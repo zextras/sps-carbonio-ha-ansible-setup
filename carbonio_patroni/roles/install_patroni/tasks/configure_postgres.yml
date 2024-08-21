@@ -1,0 +1,271 @@
+---
+- name: Edit pg_hba.conf [Ubuntu]
+  ansible.builtin.lineinfile:
+    path: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
+    state: present
+    regexp: '^host all all 0.0.0.0/0'
+    line: 'host all all 0.0.0.0/0 md5'
+  when: ansible_os_family == "Debian"
+  #notify: restart postgres
+  tags:
+    - postgres_configure
+
+- name: Edit pg_hba.conf [RHEL]
+  ansible.builtin.lineinfile:
+    path: "/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
+    state: present
+    regexp: '^host all all 0.0.0.0/0'
+    line: 'host all all 0.0.0.0/0 md5'
+  when: ansible_os_family == "RedHat"
+  #notify: restart postgres
+  tags:
+    - postgres_configure
+
+- name: Edit pg_hba.conf [Ubuntu]
+  ansible.builtin.lineinfile:
+    path: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
+    state: present
+    regexp: '^host    replication     carbonio_postgres_replica    0.0.0.0/0'
+    line: 'host    replication     carbonio_postgres_replica    0.0.0.0/0   md5'
+  #notify: restart postgres
+  when: ansible_os_family == "Debian"
+  tags:
+    - postgres_configure
+
+- name: Edit pg_hba.conf [RHEL]
+  ansible.builtin.lineinfile:
+    path: "/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
+    state: present
+    regexp: '^host    replication     carbonio_postgres_replica    0.0.0.0/0'
+    line: 'host    replication     carbonio_postgres_replica    0.0.0.0/0   md5'
+  when: ansible_os_family == "RedHat"
+  #notify: restart postgres
+  tags:
+    - postgres_configure
+
+- name: Change scram-sha-256 to md5 [Ubuntu]
+  ansible.builtin.shell:
+    cmd: "sed -i 's/scram-sha-256/md5/g' /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
+  become: yes
+  become_user: postgres
+  when: ansible_os_family == "Debian"
+  tags:
+    - postgres_configure
+
+- name: Change scram-sha-256 to md5 [RHEL]
+  ansible.builtin.shell:
+    cmd: "sed -i 's/scram-sha-256/md5/g' /var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
+  become: yes
+  become_user: postgres
+  when: ansible_os_family == "RedHat"
+  tags:
+    - initialize-postgres
+# this block needed only of fresh env. 
+# - name: "Create carbonio_adm database"
+#   postgresql_db:
+#     state: present
+#     name: "carbonio_adm"
+#   become: yes
+#   become_user: postgres
+#   when: inventory_hostname in groups["postgres-primary"]
+#   tags:
+#     - delete
+#     - initialize-postgres
+    
+# - name: Manage Postgres password
+#   ansible.builtin.set_fact:
+#       carbonio_postgres_password: "{{ lookup('ansible.builtin.password', inventory_file + '_postgrespassword', chars=['ascii_letters', 'digits'], length=8) }}"
+#   when: inventory_hostname in groups["postgres-primary"]
+#   tags:
+#     - delete
+#     - initialize-postgres
+    
+# - name: "Create carbonio_adm role"
+#   postgresql_user:
+#     state: present
+#     name: "carbonio_adm"
+#     password: "{{ carbonio_postgres_password }}"
+#     role_attr_flags: LOGIN,SUPERUSER
+#   become: yes
+#   become_user: postgres
+#   when: inventory_hostname in groups["postgres-primary"]
+#   tags:
+#     - delete
+#     - initialize-postgres
+    
+    
+# - name: "Grant carbonio_adm db access"
+#   postgresql_privs:
+#     type: database
+#     database: "carbonio_adm"
+#     roles: "carbonio_adm"
+#     grant_option: no
+#     privs: all
+#   become: yes
+#   become_user: postgres
+#   when: inventory_hostname in groups["postgres-primary"]
+#   tags:
+#     - delete
+
+- name: Manage Postgres Replica password
+  ansible.builtin.set_fact:
+      carbonio_postgres_replica_password: "{{ lookup('ansible.builtin.password', inventory_file + '_postgresreplicapassword', chars=['ascii_letters', 'digits'], length=8) }}"
+
+- name: Change Postgres to listen all ips
+  become: true
+  become_user: postgres
+  #notify: restart postgres
+  ansible.builtin.command: "psql -c \"ALTER SYSTEM SET listen_addresses TO '*';\""
+  when: inventory_hostname in groups["postgres-primary"]
+
+- name: Set md5
+  postgresql_set:
+    name: password_encryption
+    value: md5
+  become: yes
+  become_user: postgres
+  tags:
+    - initialize-postgres
+
+- name: restart_postgres [Ubuntu]
+  service: name=postgresql state=restarted
+  when: inventory_hostname in groups["postgres-primary"] and ansible_os_family == "Debian"
+
+- name: restart_postgres [RHEL]
+  service: 
+    name: "postgresql-{{ postgres_version }}"
+    state: restarted
+  when: inventory_hostname in groups["postgres-primary"] and ansible_os_family == "RedHat"
+
+# - name: Create Postgres Replica user
+#   become: true
+#   become_user: postgres
+#   notify: restart postgres
+#   ansible.builtin.command: "psql -c \"CREATE ROLE carbonio_postgres_replica WITH REPLICATION PASSWORD '{{ carbonio_postgres_replica_password }}' LOGIN;\""
+#   when: inventory_hostname  in groups["postgres-primary"]
+
+
+- name: Create Postgres Replica user
+  become: true
+  become_user: postgres
+  # notify: restart postgres
+  community.postgresql.postgresql_user:
+    name: carbonio_postgres_replica
+    password: "{{ carbonio_postgres_replica_password }}"
+    role_attr_flags: LOGIN,REPLICATION
+  when: inventory_hostname  in groups["postgres-primary"]
+
+
+- name: Clean data dir on Replica Postgres [Ubuntu]
+  become: true
+  become_user: postgres
+  ansible.builtin.shell: "rm -rf /var/lib/postgresql/{{ postgres_version }}/main/*"
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "Debian"
+
+- name: Clean data dir on Replica Postgres [RHEL]
+  become: true
+  become_user: postgres
+  ansible.builtin.shell: "rm -rf /var/lib/pgsql/{{ postgres_version }}/data/*"
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "RedHat"
+
+- name: Create pgpass file [Ubuntu]
+  ansible.builtin.copy:
+    dest: /var/lib/postgresql/.pgpass
+    content: |
+         {{ hostvars[ groups['postgres-primary'][0] ].ansible_default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
+    group: postgres
+    owner: postgres
+    mode: 0600
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "Debian"
+
+- name: Create pgpass file [RHEL]
+  ansible.builtin.copy:
+    dest: /var/lib/pgsql/.pgpass
+    content: |
+         {{ hostvars[ groups['postgres-primary'][0] ].ansible_default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
+    group: postgres
+    owner: postgres
+    mode: 0600
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "RedHat"
+
+- name: Create  Replica Postgres Sync [Ubuntu]
+  become: true
+  become_user: postgres
+  ansible.builtin.shell: "pg_basebackup -h {{ hostvars[ groups['postgres-primary'][0] ].ansible_default_ipv4.address }} -p 5432 -U carbonio_postgres_replica -D /var/lib/postgresql/{{ postgres_version }}/main/ -Fp -Xs -R"
+  # notify: restart postgres
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "Debian"
+
+
+- name: Stop the postgres service [RHEL]
+  ansible.builtin.service:
+    name: postgresql-{{ postgres_version }}
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "RedHat"
+  tags:
+    - disable_postgres
+
+- name: Create  Replica Postgres Sync [RHEL]
+  become: true
+  become_user: postgres
+  ansible.builtin.shell: "pg_basebackup -h {{ hostvars[ groups['postgres-primary'][0] ].ansible_default_ipv4.address }} -p 5432 -U carbonio_postgres_replica -D /var/lib/pgsql/{{ postgres_version }}/data/ -Fp -Xs -R"
+  # notify: restart postgres
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "RedHat"
+
+# - name: restart_postgres
+#   service: name=postgresql state=restarted
+#   when: inventory_hostname in groups["postgres-secondary"]
+
+- name: Check cluster identifier [Ubuntu]
+  become: true
+  ansible.builtin.shell: "/usr/lib/postgresql/{{ postgres_version }}/bin/pg_controldata /var/lib/postgresql/{{ postgres_version }}/main/"
+  register: cluster_ident
+  when: ansible_os_family == "Debian"
+
+- name: Check cluster identifier [RHEL]
+  become: true
+  ansible.builtin.shell: "/usr/pgsql-{{ postgres_version }}/bin/pg_controldata /var/lib/pgsql/{{ postgres_version }}/data/"
+  register: cluster_ident
+  when: ansible_os_family == "RedHat"
+
+# - name: Print postgres ident
+#   ansible.builtin.debug:
+#     var: cluster_ident
+#     verbosity: 2
+
+- name: Stop the postgres service [Ubuntu]
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "Debian"
+  tags:
+    - disable_postgres
+
+- name: Stop the postgres service [Ubuntu]
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups["postgres-primary"] and ansible_os_family == "Debian"
+  tags:
+    - disable_postgres
+
+- name: Stop the postgres service [RHEL]
+  ansible.builtin.service:
+    name: postgresql-{{ postgres_version }}
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups["postgres-secondary"] and ansible_os_family == "RedHat"
+  tags:
+    - disable_postgres
+
+- name: Stop the postgres service [RHEL]
+  ansible.builtin.service:
+    name: postgresql-{{ postgres_version }}
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups["postgres-primary"] and ansible_os_family == "RedHat"
+  tags:
+    - disable_postgres
+

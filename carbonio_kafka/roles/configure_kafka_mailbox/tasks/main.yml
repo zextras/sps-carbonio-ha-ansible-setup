@@ -1,0 +1,24 @@
+---
+- name: Add  Kafka brooker to the mailboxes
+  become: true
+  become_method: su
+  become_user: zextras
+  command: "/opt/zextras/bin/carbonio config set global brokers \"{{ hostvars[ groups['kafka'][0] ]}}:9092,{{ hostvars[ groups['kafka'][0] ]}}:9092,{{ hostvars[ groups['kafka'][0] ]}}:9092\""
+  when: inventory_hostname in groups["applicationServers"]
+  tags:
+    - kafka-mailbox
+
+- name: Check Kafka config status
+  become: true
+  become_method: su
+  become_user: zextras
+  command: "carbonio config get global brokers"
+  when: inventory_hostname in groups["applicationServers"]
+  register: kafka_status
+  tags:
+    - kafka-mailbox
+
+
+- name: Print Kafka config status
+  debug:
+    msg: "{{ kafka_status.stdout_lines }}"

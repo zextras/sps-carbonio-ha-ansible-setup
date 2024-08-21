@@ -1,0 +1,30 @@
+---
+  - name: "Set Postgres Service name RHEL"
+    set_fact:
+      postgresql_service_name: "{{ rhel_postgresql_service_name }}"
+    when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgres-secondary"]
+    tags:
+      - initialize-postgres
+      
+  - name: Check if PostgreSQL database is initialized.
+    stat:
+      path: "{{ rhel_postgresql_data_dir }}/PG_VERSION"
+    register: pgdata_dir_version
+    tags:
+      - initialize-postgres
+      
+  - name:  Initialize Postgres on RHEL
+    become: true
+    command: '{{ rhel_postgres_init_script }} initdb'
+    when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgres-secondary"] and not pgdata_dir_version.stat.exists
+    tags:
+      - initialize-postgres
+
+  - name: Enable Postgres service RHEL
+    ansible.builtin.systemd:
+      name: "{{ rhel_postgresql_service_name }}"
+      state: started
+      enabled: true
+    when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgres-secondary"]
+    tags:
+      - initialize-postgres

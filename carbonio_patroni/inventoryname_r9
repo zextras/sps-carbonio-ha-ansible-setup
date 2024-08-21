@@ -1,0 +1,6 @@
+[postgres-primary]
+mb-r9-srv2.demo.zextras.io postgres_version=16
+
+
+[postgres-secondary]
+mb-r9-srv3.demo.zextras.io postgres_version=16

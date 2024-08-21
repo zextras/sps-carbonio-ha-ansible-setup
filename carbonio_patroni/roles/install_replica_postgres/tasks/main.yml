@@ -1,0 +1,4 @@
+---
+  - import_tasks: set-repos.yml
+  - import_tasks: install-postgres.yml
+  - import_tasks: start-postgres.yml

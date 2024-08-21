@@ -1,0 +1,4 @@
+---
+  - import_tasks: configure_postgres.yml
+  - import_tasks: install_patroni.yml
+

@@ -1,0 +1,147 @@
+---
+- name: Create Patroni repo [Ubuntu]
+  template:
+    src: patroni.list.j2
+    dest: /etc/apt/sources.list.d/patroni.list
+  when: ansible_os_family == "Debian"
+  tags:
+    - set-repos
+
+- name: Add apt key Postgres repo [Ubuntu]
+  become: true
+  ansible.builtin.apt_key:
+    url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+      - set-repos
+
+- name: Update repos [Ubuntu]
+  become: true
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags:
+      - set-repos
+
+- name: Install patroni packages [Ubuntu]
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+      - patroni
+      - watchdog
+      - python3-consul
+      - python3-pysyncobj
+      - python3-psycopg2
+  when: ansible_os_family == "Debian"
+  tags:
+    - install_patroni
+
+- name: Install patroni packages [RHEL]
+  become: true
+  yum: name={{ item }} state=present
+  with_items:
+      - patroni
+      - watchdog
+      - python3-consul
+      - python3-psycopg2
+  when: ansible_os_family == "RedHat"
+  tags:
+    - install_patroni
+
+- name: Install patroni packages [RHEL]
+  become: true
+  yum: name={{ item }} state=present
+  with_items:
+      - pinentry
+  when: ansible_os_family == "RedHat"
+  tags:
+    - install_patroni
+    - delete
+
+- name: Manage Consul password
+  ansible.builtin.set_fact:
+      carbonio_mesh_password: "{{ lookup('ansible.builtin.password', inventory_file + '_consulpassword', chars=['ascii_letters', 'digits'], length=8) }}"
+  tags:
+    - service-discover-agent-bootstrap
+
+- name: Get Consul token
+  ansible.builtin.shell: "echo {{ carbonio_mesh_password }} | gpg --batch --yes --passphrase-fd 0 -qdo - /etc/zextras/service-discover/cluster-credentials.tar.gpg | tar xOf - consul-acl-secret.json | jq .SecretID -r"
+  register: carbonio_mesh_token_answer
+
+- name: Set Consul token
+  set_fact:
+    carbonio_mesh_token: "{{ carbonio_mesh_token_answer.stdout_lines[0] }}"
+
+- name: Manage Postgres Admin password
+  ansible.builtin.set_fact:
+    carbonio_postgres_password: "{{ lookup('ansible.builtin.password', inventory_file + '_postgrespassword', chars=['ascii_letters', 'digits'], length=8) }}"
+  tags:
+  -  patroni-config
+
+- name: Manage Postgres Replica password
+  ansible.builtin.set_fact:
+    carbonio_postgres_replica_password: "{{ lookup('ansible.builtin.password', inventory_file + '_postgresreplicapassword', chars=['ascii_letters', 'digits'], length=8) }}"
+  tags:
+    - patroni-config
+
+- name: Template configuration file for patroni [Ubuntu]
+  become: true
+  ansible.builtin.template:
+    src: patroni.config.yaml.j2
+    dest: /etc/patroni/config.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - patroni-config
+
+- name: Template configuration file for patroni [RHEL]
+  become: true
+  ansible.builtin.template:
+    src: patroni-rhel.config.yaml.j2
+    dest: /etc/patroni/patroni.yml
+  when: ansible_os_family == "RedHat"
+  tags:
+    - patroni-config
+
+
+- name: Check cluster identifier [Ubuntu]
+  become: true
+  ansible.builtin.shell: "/usr/lib/postgresql/{{ postgres_version }}/bin/pg_controldata /var/lib/postgresql/{{ postgres_version }}/main/"
+  register: cluster_ident
+  when: ansible_os_family == "Debian"
+
+- name: Check cluster identifier [RHEL]
+  become: true
+  ansible.builtin.shell: "/usr/pgsql-{{ postgres_version }}/bin/pg_controldata /var/lib/pgsql/{{ postgres_version }}/data/"
+  register: cluster_ident
+  when: ansible_os_family == "RedHat"
+
+- name: Print postgres ident
+  ansible.builtin.debug:
+    var: cluster_ident
+    verbosity: 2 
+
+
+- name: Start the patroni service
+  ansible.builtin.service:
+    name: patroni
+    state: started
+    enabled: yes
+  when: inventory_hostname in groups["postgres-primary"]
+  tags:
+    - enable_patroni
+
+- name: Pause for 1 minutes to vailidate pastroni start
+  ansible.builtin.pause:
+    minutes: 1
+
+- name: Start the patroni service
+  ansible.builtin.service:
+    name: patroni
+    state: started
+    enabled: yes
+  when: inventory_hostname in groups["postgres-secondary"]
+  tags:
+    - enable_patroni
+
+

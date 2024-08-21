@@ -1,0 +1,143 @@
+---
+- name: Load OS-specific variables
+  ansible.builtin.include_vars: '{{ item }}'
+  with_first_found:
+    - ../vars/{{ ansible_os_family }}.yml
+    - ../vars/{{ ansible_distribution_release }}.yml
+  tags:
+    - always
+
+
+- name: Create Zookeper group
+  ansible.builtin.group:
+    name: '{{ zookeper_group }}'
+    state: present
+    system: yes
+  tags:
+    - zookeper_group
+
+- name: Create zookeper user
+  ansible.builtin.user:
+    name: '{{ zookeper_user }}'
+    group: '{{ zookeper_group }}'
+    state: present
+    createhome: yes
+    home: '/var/lib/queue/'
+    system: yes
+  tags:
+    - zookeper_user
+
+- name: Create directory for zookeeper data log files
+  ansible.builtin.file:
+    path: /var/lib/queue/zookeeper/logs
+    state: directory
+    recurse: yes
+    owner: '{{ zookeper_user }}'
+    group: '{{ zookeper_group }}'
+    mode: 0755
+
+- name: Create directory for zookeeper config
+  ansible.builtin.file:
+    path: /opt/zookeeper/conf
+    state: directory
+    recurse: yes
+    owner: '{{ zookeper_user }}'
+    group: '{{ zookeper_group }}'
+    mode: 0755
+
+- name: Install jre [Ubuntu]
+  ansible.builtin.apt:
+    name: openjdk-17-jre-headless
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install jre [RHEL]
+  ansible.builtin.yum:
+    name: java-17-openjdk-headless
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Check if zookeper has already been downloaded and unpacked
+  ansible.builtin.stat:
+    path: '{{ zookeper_dir }}/apache-zookeeper-{{ zookeper_version }}-bin'
+  register: dir
+
+- name: Download Apache zookeper
+  ansible.builtin.get_url:
+    url: '{{ zookeper_download_base_url }}/zookeeper-{{ zookeper_version }}/apache-zookeeper-{{ zookeper_version }}-bin.tar.gz'
+    dest: /tmp
+    validate_certs: false
+    mode: 0644
+  # when: not dir.stat.exists
+  tags:
+    - zookeper_download
+
+- name: Unpack Apache zookeper
+  ansible.builtin.unarchive:
+    src: /tmp/apache-zookeeper-{{ zookeper_version }}-bin.tar.gz
+    dest: '{{ zookeper_dir }}'
+    copy: no
+    group: '{{ zookeper_group }}'
+    owner: '{{ zookeper_user }}'
+    extra_opts: ['--strip-components=1', '--show-stored-names']
+  # when: not dir.stat.exists
+  tags:
+    - zookeper_unpack
+
+- name: Create directory for symlink to zookeper configuration files
+  ansible.builtin.file:
+    path: /etc/zookeper
+    state: directory
+    group: '{{ zookeper_group }}'
+    owner: '{{ zookeper_user }}'
+    mode: 0755
+  tags:
+    - zookeper_dirs
+
+- name: Template configuration file to server.properties
+  ansible.builtin.template:
+    src: zoo.cfg.j2
+    dest: '{{ zookeper_dir }}/conf/zoo.cfg'
+    group: '{{ zookeper_group }}'
+    owner: '{{ zookeper_user }}'
+    mode: 0644
+  tags:
+    - zookeper_config
+
+- name: Create myid file
+  ansible.builtin.copy:
+    dest: /var/lib/queue/zookeeper/myid
+    content: |
+        {{ zookeeper_id }}
+    group: '{{ zookeper_group }}'
+    owner: '{{ zookeper_user }}'
+    mode: 0644 
+
+- name: Template zookeper systemd service
+  ansible.builtin.template:
+    src: carbonio-zookeper.service.j2
+    dest: '{{ zookeper_unit_path }}'
+    group: '{{ zookeper_group }}'
+    owner: '{{ zookeper_user }}'
+    mode: 0644
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version > '6' or ansible_os_family == "Debian"
+  tags:
+    - zookeper_service
+
+- name: Install and start the zookeper service
+  ansible.builtin.service:
+    name: carbonio-zookeeper
+    state: started
+    enabled: yes
+  # when: zookeper_start
+  tags:
+    - zookeper_service
+
+- name: Delete the zookeeper archive file
+  ansible.builtin.file:
+    path: /tmp/apache-zookeeper-{{ zookeper_version }}-bin.tar.gz
+    state: absent
+  tags:
+    - zookeper_cleanup

@@ -1,0 +1,52 @@
+[postgres-primary]
+mb-r9-srv2.demo.zextras.io postgres_version=16
+
+
+[postgres-secondary]
+mb-r9-srv3.demo.zextras.io postgres_version=16
+
+[kafka]
+mb-r9-srv1.demo.zextras.io broker_id=1
+mb-r9-srv2.demo.zextras.io broker_id=2
+mb-r9-srv3.demo.zextras.io broker_id=3
+
+[zookeeper_servers]
+mb-r9-srv1.demo.zextras.io zookeeper_id=1
+mb-r9-srv2.demo.zextras.io zookeeper_id=2
+mb-r9-srv3.demo.zextras.io zookeeper_id=3
+
+[postgresServers]
+
+[masterDirectoryServers]
+
+[replicaDirectoryServers]
+
+[serviceDiscoverServers]
+
+[dbsConnectorServers]
+
+[mtaServers]
+
+[proxyServers]
+
+[proxyServers:vars]
+#webmailHostname=webmailPublicHostname
+
+[applicationServers]
+
+[WorkStreamServers]
+
+[filesServers]
+
+[docsServers]
+
+[taskServers]
+
+[previewServers]
+
+[videoServers]
+#hostname public_ip_address=x.y.z.t
+
+[prometheusServers]
+
+[syslogServer]

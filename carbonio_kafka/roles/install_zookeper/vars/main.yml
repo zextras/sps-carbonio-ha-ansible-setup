@@ -1,0 +1,15 @@
+---
+# vars file for install_zookeper
+zookeper_user: 'carbonio-queue'
+zookeper_group: 'carbonio-queue'
+
+zookeper_download_base_url: https://dlcdn.apache.org/zookeeper
+zookeper_download_validate_certs: yes
+zookeper_version: 3.8.4
+zookeper_scala_version: 2.13
+
+# The zookeper user and group to create files/dirs with and for running the zookeper service
+zookeper_create_user_group: true
+zookeper_root_dir: /opt
+zookeper_dir: "{{ zookeper_root_dir }}/zookeeper"
+zookeper_unit_path: /lib/systemd/system/carbonio-zookeeper.service

@@ -1,0 +1,2 @@
+---
+zookeper_unit_path: /usr/lib/systemd/system/carbonio-zookeeper.service

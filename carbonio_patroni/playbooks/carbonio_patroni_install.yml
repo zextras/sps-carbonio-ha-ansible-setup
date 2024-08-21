@@ -1,0 +1,12 @@
+---
+- hosts: postgres-primary,postgres-secondary
+  order: inventory
+  gather_facts: yes
+  roles:
+     - ../roles/install_patroni
+
+- hosts: dbsConnectorServers,applicationServers
+  order: inventory
+  gather_facts: yes
+  roles:
+     - ../roles/configure_patroni_carbonio

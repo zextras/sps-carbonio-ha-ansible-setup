@@ -1,0 +1,15 @@
+---
+# vars file for install_replica_postgres
+postgres_packages_ubuntu: 
+  - python3-psycopg2
+  - postgresql-16
+
+postgres_packages_rhel: 
+  - python38-psycopg2
+  - postgresql16-server
+
+rhel_postgresql_data_dir: "/var/lib/pgsql/16/data/"
+ubuntu_postgresql_conf_dir: "/etc/postgresql/16/main/"
+rhel_postgresql_service_name: "postgresql-16"
+postgresql_service_name: "postgresql"
+rhel_postgres_init_script: "/usr/pgsql-16/bin/postgresql-16-setup"

@@ -1,0 +1,42 @@
+scope: carbonio-psql-cluster
+name: {{ inventory_hostname }}              # Change this value on uniq in scope of patroni cluster
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: 127.0.0.1:8008
+consul:
+  host: 127.0.0.1:8500
+  token: "{{ carbonio_mesh_token }}"             #Do not forget to get this value from command above!!!
+  dc: dc1
+  register_service: true
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout : 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: replica
+        hot_standby: "on"
+        wal_keep_segments: 100
+  initdb:
+  - encoding: UTF8
+  - data-checksums
+  pg_hba:
+  - host replication carbonio_postgres_replica 0.0.0.0/0 md5
+  - host all all 0.0.0.0/0 md5
+postgresql:
+  listen: 0.0.0.0:5432                # should be 0.0.0.0 to listen all incoming sources + port 5432 can be used if haproxy\pgpool not on this VM 
+  connect_address: {{ ansible_default_ipv4.address }}:5432     # should be local ip address, ip addr show to check
+  config_dir: /var/lib/pgsql/{{ postgres_version }}/data
+  data_dir: /var/lib/pgsql/{{ postgres_version }}/data
+  bin_dir: /usr/pgsql-{{ postgres_version }}/bin
+  authentication:
+    replication:
+      username: carbonio_postgres_replica
+      password: {{ carbonio_postgres_replica_password }}
+    superuser:
+      username: carbonio_adm
+      password: {{ carbonio_postgres_password }}

@@ -1,0 +1,6 @@
+---
+- hosts: postgres-secondary
+  order: inventory
+  gather_facts: yes
+  roles:
+     - ../roles/install_replica_postgres

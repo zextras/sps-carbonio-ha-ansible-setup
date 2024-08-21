@@ -1,0 +1,3 @@
+---
+# tasks file for configure_patroni_carbonio
+- import_tasks: install_haproxy.yml

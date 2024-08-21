@@ -1,0 +1,4 @@
+---
+# handlers file for install_patroni
+# - name: restart postgres
+#   service: name=postgresql state=restarted
