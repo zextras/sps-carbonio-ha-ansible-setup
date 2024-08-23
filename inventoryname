@@ -19,6 +19,8 @@ mb-pgcache-srv3.demo.zextras.io zookeeper_id=3
 
 [masterDirectoryServers]
 
+
+
 [replicaDirectoryServers]
 
 [serviceDiscoverServers]

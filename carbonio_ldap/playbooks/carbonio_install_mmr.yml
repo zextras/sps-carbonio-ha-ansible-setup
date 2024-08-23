@@ -1,0 +1,5 @@
+- hosts: masterDirectoryServers, NewMutliMasterDirectoryServers
+  order: inventory
+  gather_facts: yes
+  roles:
+     - ../roles/install_multimaster

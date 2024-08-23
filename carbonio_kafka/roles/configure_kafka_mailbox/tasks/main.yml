@@ -3,7 +3,7 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/carbonio config set global brokers \"{{ hostvars[ groups['kafka'][0] ]}}:9092,{{ hostvars[ groups['kafka'][0] ]}}:9092,{{ hostvars[ groups['kafka'][0] ]}}:9092\""
+  command: "/opt/zextras/bin/carbonio config set global brokers \"{{ groups[\"kafka\"][0]}}:9092,{{ groups[\"kafka\"][1]}}:9092,{{ groups[\"kafka\"][2]}}:9092\""
   when: inventory_hostname in groups["applicationServers"]
   tags:
     - kafka-mailbox

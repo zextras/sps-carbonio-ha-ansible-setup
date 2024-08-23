@@ -1,0 +1,79 @@
+[postgres-primary]
+mb-pltest-u22-svc1.demo.zextras.io postgres_version=16
+
+
+[postgres-secondary]
+mb-pltest-u22-svc2.demo.zextras.io postgres_version=16
+
+[kafka]
+mb-pltest-u22-svc1.demo.zextras.io broker_id=1
+mb-pltest-u22-svc2.demo.zextras.io broker_id=2
+mb-pltest-u22-svc3.demo.zextras.io broker_id=3
+
+[zookeeper_servers]
+mb-pltest-u22-svc1.demo.zextras.io zookeeper_id=1
+mb-pltest-u22-svc2.demo.zextras.io zookeeper_id=2
+mb-pltest-u22-svc3.demo.zextras.io zookeeper_id=3
+
+[NewMutliMasterDirectoryServers]
+mb-pltest-u22-svc2.demo.zextras.io
+
+[postgresServers]
+mb-pltest-u22-svc1.demo.zextras.io
+
+[masterDirectoryServers]
+mb-pltest-u22-svc1.demo.zextras.io
+
+[replicaDirectoryServers]
+
+ 
+[serviceDiscoverServers]
+mb-pltest-u22-svc1.demo.zextras.io
+mb-pltest-u22-svc2.demo.zextras.io
+mb-pltest-u22-svc3.demo.zextras.io
+
+[dbsConnectorServers]
+mb-pltest-u22-mbox1.demo.zextras.io
+mb-pltest-u22-mbox2.demo.zextras.io
+
+[mtaServers]
+mb-pltest-u22-pmv1.demo.zextras.io
+mb-pltest-u22-pmv2.demo.zextras.io
+
+[antivirusServers]
+
+[proxyServers]
+mb-pltest-u22-pmv1.demo.zextras.io
+mb-pltest-u22-pmv2.demo.zextras.io
+
+[proxyServers:vars]
+webmailHostname=webmail.demo.zextras.io
+
+[applicationServers]
+mb-pltest-u22-mbox1.demo.zextras.io
+mb-pltest-u22-mbox2.demo.zextras.io
+
+[filesServers]
+mb-pltest-u22-fd1.demo.zextras.io
+mb-pltest-u22-fd2.demo.zextras.io
+
+[taskServers]
+mb-pltest-u22-fd1.demo.zextras.io
+mb-pltest-u22-fd2.demo.zextras.io
+
+[docsServers]
+mb-pltest-u22-fd1.demo.zextras.io
+mb-pltest-u22-fd2.demo.zextras.io
+
+[previewServers]
+mb-pltest-u22-fd1.demo.zextras.io
+mb-pltest-u22-fd2.demo.zextras.io
+
+[videoServers]
+#hostname public_ip_address=x.y.z.t
+
+[prometheusServers]
+mb-pltest-u22-svc3.demo.zextras.io
+
+[syslogServer]
+mb-pltest-u22-svc3.demo.zextras.io
