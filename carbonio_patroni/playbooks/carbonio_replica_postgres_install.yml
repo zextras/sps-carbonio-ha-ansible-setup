@@ -1,5 +1,5 @@
 ---
-- hosts: postgres-secondary
+- hosts: postgresServers
   order: inventory
   gather_facts: yes
   roles:

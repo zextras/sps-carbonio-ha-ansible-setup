@@ -8,48 +8,48 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"NewMutliMasterDirectoryServers\"][0]}}:389/"
-  when: inventory_hostname in groups["masterDirectoryServers"]
+  command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389/"
+  when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Change local conf on first master
   become: true
   become_method: su
   become_user: zextras
-  command: "zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"NewMutliMasterDirectoryServers\"][0]}}:389\""
-  when: inventory_hostname in groups["masterDirectoryServers"]
+  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389\""
+  when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Restart carbonio on first LDAP master
   become: true
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
-  when: inventory_hostname in groups["masterDirectoryServers"]
+  when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Stop zimbra services on second LDAP master
   become: true
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol stop"
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Install carbonio-directory-server [Ubuntu]
   become: true
   apt: name={{ item }} state=present
   with_items:
       - carbonio-directory-server
-  when: "ansible_os_family == \"Debian\" and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "ansible_os_family == \"Debian\" and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Install carbonio-directory-server [RHEL]
   become: true
   yum: name={{ item }} state=present
   with_items:
       - carbonio-directory-server
-  when: "ansible_os_family == \"RedHat\" and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "ansible_os_family == \"RedHat\" and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Remove old configuration
   become: true
   ansible.builtin.shell: "rm /opt/zextras/config.* && rm /opt/zextras/.install_history"
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Manage Consul password
   ansible.builtin.set_fact:
@@ -64,7 +64,7 @@
     src: apply-pending-setups.sh
     dest: /tmp/apply-pending-setups.sh
     mode: '0755'
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
   tags:
     - execute-pending-setups
     
@@ -72,7 +72,7 @@
   become: true
   command: /tmp/apply-pending-setups.sh {{ carbonio_mesh_password }}
   register: pso
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
   tags:
     - execute-pending-setups
     
@@ -81,7 +81,7 @@
   ansible.builtin.file:
     state: absent
     path: /tmp/apply-pending-setups.sh
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
   tags:
     - execute-pending-setups
 
@@ -95,14 +95,14 @@
   template:
     src: carbonio-config.txt.j2
     dest: /tmp/carbonio-config.txt
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
   tags:
     - execute-carbonio-bootstrap
     
 - name: run Carbonio Bootstrap
   become: true
   command: /usr/bin/carbonio-bootstrap -c /tmp/carbonio-config.txt
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
   tags:
     - execute-carbonio-bootstrap
 
@@ -110,12 +110,12 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"NewMutliMasterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Restart carbonio on second LDAP master
   become: true
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
-  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"NewMutliMasterDirectoryServers\"]"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""

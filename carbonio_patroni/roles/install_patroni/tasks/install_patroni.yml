@@ -127,7 +127,7 @@
     name: patroni
     state: started
     enabled: yes
-  when: inventory_hostname in groups["postgres-primary"]
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary"
   tags:
     - enable_patroni
 
@@ -140,7 +140,7 @@
     name: patroni
     state: started
     enabled: yes
-  when: inventory_hostname in groups["postgres-secondary"]
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
     - enable_patroni
 
