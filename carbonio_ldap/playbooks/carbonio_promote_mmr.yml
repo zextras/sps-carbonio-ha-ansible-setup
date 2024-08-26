@@ -1,4 +1,4 @@
-- hosts: masterDirectoryServers, NewMutliMasterDirectoryServers
+- hosts: masterDirectoryServers
   order: inventory
   gather_facts: yes
   roles:

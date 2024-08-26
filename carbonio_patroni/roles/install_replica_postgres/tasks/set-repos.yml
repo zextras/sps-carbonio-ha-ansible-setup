@@ -3,7 +3,7 @@
   template:
     src: pgpool.list.j2
     dest: /etc/apt/sources.list.d/pgdg.list
-  when: ansible_os_family == "Debian" and inventory_hostname in groups["postgres-secondary"]
+  when: ansible_os_family == "Debian" and inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
     - set-repos
 
@@ -12,7 +12,7 @@
   ansible.builtin.apt_key:
     url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
     state: present
-  when: ansible_os_family == "Debian" and inventory_hostname in groups["postgres-secondary"]
+  when: ansible_os_family == "Debian" and inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
       - set-repos
       
@@ -31,7 +31,7 @@
     name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_distribution_major_version }}-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     state: present
     disable_gpg_check : true
-  when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgres-secondary"]
+  when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
       - set-repos
 
@@ -45,7 +45,7 @@
     gpgcheck: no
     repo_gpgcheck: no
     enabled: yes
-  when: ansible_facts['os_family'] == "RedHat" and  inventory_hostname in groups["postgres-secondary"]
+  when: ansible_facts['os_family'] == "RedHat" and  inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
     - set-repos
 
@@ -56,14 +56,14 @@
     executable: /bin/bash
   register: pkgu
   failed_when: "pkgu.rc not in [ 0, 100 ]"
-  when: ansible_os_family == "RedHat" and  inventory_hostname in groups["postgres-secondary"]
+  when: ansible_os_family == "RedHat" and  inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
     - set-repos
 
 - name: Disable the postgresql stream module in AppStream
   become: true
   command: '/usr/bin/dnf -qy module disable postgresql'
-  when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgres-secondary"]
+  when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
       - set-repos
       
@@ -72,6 +72,6 @@
   ansible.builtin.yum:
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
     state: present
-  when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgres-secondary"]
+  when: ansible_os_family == "RedHat" and inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
       - set-repos    

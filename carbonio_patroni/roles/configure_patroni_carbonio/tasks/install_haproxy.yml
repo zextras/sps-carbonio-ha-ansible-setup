@@ -39,7 +39,7 @@
     name: pgpool2.service
     state: stopped
     enabled: no
-  when: ansible_os_family == "RedHat" and inventory_hostname in groups["dbsConnectorServers"]
+  when: ansible_os_family == "Debian" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
     - stop_pgpool
 
@@ -48,7 +48,7 @@
     name: pgpool-II
     state: stopped
     enabled: no
-  when: ansible_os_family == "Debian" and inventory_hostname in groups["dbsConnectorServers"]
+  when: ansible_os_family == "RedHat" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
     - stop_pgpool
 

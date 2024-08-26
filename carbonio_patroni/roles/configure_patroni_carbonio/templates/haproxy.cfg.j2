@@ -18,5 +18,5 @@ listen region_one
 	option httpchk
 	http-check expect status 200
 	default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
-    	server {{ hostvars[ groups['postgres-primary'][0] ].inventory_hostname }} {{ hostvars[ groups['postgres-primary'][0] ].ansible_default_ipv4.address }}:5432 maxconn 80 check port 8008
-    	server {{ hostvars[ groups['postgres-secondary'][0] ].inventory_hostname }} {{ hostvars[ groups['postgres-secondary'][0] ].ansible_default_ipv4.address }}:5432 maxconn 80 check port 8008
+    	server {{ hostvars[ groups['postgresServers'][0] ].inventory_hostname }} {{ hostvars[ groups['postgresServers'][0] ].ansible_default_ipv4.address }}:5432 maxconn 80 check port 8008
+    	server {{ hostvars[ groups['postgresServers'][1] ].inventory_hostname }} {{ hostvars[ groups['postgresServers'][1] ].ansible_default_ipv4.address }}:5432 maxconn 80 check port 8008
