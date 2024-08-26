@@ -5,7 +5,7 @@
     update_cache: yes
   when: ansible_os_family == "Debian" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
-      - set-repos
+      - haproxy
 
 - name: Install haproxy packages [Ubuntu]
   become: true
@@ -14,7 +14,7 @@
     - haproxy
   when: ansible_os_family == "Debian" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
-    - install_patroni
+    - haproxy
 
 - name: Install haproxy packages [RHEL]
   become: true
@@ -23,7 +23,7 @@
     - haproxy
   when: ansible_os_family == "RedHat" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
-    - install_patroni
+    - haproxy
 
 - name: Template configuration file for haproxy
   become: true
@@ -32,7 +32,7 @@
     dest: /etc/haproxy/haproxy.cfg
   when: inventory_hostname in groups["dbsConnectorServers"]
   tags:
-    - patroni-config
+    - haproxy
 
 - name: Stop the pgpool service [Ubuntu]
   ansible.builtin.service:
@@ -41,7 +41,7 @@
     enabled: no
   when: ansible_os_family == "Debian" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
-    - stop_pgpool
+    - haproxy
 
 - name: Stop the pgpool service [RHEL]
   ansible.builtin.service:
@@ -50,7 +50,7 @@
     enabled: no
   when: ansible_os_family == "RedHat" and inventory_hostname in groups["dbsConnectorServers"]
   tags:
-    - stop_pgpool
+    - haproxy
 
 - name: Start the haproxy service
   ansible.builtin.service:
@@ -59,13 +59,13 @@
     enabled: yes
   when: inventory_hostname in groups["dbsConnectorServers"]
   tags:
-    - enable_patroni
+    - haproxy
 
-- name: Configure syslog server
+- name: Restart carbonio
   become: true
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
   when: inventory_hostname in groups["applicationServers"]
   tags:
-    - master-directory-bootstrap     
+    - haproxy    

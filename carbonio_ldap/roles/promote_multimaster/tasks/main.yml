@@ -15,7 +15,7 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389\""
+  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389\""
   when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Restart carbonio on first LDAP master
@@ -43,7 +43,7 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
+  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
   when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Restart carbonio on second LDAP master
