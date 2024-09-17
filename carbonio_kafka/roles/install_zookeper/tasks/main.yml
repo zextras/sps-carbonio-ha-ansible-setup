@@ -70,7 +70,16 @@
     dest: /tmp
     validate_certs: false
     mode: 0644
-  # when: not dir.stat.exists
+  when: offline is undefined
+  tags:
+    - zookeper_download
+
+- name: Upload Apache zookeper
+  ansible.builtin.copy:
+    src: apache-zookeeper-{{ zookeper_version }}-bin.tar.gz
+    dest: /tmp/apache-zookeeper-{{ zookeper_version }}-bin.tar.gz
+    mode: '0644'
+  when: offline is defined
   tags:
     - zookeper_download
 

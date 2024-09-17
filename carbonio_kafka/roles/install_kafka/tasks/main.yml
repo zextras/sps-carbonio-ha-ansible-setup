@@ -71,7 +71,16 @@
     dest: /tmp
     validate_certs: false
     mode: 0644
-  # when: not dir.stat.exists
+  when: offline is undefined
+  tags:
+    - kafka_download
+
+- name: Upload Apache Kafka
+  ansible.builtin.copy:
+      src: kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
+      dest: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
+      mode: '0644'
+  when: offline is defined
   tags:
     - kafka_download
 
