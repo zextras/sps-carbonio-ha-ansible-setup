@@ -12,7 +12,7 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "carbonio config get global brokers"
+  command: "/opt/zextras/bin/carbonio config get global brokers"
   when: inventory_hostname in groups["applicationServers"]
   register: kafka_status
   tags:

@@ -1,0 +1,13 @@
+- hosts: kafka
+  order: inventory
+  gather_facts: yes
+  vars:
+      offline: true
+  roles:
+     - ../roles/install_kafka
+
+- hosts: applicationServers
+  order: inventory
+  gather_facts: yes
+  roles:
+     - ../roles/configure_kafka_mailbox
