@@ -147,7 +147,7 @@
 - name: Stop the patroni service[Ubuntu]
   ansible.builtin.service:
     name: patroni
-    state: started
+    state: stopped
     enabled: yes
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
   tags:
