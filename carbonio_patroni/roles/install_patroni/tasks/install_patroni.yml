@@ -131,16 +131,43 @@
   tags:
     - enable_patroni
 
+- name: Restart the patroni service[Ubuntu]
+  ansible.builtin.service:
+    name: patroni
+    state: restarted
+    enabled: yes
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_os_family == "Debian"
+  tags:
+    - enable_patroni
+
 - name: Pause for 1 minutes to vailidate pastroni start
   ansible.builtin.pause:
     minutes: 1
 
-- name: Start the patroni service
+- name: Stop the patroni service[Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: started
     enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
+  tags:
+    - enable_patroni
+
+- name: Start the patroni service [RHEL]
+  ansible.builtin.service:
+    name: patroni
+    state: started
+    enabled: yes
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "RedHat"
+  tags:
+    - enable_patroni
+
+- name: Restart the patroni service [Ubuntu]
+  ansible.builtin.service:
+    name: patroni
+    state: started
+    enabled: yes
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
   tags:
     - enable_patroni
 
