@@ -1,18 +1,22 @@
 global
-	maxconn 100
+    maxconn 1000
+	external-check
+
 defaults
-	log global
-	mode tcp
-	retries 2
-	timeout client 30m
-	timeout connect 4s
-	timeout server 30m
-	timeout check 5s
+        log global
+        mode tcp
+        retries 2
+        timeout client 30m
+        timeout connect 4s
+        timeout server 30m
+        timeout check 5s
+
 listen stats
-	mode http
-	bind *:7000
-	stats enable
-	stats uri /
+        mode http
+        bind *:7000
+        stats enable
+        stats uri /
+
 frontend ldap_service_front
   mode                  tcp
   bind                  *:389
@@ -21,11 +25,14 @@ frontend ldap_service_front
   option                tcpka
   timeout client        3600s
   default_backend       ldap_service_back
+
 backend ldap_service_back
   server                ldap-1 {{ hostvars[ groups['masterDirectoryServers'][0] ].inventory_hostname }}:389 check fall 1 rise 1 inter 2s
   server                ldap-2 {{ hostvars[ groups['masterDirectoryServers'][1] ].inventory_hostname }}:389 check backup fall 1 rise 1 inter 2s
   mode                  tcp
+  balance               roundrobin
   option                tcpka
   option                ldap-check
   timeout server        1800s
   timeout connect       1s
+
