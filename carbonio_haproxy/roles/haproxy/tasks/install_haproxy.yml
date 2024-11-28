@@ -46,8 +46,8 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmlocalconfig -e ldap_url="ldap://localhost:389""
-  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url="ldap://localhost:389""
+  command: "/opt/zextras/bin/zmlocalconfig -e ldap_url='ldap://localhost:389'"
+  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url='ldap://localhost:389'"
   when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
     - haproxy
