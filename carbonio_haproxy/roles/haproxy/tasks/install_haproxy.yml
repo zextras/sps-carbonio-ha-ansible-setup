@@ -10,7 +10,7 @@
   become: true
   apt: name={{ item }} state=present
   with_items:
-    - haproxy
+    - "{{ haproxy_packages }}"
   when: ansible_os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
     - haproxy
@@ -19,7 +19,7 @@
   become: true
   yum: name={{ item }} state=present
   with_items:
-    - haproxy
+    - "{{ haproxy_packages }}"
   when: ansible_os_family == "RedHat" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
     - haproxy
