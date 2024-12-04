@@ -1,21 +1,20 @@
 global
-    maxconn 1000
-	external-check
-
+	maxconn 100
+        
 defaults
-        log global
-        mode tcp
-        retries 2
-        timeout client 30m
-        timeout connect 4s
-        timeout server 30m
-        timeout check 5s
+	log global
+	mode tcp
+	retries 2
+	timeout client 30m
+	timeout connect 4s
+	timeout server 30m
+	timeout check 5s
 
 listen stats
-        mode http
-        bind *:7000
-        stats enable
-        stats uri /
+	mode http
+	bind *:7000
+	stats enable
+	stats uri /
 
 frontend ldap_service_front
   mode                  tcp
@@ -35,4 +34,15 @@ backend ldap_service_back
   option                ldap-check
   timeout server        1800s
   timeout connect       1s
+
+{% if inventory_hostname in groups['dbsConnectorServers'] %}
+listen region_one
+	bind *:5432
+	option httpchk
+	http-check expect status 200
+	default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+    	server {{ hostvars[ groups['postgresServers'][0] ].inventory_hostname }} {{ hostvars[ groups['postgresServers'][0] ].ansible_default_ipv4.address }}:5432 maxconn 80 check port 8008
+    	server {{ hostvars[ groups['postgresServers'][1] ].inventory_hostname }} {{ hostvars[ groups['postgresServers'][1] ].ansible_default_ipv4.address }}:5432 maxconn 80 check port 8008
+{% endif %}
+
 

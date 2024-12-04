@@ -5,8 +5,28 @@
   roles:
      - ../roles/install_patroni
 
-- hosts: dbsConnectorServers,applicationServers
-  order: inventory
+- name: Prompt for Full HA Installation
+  hosts: localhost
+  gather_facts: no
+  vars_prompt:
+    - name: full_ha
+      prompt: "Is this a full HA installation? (yes/no)"
+      private: no
+
+  tasks:
+    - name: Set fact for running playbook on all servers
+      set_fact:
+        target_hosts: "all"
+      when: full_ha == "yes"
+
+    - name: Set fact for running playbook on dbsConnectorServers
+      set_fact:
+        target_hosts: "dbsConnectorServers"
+      when: full_ha == "no"
+
+- name: Execute HAProxy Configuration
+  hosts: "{{ target_hosts }}"
   gather_facts: yes
-  roles:
-     - ../roles/configure_patroni_carbonio
+  tasks:
+    - import_playbook: "../../carbonio_haproxy/playbooks/install_haproxy.yml"
+      when: full_ha is defined and full_ha != ''

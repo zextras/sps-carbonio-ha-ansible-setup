@@ -29,7 +29,7 @@
   template:
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
-  when: inventory_hostname not in groups["dbsConnectorServers"] and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
     - haproxy
 
