@@ -5,28 +5,50 @@
   roles:
      - ../roles/install_patroni
 
-- name: Prompt for Full HA Installation
+- name: Check the type of the installation
   hosts: localhost
   gather_facts: no
-  vars_prompt:
-    - name: full_ha
-      prompt: "Is this a full HA installation? (yes/no)"
-      private: no
-
   tasks:
-    - name: Set fact for running playbook on all servers
-      set_fact:
-        target_hosts: "all"
-      when: full_ha == "yes"
+    - name: Check the type of the installation
+      pause:
+        prompt: "Is this a full HA installation? (yes/no)"
+      register: full_ha
+      tags:
+        - haproxy
 
-    - name: Set fact for running playbook on dbsConnectorServers
-      set_fact:
-        target_hosts: "dbsConnectorServers"
-      when: full_ha == "no"
+    - name: Faif if user wrote a wrong value
+      fail:
+        msg: "Invalid input. Please enter 'yes' or 'no'."
+      when: full_ha.user_input not in ['yes', 'no']
+      tags:
+        - haproxy
 
-- hosts: "{{ target_hosts }}"
-  order: inventory
+    - name: Set global vars for full_ha
+      add_host:
+        name: "{{ item }}"
+        full_ha: "{{ full_ha.user_input }}"
+      with_items: "{{ groups['all'] }}"
+      tags:
+        - haproxy
+
+- name: HAProxy installation for full HA
+  hosts: all
   gather_facts: yes
-  roles:
-     - ../roles/configure_patroni_carbonio
-  when: full_ha is defined and full_ha != ''
+  tasks:
+    - name: HAProxy installation for full HA
+      import_role:
+        name: ../roles/install_haproxy
+      when: full_ha == "yes"
+      tags:
+        - haproxy
+
+- name: HAProxy Installation for non-full HA
+  hosts: dbsConnectorServers
+  gather_facts: yes
+  tasks:
+    - name: HAProxy installation for non-full HA
+      import_role:
+        name: ../roles/install_haproxy
+      when: full_ha == "no"
+      tags:
+        - haproxy
