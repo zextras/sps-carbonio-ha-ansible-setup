@@ -1,5 +1,0 @@
-- hosts: all
-  order: inventory
-  gather_facts: yes
-  roles:
-     - ../roles/haproxy

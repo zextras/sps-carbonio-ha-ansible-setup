@@ -24,9 +24,9 @@
         target_hosts: "dbsConnectorServers"
       when: full_ha == "no"
 
-- name: Execute HAProxy Configuration
-  hosts: "{{ target_hosts }}"
+- hosts: "{{ target_hosts }}"
+  order: inventory
   gather_facts: yes
-  tasks:
-    - import_playbook: "../../carbonio_haproxy/playbooks/install_haproxy.yml"
-      when: full_ha is defined and full_ha != ''
+  roles:
+     - ../roles/configure_patroni_carbonio
+  when: full_ha is defined and full_ha != ''
