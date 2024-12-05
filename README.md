@@ -75,7 +75,7 @@ The initial roles assigned during the standard installation must remain on the s
 - Additional servers should be assigned:
   - `mmr` for LDAP
   - `secondary` for PostgreSQL
-
+```
 ### Full Inventory Example
 Here’s an example of the inventory file configured for HA:
 ```
