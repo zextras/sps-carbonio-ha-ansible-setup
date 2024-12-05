@@ -166,6 +166,14 @@ Run these commands to set up PostgreSQL HA with Patroni:
 ansible-playbook -i inventory carbonio_patroni/playbooks/carbonio_replica_postgres_install.yml
 ansible-playbook -i inventory carbonio_patroni/playbooks/carbonio_patroni_install.yml
 ```
+**Note:** During the execution of the Patroni playbook, you will be prompted with the following question:
+ 
+```
+Is this a full HA installation? (yes/no)
+```
+ 
+- If you answer `yes`, HAProxy will be installed on all servers except the LDAP servers.
+- If you answer `no`, HAProxy will only be installed on the `dbconnectors`.
 
 ### 3. Install Multi-Master LDAP
 Run this command to install LDAP in a multi-master configuration:
