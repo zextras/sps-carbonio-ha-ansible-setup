@@ -1,0 +1,262 @@
+# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Disable mailbox db connector (Debian)  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove mailbox db connector packages (Debian)  
+  become: true
+  apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ mailbox_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable files db connector (Debian)  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ files_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers']
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+    
+- name: Remove files db connector packages (Debian)  
+  become: true
+  apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ files_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers']
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable docs db connector (Debian)  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove docs db connector packages (Debian)  
+  become: true
+  apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ docs_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable tasks db connector (Debian)  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove tasks db connector packages (Debian)  
+  become: true
+  apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ task_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove dbconnectors directories in /etc/carbonio/ with tokens 
+  become: true
+  command:
+    cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Reset failed services
+  shell:
+    cmd: 'systemctl reset-failed'
+    executable: /bin/bash
+  when: 
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'] 
+    - "'pgpool2' in pgpool_check_debian.stdout"
+  tags:
+    - remove-carbonio-dbconnector
+
+#RHEL
+
+- name: Disable mailbox db connector [RHEL]  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers']
+  tags:
+    - remove-carbonio-dbconnectors
+
+
+- name: Remove mailbox db connector packages [RHEL]  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ mailbox_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers']
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable files db connector [RHEL]  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ files_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers']
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove files db connector packages [RHEL]  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ files_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers']
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable docs db connector [RHEL]  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers']
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove docs db connector packages [RHEL]  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ docs_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers']
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable tasks db connector [RHEL]  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] 
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove tasks db connector packages [RHEL]  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ task_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] 
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove dbconnectors directories in /etc/carbonio/ with tokens  [RHEL]
+  become: true
+  command:
+    cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] 
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Reset failed services [RHEL]
+  shell:
+    cmd: 'systemctl reset-failed'
+    executable: /bin/bash
+  when: 
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'] 
+  tags:
+    - remove-carbonio-dbconnector

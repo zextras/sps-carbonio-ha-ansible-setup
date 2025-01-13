@@ -1,0 +1,100 @@
+# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Install mailbox db connector Ubuntu 24.9 -> 24.12
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ mailbox_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+  tags:
+    - install-carbonio-dbconnectors
+    
+- name: Install files db connector Ubuntu 24.9 -> 24.12
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ files_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - groups['filesServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+    
+- name: Install docs db connector Ubuntu 24.9 -> 24.12
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ docs_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - groups['docsServers'] | length > 0 
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install tasks db connector Ubuntu 24.9 -> 24.12
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ task_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - groups['taskServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+##### RHEL
+
+- name: Install mailbox db connector RHEL 24.9 -> 24.12
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mailbox_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install files db connector RHEL 24.9 -> 24.12
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ files_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - groups['filesServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install docs db connector RHEL 24.9 -> 24.12
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ docs_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - groups['docsServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install tasks db connector RHEL 24.9 -> 24.12
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ task_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - groups['taskServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
