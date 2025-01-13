@@ -12,7 +12,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
   tags:
     - remove-carbonio-dbconnectors
 
@@ -25,7 +25,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
   tags:
     - remove-carbonio-dbconnectors
 
@@ -66,7 +66,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
     - groups['docsServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -80,7 +80,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
     - groups['docsServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -94,7 +94,7 @@
   with_items:
     - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -108,7 +108,7 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -118,7 +118,7 @@
   command:
     cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'] [0]
   tags:
     - remove-carbonio-dbconnector
 
@@ -128,8 +128,7 @@
     executable: /bin/bash
   when: 
     - ansible_os_family == "Debian"
-    - inventory_hostname in groups['postgresServers'] 
-    - "'pgpool2' in pgpool_check_debian.stdout"
+    - inventory_hostname in groups['postgresServers'] [0]
   tags:
     - remove-carbonio-dbconnector
 
@@ -224,7 +223,7 @@
   with_items:
     - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] [0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -237,7 +236,7 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] [0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -247,7 +246,7 @@
   command:
     cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'] [0]
   tags:
     - remove-carbonio-dbconnector
 
@@ -257,6 +256,6 @@
     executable: /bin/bash
   when: 
     - ansible_os_family == "RedHat"
-    - inventory_hostname in groups['postgresServers'] 
+    - inventory_hostname in groups['postgresServers'] [0]
   tags:
     - remove-carbonio-dbconnector
