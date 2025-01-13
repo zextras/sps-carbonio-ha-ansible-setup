@@ -52,3 +52,13 @@
       when: full_ha == "no"
       tags:
         - haproxy
+
+- name: Move DB connectors 
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Move DB connectors for full HA
+      import_role:
+        name: ../roles/move_dbconnectors
+      tags:
+        - move-dbconnectors

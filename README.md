@@ -64,6 +64,13 @@ svc1.example.com ldap_role=master
 svc2.example.com ldap_role=mmr
 ```
 
+`dbsConnectorServers` group specifies db connectors for HA (it will move connectors from postgres to application servers)
+```
+[dbsConnectorServers]
+mbox1.example.com 
+mbox2.example.com
+```
+
 ### Important Notes on Initial Roles for HA Configuration
 
 The initial roles assigned during the standard installation must remain on the servers configured in the standard environment. Follow these guidelines:

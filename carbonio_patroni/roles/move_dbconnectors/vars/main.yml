@@ -1,0 +1,13 @@
+---
+# vars file for dbconnectors
+  mailbox_dbconnectors_packages: 
+    - carbonio-mailbox-db
+    
+  files_dbconnectors_packages: 
+    - carbonio-files-db
+
+  docs_dbconnectors_packages: 
+    - carbonio-docs-connector-db
+
+  task_dbconnectors_packages:
+    - carbonio-tasks-db
