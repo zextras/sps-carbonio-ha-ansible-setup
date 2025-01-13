@@ -6,6 +6,8 @@
 - name: Manage Consul password
   ansible.builtin.set_fact:
       carbonio_mesh_password: "{{ lookup('ansible.builtin.password', inventory_file + '_consulpassword', chars=['ascii_letters'], length=8) }}"
+  when: 
+    - inventory_hostname in groups['dbsConnectorServers']
   tags:
       - execute-pending-setups
 
