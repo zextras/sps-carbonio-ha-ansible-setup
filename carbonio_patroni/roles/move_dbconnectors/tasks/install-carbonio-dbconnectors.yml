@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 ---
-- name: Install mailbox db connector Ubuntu 24.9 -> 24.12
+- name: Install mailbox db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
@@ -13,7 +13,7 @@
   tags:
     - install-carbonio-dbconnectors
     
-- name: Install files db connector Ubuntu 24.9 -> 24.12
+- name: Install files db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
@@ -24,7 +24,7 @@
   tags:
     - install-carbonio-dbconnectors
     
-- name: Install docs db connector Ubuntu 24.9 -> 24.12
+- name: Install docs db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
@@ -35,7 +35,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install tasks db connector Ubuntu 24.9 -> 24.12
+- name: Install tasks db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
@@ -48,7 +48,7 @@
 
 ##### RHEL
 
-- name: Install mailbox db connector RHEL 24.9 -> 24.12
+- name: Install mailbox db connector RHEL  
   become: true
   yum:
     name: "{{ item }}"
@@ -60,7 +60,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install files db connector RHEL 24.9 -> 24.12
+- name: Install files db connector RHEL  
   become: true
   yum:
     name: "{{ item }}"
@@ -73,7 +73,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install docs db connector RHEL 24.9 -> 24.12
+- name: Install docs db connector RHEL  
   become: true
   yum:
     name: "{{ item }}"
@@ -86,7 +86,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install tasks db connector RHEL 24.9 -> 24.12
+- name: Install tasks db connector RHEL  
   become: true
   yum:
     name: "{{ item }}"
