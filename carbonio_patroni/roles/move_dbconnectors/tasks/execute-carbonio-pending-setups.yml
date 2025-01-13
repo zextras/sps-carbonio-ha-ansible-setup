@@ -42,5 +42,7 @@
       - execute-pending-setups
 
 - local_action: copy content={{ pso.stdout }} dest=/tmp/pso_{{ inventory_hostname }}
+  when: 
+    - inventory_hostname in groups['dbsConnectorServers']
   tags:
       - execute-pending-setups

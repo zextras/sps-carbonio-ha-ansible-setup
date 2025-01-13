@@ -3,4 +3,3 @@
 - import_tasks: install-carbonio-dbconnectors.yml
 - import_tasks: remove-unneeded-packages.yml
 - import_tasks: execute-carbonio-pending-setups.yml
-- import_tasks: execute-dbconnectors-bootstrap.yml
