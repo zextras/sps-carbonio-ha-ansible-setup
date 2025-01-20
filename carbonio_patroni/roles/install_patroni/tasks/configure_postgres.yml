@@ -188,13 +188,21 @@
     mode: 0600
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "RedHat"
 
+- name: Stop the postgres service [Ubuntu]
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
+  tags:
+    - disable_postgres
+    
 - name: Create  Replica Postgres Sync [Ubuntu]
   become: true
   become_user: postgres
   ansible.builtin.shell: "pg_basebackup -h {{ hostvars[ groups['postgresServers'][0] ].ansible_default_ipv4.address }} -p 5432 -U carbonio_postgres_replica -D /var/lib/postgresql/{{ postgres_version }}/main/ -Fp -Xs -R"
   # notify: restart postgres
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
-
 
 - name: Stop the postgres service [RHEL]
   ansible.builtin.service:
