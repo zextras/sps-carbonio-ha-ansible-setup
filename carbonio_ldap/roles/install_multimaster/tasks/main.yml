@@ -25,7 +25,7 @@
   command: "/opt/zextras/bin/zmcontrol restart"
   when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
-- name: Stop zimbra services on second LDAP master
+- name: Stop carbonio services on second LDAP master
   become: true
   become_method: su
   become_user: zextras
