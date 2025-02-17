@@ -53,3 +53,5 @@
 #   group_name:
 #     - module1
 #     - module2
+
+requires_ansible: '>=2.15.5'
