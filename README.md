@@ -160,18 +160,27 @@ svc3.example.com
 
 ## Installation Steps
 
-### 1. Install Zookeeper and Kafka
-Run the following commands to install Zookeeper and Kafka using the provided playbooks:
+Download necessary collections before the HA installation:
+
 ```
-ansible-playbook -i inventory carbonio_kafka/playbooks/carbonio_zookeper_install.yml
-ansible-playbook -i inventory carbonio_kafka/playbooks/carbonio_kafka_install.yml
+ansible-galaxy collection install zxbot.carbonio_kafka
+ansible-galaxy collection install zxbot.carbonio_patroni
+ansible-galaxy collection install zxbot.carbonio_ldap
+```
+
+
+### 1. Install Zookeeper and Kafka
+Run the following commands to install Zookeeper and Kafka:
+```
+ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_zookeper_install
+ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
 ### 2. Install PostgreSQL HA
 Run these commands to set up PostgreSQL HA with Patroni:
 ```
-ansible-playbook -i inventory carbonio_patroni/playbooks/carbonio_replica_postgres_install.yml
-ansible-playbook -i inventory carbonio_patroni/playbooks/carbonio_patroni_install.yml
+ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
+ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
 ```
 **Note:** During the execution of the Patroni playbook, you will be prompted with the following question:
  
@@ -185,11 +194,11 @@ Is this a full HA installation? (yes/no)
 ### 3. Install Multi-Master LDAP
 Run this command to install LDAP in a multi-master configuration:
 ```
-ansible-playbook -i inventory carbonio_ldap/playbooks/carbonio_install_mmr.yml
+ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_install_mmr
 ```
 or if a replica is already installed, run this playbook to promote it:
 ```
-ansible-playbook -i inventory carbonio_ldap/playbooks/carbonio_promote_mmr.yml
+ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_promote_mmr
 ```
 
 
