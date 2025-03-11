@@ -151,6 +151,9 @@ filesdocs2.example.com
 video1.example.com public_ip_address=1.2.3.4
 video2.example.com public_ip_address=1.2.3.4
 
+[workStreamServers]
+wsc1.example.com
+
 [prometheusServers]
 svc3.example.com
 
