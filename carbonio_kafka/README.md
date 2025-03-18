@@ -1,20 +1,35 @@
-# Install Carbonio Ansible role
+# Ansible Collection - zxbot.carbonio_kafka
 
-An ansible role to install Zextras Carbonio infrastructures
+An ansible collection to install Kafka&Zookeeper part of Carbonio HA 
 
-To install  Carbonio using this role you have to insert information in the inventory file It supports only FQDN.
-All VMs must be configured and the Zextras repo to be used already set.
+To install Kafka and Zookeeper using this collection you have to insert new groups in the inventory file It supports only FQDN.
 
+### Install the collection
 
-# Install dependencies
+```
+ansible-galaxy collection install zxbot.carbonio_kafka
+```
+### Modify the inventory 
 
-ansible-galaxy install -r requirements.yml
+To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
 
-Multi master for directory server is not supported.  
-__Postgres server cannot be installed on dbsConnectorServers__
+`kafka` group specifies the servers where Kafka will be installed:
+```
+[kafka]
+svc1.example.com broker_id=1
+svc2.example.com broker_id=2
+svc3.example.com broker_id=3
+```
 
+`zookeeper_servers` group specifies the servers where Zookeeper will be installed:
+```
+[zookeeper_servers]
+svc1.example.com zookeeper_id=1
+svc2.example.com zookeeper_id=2
+svc3.example.com zookeeper_id=3
+```
 
-Example for inventory file
+Example for Full HA inventory file
 
 ```
 [kafka]
@@ -88,6 +103,13 @@ svcs3.example.com
 
 [syslogServer]
 svcs3.example.com
+```
+
+### Install Zookeeper and Kafka
+Run the following commands to install Zookeeper and Kafka:
+```
+ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_zookeper_install
+ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
 ## License(s)
