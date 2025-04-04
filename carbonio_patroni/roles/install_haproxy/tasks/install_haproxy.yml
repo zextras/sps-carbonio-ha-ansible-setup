@@ -104,7 +104,7 @@
   tags:
     - haproxy
 
-- name: Uninstall pgpool package if installed [RHEL
+- name: Uninstall pgpool package if installed [RHEL]
   become: true
   yum:
     name: pgpool-II
