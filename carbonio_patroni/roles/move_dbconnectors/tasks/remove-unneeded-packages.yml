@@ -160,6 +160,16 @@
   tags:
     - remove-carbonio-dbconnector
 
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
 #RHEL
 
 - name: Disable mailbox db connector [RHEL]  
@@ -309,6 +319,16 @@
   shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
+  when: 
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
   when: 
     - ansible_os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
