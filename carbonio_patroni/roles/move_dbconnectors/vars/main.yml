@@ -16,4 +16,4 @@
     - carbonio-tasks-db
     
   wsc_dbconnectors_packages:
-    - carbonio-tasks-db
+    - carbonio-ws-collaboration-db
