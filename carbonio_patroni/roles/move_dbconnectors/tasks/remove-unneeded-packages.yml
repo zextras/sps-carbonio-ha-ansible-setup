@@ -113,6 +113,34 @@
   tags:
     - remove-carbonio-dbconnectors
 
+- name: Disable wsc db connector (Debian)  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ wsc_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove wsc db connector packages (Debian)  
+  become: true
+  apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ wsc_dbconnectors_packages}}"
+  when: 
+    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
 - name: Remove dbconnectors directories in /etc/carbonio/ with tokens 
   become: true
   command:
@@ -126,6 +154,16 @@
   shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
+  when: 
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
   when: 
     - ansible_os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
@@ -241,6 +279,33 @@
   tags:
     - remove-carbonio-dbconnectors
 
+- name: Disable wsc db connector [RHEL]  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ wsc_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove wsc db connector packages [RHEL]  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ wsc_dbconnectors_packages }}"
+  when: 
+    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
 - name: Remove dbconnectors directories in /etc/carbonio/ with tokens  [RHEL]
   become: true
   command:
@@ -254,6 +319,16 @@
   shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
+  when: 
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
   when: 
     - ansible_os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
