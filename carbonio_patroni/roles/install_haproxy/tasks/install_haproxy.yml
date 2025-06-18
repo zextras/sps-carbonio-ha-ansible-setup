@@ -163,6 +163,15 @@
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
-  when: inventory_hostname in groups["applicationServers"]
+  when: inventory_hostname in groups["applicationServers"] and ansible_distribution_major_version != '9' and ansible_distribution_major_version != '24'
+  tags:
+    - haproxy
+
+- name: Restart carbonio  [Sysd]
+  become: true
+  ansible.builtin.systemd:
+    name: carbonio.target
+    state: restarted
+  when: inventory_hostname in groups["applicationServers"] and (ansible_distribution_major_version == '9' or ansible_distribution_major_version != '24')
   tags:
     - haproxy
