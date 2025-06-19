@@ -6,7 +6,9 @@
 - name: Check if read replica configured
   ansible.builtin.package_facts:
       manager: auto
-
+  tags:
+    - execute-pending-setups
+    
 - name: Enable MMR on existing LDAP master
   become: true
   become_method: su
@@ -81,7 +83,7 @@
 - name: Copy scripts to remote host
   become: true
   ansible.builtin.copy:
-    src: apply-pending-setups.sh
+    src: apply-pending-setups.sh.j2
     dest: /tmp/apply-pending-setups.sh
     mode: '0755'
   when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
