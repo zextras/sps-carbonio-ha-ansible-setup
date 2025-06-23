@@ -17,3 +17,5 @@
     
   wsc_dbconnectors_packages:
     - carbonio-ws-collaboration-db
+    - carbonio-message-dispatcher-db
+    - carbonio-notification-push-db
