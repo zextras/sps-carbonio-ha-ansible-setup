@@ -113,30 +113,92 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wsc db connector (Debian)  
+- name: Disable wscollaboration db connector (Debian)
   become: true
   systemd:
     name: "{{ item }}"
     enabled: false
     state: stopped
   with_items:
-    - "{{ wsc_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
-  when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wsc db connector packages (Debian)  
+- name: Remove wscollaboration db connector packages (Debian)
   become: true
-  apt: 
+  apt:
     name: "{{ item }}"
     state: absent
     purge: true
   with_items:
-    - "{{ wsc_dbconnectors_packages}}"
-  when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - "{{ ws_collaboration_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable message dispatcher db connector (Debian)
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove message dispatcher db connector packages (Debian)
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable notification push db connector (Debian)
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ notification_push_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove notification push db connector packages (Debian)
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ notification_push_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -279,29 +341,89 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wsc db connector [RHEL]  
+- name: Disable wscollaboration db connector [RHEL]
   become: true
   systemd:
     name: "{{ item }}"
     enabled: false
     state: stopped
   with_items:
-    - "{{ wsc_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
-  when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wsc db connector packages [RHEL]  
+- name: Remove wscollaboration db connector packages [RHEL]
   become: true
   yum:
     name: "{{ item }}"
     state: absent
   with_items:
-    - "{{ wsc_dbconnectors_packages }}"
-  when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - "{{ ws_collaboration_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable message dispatcher db connector [RHEL]
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove message dispatcher db connector packages [RHEL]
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable notification push db connector [RHEL]
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ notification_push_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove notification push db connector packages [RHEL]
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ notification_push_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
