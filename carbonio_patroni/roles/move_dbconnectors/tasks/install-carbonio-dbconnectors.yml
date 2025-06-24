@@ -8,28 +8,31 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
   tags:
     - install-carbonio-dbconnectors
-    
+
 - name: Install files db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
     - "{{ files_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['filesServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
-    
+
 - name: Install docs db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['docsServers'] | length > 0 
   tags:
     - install-carbonio-dbconnectors
@@ -40,24 +43,49 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['taskServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install wsc db connector Ubuntu  
+- name: Install ws_collaboration db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
-    - "{{ wsc_dbconnectors_packages }}"
+    - "{{ ws_collaboration_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
-    
-##### RHEL
 
+- name: Install message_dispatcher db connector Ubuntu  
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install notification_push db connector Ubuntu  
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ notification_push_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+# RHEL Part
 - name: Install mailbox db connector RHEL  
   become: true
   yum:
@@ -66,7 +94,8 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
   tags:
     - install-carbonio-dbconnectors
 
@@ -78,7 +107,8 @@
   with_items:
     - "{{ files_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['filesServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
@@ -91,7 +121,8 @@
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['docsServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
@@ -104,20 +135,50 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['taskServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install wsc db connector RHEL  
+- name: Install wscollaboration db connector RHEL  
   become: true
   yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - "{{ wsc_dbconnectors_packages }}"
+    - "{{ ws_collaboration_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install message dispatcher db connector RHEL  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install notification push db connector RHEL  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ notification_push_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
