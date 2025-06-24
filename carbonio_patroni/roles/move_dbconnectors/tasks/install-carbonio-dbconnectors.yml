@@ -85,7 +85,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-# RHEL Part
+##### RHEL
 - name: Install mailbox db connector RHEL  
   become: true
   yum:
