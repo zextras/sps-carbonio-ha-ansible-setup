@@ -21,5 +21,5 @@ controller.quorum.voters=1@\"{{ groups[\"kafka\"][0]}}:9093,2@{{ groups[\"kafka\
 controller.listener.names=CONTROLLER
 inter.broker.listener.name=PLAINTEXT
 listeners=PLAINTEXT://:9092,CONTROLLER://:9093
-advertised.listeners=PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+advertised.listeners=PLAINTEXT://{{ ansible_fqdn }}:9092,CONTROLLER://{{ ansible_fqdn }}:9093
 listener.security.protocol.map=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
