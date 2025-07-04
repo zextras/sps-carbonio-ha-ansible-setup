@@ -134,6 +134,7 @@
   register: kafka_cluster_id_result
   changed_when: kafka_cluster_id_result.rc == 0 and kafka_cluster_id_result.stdout is defined and kafka_cluster_id_result.stdout | length > 0
   become_user: "{{ kafka_user }}"
+  run_once: true
 
 - name: Set kafka_cluster_id fact
   ansible.builtin.set_fact:
