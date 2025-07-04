@@ -129,6 +129,27 @@
   tags:
     - kafka_config
 
+- name: Generate Kafka KRaft Cluster ID
+  ansible.builtin.command: "{{ kafka_dir }}/bin/kafka-storage.sh random-uuid"
+  register: kafka_cluster_id_result
+  changed_when: kafka_cluster_id_result.rc == 0 and kafka_cluster_id_result.stdout is defined and kafka_cluster_id_result.stdout | length > 0
+  become_user: "{{ kafka_user }}"
+
+- name: Set kafka_cluster_id fact
+  ansible.builtin.set_fact:
+    kafka_cluster_id: "{{ kafka_cluster_id_result.stdout | trim }}"
+
+- name: Debug - Show generated Cluster ID
+  ansible.builtin.debug:
+    msg: "Generated Kafka Cluster ID: {{ kafka_cluster_id }}"
+  when: kafka_cluster_id is defined
+
+- name: Format Kafka KRaft Log Directories
+  ansible.builtin.command: "{{ kafka_dir }}/bin/kafka-storage.sh format --cluster-id {{ kafka_cluster_id }} -c /opt/kafka/config/server.properties"
+  register: kafka_format_result
+  changed_when: kafka_format_result.rc == 0
+  become_user: "{{ kafka_user }}"
+
 - name: Template kafka systemd service
   ansible.builtin.template:
     src: carbonio-kafka.service.j2
