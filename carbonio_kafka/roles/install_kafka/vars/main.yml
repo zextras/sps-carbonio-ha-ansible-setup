@@ -8,7 +8,7 @@ kafka_group: 'carbonio-queue'
 
 kafka_download_base_url: https://archive.apache.org/dist/kafka
 kafka_download_validate_certs: yes
-kafka_version: 3.9.0
+kafka_version: 4.0.0
 kafka_scala_version: 2.13
 
 # The kafka user and group to create files/dirs with and for running the kafka service
