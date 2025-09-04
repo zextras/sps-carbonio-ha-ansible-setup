@@ -88,6 +88,10 @@ filesdocs1.example.com
 video1.example.com
 video2.example.com
 
+[workStreamServers]
+wsc1.example.com
+wsc2.example.com
+
 [prometheusServers]
 svcs3.example.com
 
