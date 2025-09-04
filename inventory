@@ -4,11 +4,6 @@ svcs1.example.com broker_id=1
 svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
 
-[zookeeper_servers]
-svcs1.example.com zookeeper_id=1
-svcs2.example.com zookeeper_id=2
-svcs3.example.com zookeeper_id=3
-
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
 svcs2.example.com postgres_version=16 patroni_role=secondary

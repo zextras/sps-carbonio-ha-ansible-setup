@@ -4,8 +4,8 @@ This repository contains separate Ansible playbooks designed to configure Carbon
 
 ## Playbooks Overview
 
-### 1. **Kafka and Zookeeper**
-- `carbonio_kafka` includes 2 playboks to install Kafka and Zookeeper, essential for distributed messaging and coordination.
+### 1. **Kafka**
+- `carbonio_kafka` includes playbok to install Kafka, essential for distributed messaging and coordination.
 
 ### 2. **LDAP Multi-Master**
 - `carbonio_ldap` includes 2 playboks to install (or promote if replica is installed) LDAP multi-master.
@@ -37,14 +37,6 @@ To configure the inventory for HA installation, update the **inventory file** wi
 svc1.example.com broker_id=1
 svc2.example.com broker_id=2
 svc3.example.com broker_id=3
-```
-
-`zookeeper_servers` group specifies the servers where Zookeeper will be installed:
-```
-[zookeeper_servers]
-svc1.example.com zookeeper_id=1
-svc2.example.com zookeeper_id=2
-svc3.example.com zookeeper_id=3
 ```
 
 `postgresServers` group includes the following variables:
@@ -90,11 +82,6 @@ Here’s an example of the inventory file configured for HA:
 svc1.example.com broker_id=1
 svc2.example.com broker_id=2
 svc3.example.com broker_id=3
-
-[zookeeper_servers]
-svc1.example.com zookeeper_id=1
-svc2.example.com zookeeper_id=2
-svc3.example.com zookeeper_id=3
 
 [postgresServers]
 svc1.example.com postgres_version=16 patroni_role=primary
@@ -172,10 +159,9 @@ ansible-galaxy collection install zxbot.carbonio_ldap
 ```
 
 
-### 1. Install Zookeeper and Kafka
-Run the following commands to install Zookeeper and Kafka:
+### 1. Install Kafka
+Run the following commands to install Kafka:
 ```
-ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_zookeper_install
 ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
@@ -185,14 +171,6 @@ Run these commands to set up PostgreSQL HA with Patroni:
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
 ```
-**Note:** During the execution of the Patroni playbook, you will be prompted with the following question:
- 
-```
-Is this a full HA installation? (yes/no)
-```
- 
-- If you answer `yes`, HAProxy will be installed on all servers except the LDAP servers.
-- If you answer `no`, HAProxy will only be installed on the `dbconnectors`.
 
 ### 3. Install Multi-Master LDAP
 Run this command to install LDAP in a multi-master configuration:

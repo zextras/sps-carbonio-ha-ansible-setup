@@ -2,7 +2,7 @@
 
 An ansible collection to install Patroni part of Carbonio HA 
 
-To install Kafka and Zookeeper using this collection you have to insert new groups in the inventory file It supports only FQDN.
+To install Kafka using this collection you have to insert new groups in the inventory file It supports only FQDN.
 
 ### Install the collection
 
@@ -36,11 +36,6 @@ Example for Full HA inventory file
 svcs1.example.com broker_id=1
 svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
-
-[zookeeper_servers]
-svcs1.example.com zookeeper_id=1
-svcs2.example.com zookeeper_id=2
-svcs3.example.com zookeeper_id=3
 
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
