@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. 
 
-### [25.6.0] (2025-09-04)
+### [25.9.0] (2025-09-04)
 
 
 ### Features
