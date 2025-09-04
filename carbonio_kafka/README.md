@@ -29,6 +29,9 @@ svcs1.example.com broker_id=1
 svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
 
+[zookeeper_servers]
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
+
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
 svcs2.example.com postgres_version=16 patroni_role=secondary
@@ -93,7 +96,7 @@ svcs3.example.com
 ```
 
 ### Install Kafka
-Run the following commands to install Kafka:
+Run the following command to install Kafka:
 ```
 ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```

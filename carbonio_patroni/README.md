@@ -37,6 +37,9 @@ svcs1.example.com broker_id=1
 svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
 
+[zookeeper_servers]
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
+
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
 svcs2.example.com postgres_version=16 patroni_role=secondary
@@ -118,14 +121,6 @@ Run these commands to set up PostgreSQL HA with Patroni:
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
 ```
-**Note:** During the execution of the Patroni playbook, you will be prompted with the following question:
- 
-```
-Is this a full HA installation? (yes/no)
-```
- 
-- If you answer `yes`, HAProxy will be installed on all servers except the LDAP servers.
-- If you answer `no`, HAProxy will only be installed on the `dbconnectors`.
 
 
 ## License(s)

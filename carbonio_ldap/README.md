@@ -33,6 +33,9 @@ svcs3.example.com broker_id=3
 svcs1.example.com postgres_version=16 patroni_role=primary
 svcs2.example.com postgres_version=16 patroni_role=secondary
 
+[zookeeper_servers]
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
+
 [masterDirectoryServers]
 svcs1.example.com ldap_role=master
 svcs2.example.com ldap_role=mmr

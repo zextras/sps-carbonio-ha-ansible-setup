@@ -83,6 +83,9 @@ svc1.example.com broker_id=1
 svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 
+[zookeeper_servers]
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
+
 [postgresServers]
 svc1.example.com postgres_version=16 patroni_role=primary
 svc2.example.com postgres_version=16 patroni_role=secondary
@@ -140,6 +143,7 @@ video2.example.com public_ip_address=1.2.3.4
 
 [workStreamServers]
 wsc1.example.com
+wsc2.example.com
 
 [prometheusServers]
 svc3.example.com
@@ -160,7 +164,7 @@ ansible-galaxy collection install zxbot.carbonio_ldap
 
 
 ### 1. Install Kafka
-Run the following commands to install Kafka:
+Run the following command to install Kafka:
 ```
 ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
@@ -176,10 +180,6 @@ ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
 Run this command to install LDAP in a multi-master configuration:
 ```
 ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_install_mmr
-```
-or if a replica is already installed, run this playbook to promote it:
-```
-ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_promote_mmr
 ```
 
 
