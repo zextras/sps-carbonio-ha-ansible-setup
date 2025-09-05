@@ -1,8 +1,8 @@
 # Ansible Collection - zxbot.carbonio_kafka
 
-An ansible collection to install Kafka&Zookeeper part of Carbonio HA 
+An ansible collection to install Kafka part of Carbonio HA 
 
-To install Kafka and Zookeeper using this collection you have to insert new groups in the inventory file It supports only FQDN.
+To install Kafka using this collection you have to insert new group in the inventory file It supports only FQDN.
 
 ### Install the collection
 
@@ -21,14 +21,6 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 ```
 
-`zookeeper_servers` group specifies the servers where Zookeeper will be installed:
-```
-[zookeeper_servers]
-svc1.example.com zookeeper_id=1
-svc2.example.com zookeeper_id=2
-svc3.example.com zookeeper_id=3
-```
-
 Example for Full HA inventory file
 
 ```
@@ -38,9 +30,7 @@ svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
 
 [zookeeper_servers]
-svcs1.example.com zookeeper_id=1
-svcs2.example.com zookeeper_id=2
-svcs3.example.com zookeeper_id=3
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
@@ -98,6 +88,10 @@ filesdocs1.example.com
 video1.example.com
 video2.example.com
 
+[workStreamServers]
+wsc1.example.com
+wsc2.example.com
+
 [prometheusServers]
 svcs3.example.com
 
@@ -105,10 +99,9 @@ svcs3.example.com
 svcs3.example.com
 ```
 
-### Install Zookeeper and Kafka
-Run the following commands to install Zookeeper and Kafka:
+### Install Kafka
+Run the following command to install Kafka:
 ```
-ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_zookeper_install
 ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 

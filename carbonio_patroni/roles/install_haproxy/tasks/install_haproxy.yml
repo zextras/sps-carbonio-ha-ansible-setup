@@ -154,7 +154,7 @@
   loop:
     - "ldap_url='ldap://localhost:389'"
     - "ldap_master_url='ldap://localhost:389'"
-  when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"] and groups['masterDirectoryServers'] | length > 1
   tags:
     - haproxy
 

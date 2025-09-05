@@ -1,5 +1,0 @@
-- hosts: zookeeper_servers
-  order: inventory
-  gather_facts: yes
-  roles:
-     - ../roles/install_zookeper

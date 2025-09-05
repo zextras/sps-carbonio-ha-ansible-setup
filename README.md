@@ -4,11 +4,11 @@ This repository contains separate Ansible playbooks designed to configure Carbon
 
 ## Playbooks Overview
 
-### 1. **Kafka and Zookeeper**
-- `carbonio_kafka` includes 2 playboks to install Kafka and Zookeeper, essential for distributed messaging and coordination.
+### 1. **Kafka**
+- `carbonio_kafka` includes a playbook to install Kafka, essential for distributed messaging and coordination.
 
 ### 2. **LDAP Multi-Master**
-- `carbonio_ldap` includes 2 playboks to install (or promote if replica is installed) LDAP multi-master.
+- `carbonio_ldap` includes a playbook to install LDAP multi-master.
 
 ### 3. **PostgreSQL and Patroni**
 - `carbonio_patroni` includes 2 playbooks to sets up a PostgreSQL replica cluster and install Patroni for PostgreSQL HA management (second one includes HAProxy).
@@ -26,7 +26,6 @@ After the standard Carbonio installation, the following inventory files should b
 - `inventory_postgrespassword`
 - `inventory_ldap_password`
 - `inventory_consulpassword`
-- `inventory_videoserver` (only if the video server was installed)
 
 ### Update the Inventory
 To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
@@ -39,12 +38,10 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 ```
 
-`zookeeper_servers` group specifies the servers where Zookeeper will be installed:
+`zookeeper_servers` group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 ```
 [zookeeper_servers]
-svc1.example.com zookeeper_id=1
-svc2.example.com zookeeper_id=2
-svc3.example.com zookeeper_id=3
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 ```
 
 `postgresServers` group includes the following variables:
@@ -92,9 +89,7 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 
 [zookeeper_servers]
-svc1.example.com zookeeper_id=1
-svc2.example.com zookeeper_id=2
-svc3.example.com zookeeper_id=3
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
 svc1.example.com postgres_version=16 patroni_role=primary
@@ -153,6 +148,7 @@ video2.example.com public_ip_address=1.2.3.4
 
 [workStreamServers]
 wsc1.example.com
+wsc2.example.com
 
 [prometheusServers]
 svc3.example.com
@@ -172,10 +168,9 @@ ansible-galaxy collection install zxbot.carbonio_ldap
 ```
 
 
-### 1. Install Zookeeper and Kafka
-Run the following commands to install Zookeeper and Kafka:
+### 1. Install Kafka
+Run the following command to install Kafka:
 ```
-ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_zookeper_install
 ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
@@ -185,23 +180,11 @@ Run these commands to set up PostgreSQL HA with Patroni:
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
 ```
-**Note:** During the execution of the Patroni playbook, you will be prompted with the following question:
- 
-```
-Is this a full HA installation? (yes/no)
-```
- 
-- If you answer `yes`, HAProxy will be installed on all servers except the LDAP servers.
-- If you answer `no`, HAProxy will only be installed on the `dbconnectors`.
 
 ### 3. Install Multi-Master LDAP
 Run this command to install LDAP in a multi-master configuration:
 ```
 ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_install_mmr
-```
-or if a replica is already installed, run this playbook to promote it:
-```
-ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_promote_mmr
 ```
 
 
