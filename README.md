@@ -26,7 +26,6 @@ After the standard Carbonio installation, the following inventory files should b
 - `inventory_postgrespassword`
 - `inventory_ldap_password`
 - `inventory_consulpassword`
-- `inventory_videoserver` (only if the video server was installed)
 
 ### Update the Inventory
 To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
