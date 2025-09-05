@@ -8,7 +8,7 @@ This repository contains separate Ansible playbooks designed to configure Carbon
 - `carbonio_kafka` includes a playbook to install Kafka, essential for distributed messaging and coordination.
 
 ### 2. **LDAP Multi-Master**
-- `carbonio_ldap` includes 2 playbooks to install (or promote if replica is installed) LDAP multi-master.
+- `carbonio_ldap` includes a playbook to install LDAP multi-master.
 
 ### 3. **PostgreSQL and Patroni**
 - `carbonio_patroni` includes 2 playbooks to sets up a PostgreSQL replica cluster and install Patroni for PostgreSQL HA management (second one includes HAProxy).
