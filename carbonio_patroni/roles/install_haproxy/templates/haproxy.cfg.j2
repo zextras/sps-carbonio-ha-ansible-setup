@@ -16,6 +16,7 @@ listen stats
 	stats enable
 	stats uri /
 
+{% if groups['masterDirectoryServers'] | length > 1 %}
 frontend ldap_service_front
   mode                  tcp
   bind                  *:389
@@ -34,6 +35,7 @@ backend ldap_service_back
   option                ldap-check
   timeout server        1800s
   timeout connect       1s
+{% endif %}
 
 {% if inventory_hostname in groups['dbsConnectorServers'] %}
 listen region_one

@@ -2,7 +2,7 @@
 
 An ansible collection to install Patroni part of Carbonio HA 
 
-To install Kafka and Zookeeper using this collection you have to insert new groups in the inventory file It supports only FQDN.
+To install Kafka using this collection you have to insert new groups in the inventory file It supports only FQDN.
 
 ### Install the collection
 
@@ -38,9 +38,7 @@ svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
 
 [zookeeper_servers]
-svcs1.example.com zookeeper_id=1
-svcs2.example.com zookeeper_id=2
-svcs3.example.com zookeeper_id=3
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
@@ -98,6 +96,10 @@ filesdocs1.example.com
 video1.example.com
 video2.example.com
 
+[workStreamServers]
+wsc1.example.com
+wsc2.example.com
+
 [prometheusServers]
 svcs3.example.com
 
@@ -123,14 +125,6 @@ Run these commands to set up PostgreSQL HA with Patroni:
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
 ```
-**Note:** During the execution of the Patroni playbook, you will be prompted with the following question:
- 
-```
-Is this a full HA installation? (yes/no)
-```
- 
-- If you answer `yes`, HAProxy will be installed on all servers except the LDAP servers.
-- If you answer `no`, HAProxy will only be installed on the `dbconnectors`.
 
 
 ## License(s)
