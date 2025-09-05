@@ -18,7 +18,7 @@ listen stats
 
 {% if groups['masterDirectoryServers'] | length > 1 %}
 frontend ldap_service_front
-
+  mode                  tcp
   bind                  *:389
   description           LDAP Service
   option                socket-stats
