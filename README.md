@@ -39,6 +39,12 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 ```
 
+`zookeeper_servers` group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
+```
+[zookeeper_servers]
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
+```
+
 `postgresServers` group includes the following variables:
 * `postgres_version` Specifies the PostgreSQL version used for PostgreSQL HA.
 * `patroni_role` Specifies the Patroni role. Use primary for the initial master or secondary for additional masters.
