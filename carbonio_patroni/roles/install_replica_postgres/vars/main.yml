@@ -8,7 +8,7 @@ postgres_packages_ubuntu:
   - postgresql-16
 
 postgres_packages_rhel: 
-  - python38-psycopg2
+  - python3-psycopg2
   - postgresql16-server
 
 rhel_postgresql_data_dir: "/var/lib/pgsql/16/data/"
