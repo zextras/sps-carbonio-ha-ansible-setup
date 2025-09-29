@@ -2,29 +2,24 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- name: Ensure 'local all postgres peer' exists after comments [Ubuntu]
+- name: Ensure 'local all postgres peer' exists right under the "local" header [Ubuntu]
   ansible.builtin.lineinfile:
     path: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
     state: present
-    regexp: '^\s*local\s+all\s+postgres\s+peer(\s+.*)?$'
+    regexp: '^\s*local\s+all\s+postgres\s+peer(?:\s+.*)?$'
     line: 'local   all             postgres                                peer'
-    insertbefore: '^(?!\s*#)\s*(local|host)\b'
-    # backup: true
-  when: ansible_os_family == "Debian"
-  # notify: restart postgres
+    insertafter: '^# "local" is for Unix domain socket connections only\s*$'
   tags:
     - postgres_configure
 
-- name: Ensure 'local all postgres peer' exists after comments [RHEL]
+- name: Ensure 'local all postgres peer' exists right under the "local" header [RHEL]
   ansible.builtin.lineinfile:
     path: "/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
     state: present
-    regexp: '^\s*local\s+all\s+postgres\s+peer(\s+.*)?$'
+    regexp: '^\s*local\s+all\s+postgres\s+peer(?:\s+.*)?$'
     line: 'local   all             postgres                                peer'
-    insertbefore: '^(?!\s*#)\s*(local|host)\b'
-    # backup: true
+    insertafter: '^# "local" is for Unix domain socket connections only\s*$'
   when: ansible_os_family == "RedHat"
-  # notify: restart postgres
   tags:
     - postgres_configure
 
