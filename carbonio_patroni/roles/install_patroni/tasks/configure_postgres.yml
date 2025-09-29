@@ -9,6 +9,7 @@
     regexp: '^\s*local\s+all\s+postgres\s+peer(?:\s+.*)?$'
     line: 'local   all             postgres                                peer'
     insertafter: '^# "local" is for Unix domain socket connections only\s*$'
+  when: ansible_os_family == "Debian"
   tags:
     - postgres_configure
 
