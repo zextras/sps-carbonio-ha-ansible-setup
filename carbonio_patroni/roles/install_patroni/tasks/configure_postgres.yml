@@ -2,27 +2,29 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- name: Ensure "local all postgres peer" is the first rule [Debian]
-  become: true
+- name: Ensure 'local all postgres peer' exists after comments [Ubuntu]
   ansible.builtin.lineinfile:
     path: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
     state: present
-    insertbefore: '^(local|host)'
-    regexp: '^\s*local\s+all\s+postgres\s+peer\s*$'
+    regexp: '^\s*local\s+all\s+postgres\s+peer(\s+.*)?$'
     line: 'local   all             postgres                                peer'
+    insertbefore: '^(?!\s*#)\s*(local|host)\b'
+    # backup: true
   when: ansible_os_family == "Debian"
+  # notify: restart postgres
   tags:
     - postgres_configure
 
-- name: Ensure "local all postgres peer" is the first rule [RHEL]
-  become: true
+- name: Ensure 'local all postgres peer' exists after comments [RHEL]
   ansible.builtin.lineinfile:
     path: "/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
     state: present
-    insertbefore: '^(local|host)'
-    regexp: '^\s*local\s+all\s+postgres\s+peer\s*$'
+    regexp: '^\s*local\s+all\s+postgres\s+peer(\s+.*)?$'
     line: 'local   all             postgres                                peer'
+    insertbefore: '^(?!\s*#)\s*(local|host)\b'
+    # backup: true
   when: ansible_os_family == "RedHat"
+  # notify: restart postgres
   tags:
     - postgres_configure
 
