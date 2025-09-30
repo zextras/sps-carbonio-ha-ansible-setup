@@ -1,6 +1,6 @@
 # Ansible Collection - zxbot.carbonio_ldap
 
-An ansible collection to install Multi Master LDAP part of Carbonio HA 
+An ansible collection to install Multi Master LDAP part of Carbonio Cluster Services Redundancy 
 
 To install Multi Master LDAP using this collection you have to modify the masterDirectoryServers group in the inventory file. It supports only FQDN.
 
@@ -11,7 +11,7 @@ ansible-galaxy collection install zxbot.carbonio_ldap
 ```
 ### Modify the inventory 
 
-To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
+To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
 
 `masterDirectoryServers` group includes the following variable:
 * `ldap_role` Specifies the LDAP role. Use master for the initial master or mmr for additional masters.
@@ -21,7 +21,7 @@ svc1.example.com ldap_role=master
 svc2.example.com ldap_role=mmr
 ```
 
-Example for Full HA inventory file
+Example for Full Cluster Services Redundancy inventory file
 
 ```
 [kafka]
@@ -30,9 +30,7 @@ svcs2.example.com broker_id=2
 svcs3.example.com broker_id=3
 
 [zookeeper_servers]
-svcs1.example.com zookeeper_id=1
-svcs2.example.com zookeeper_id=2
-svcs3.example.com zookeeper_id=3
+#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
 svcs1.example.com postgres_version=16 patroni_role=primary
@@ -90,6 +88,10 @@ filesdocs1.example.com
 video1.example.com
 video2.example.com
 
+[workStreamServers]
+wsc1.example.com
+wsc2.example.com
+
 [prometheusServers]
 svcs3.example.com
 
@@ -98,7 +100,7 @@ svcs3.example.com
 ```
 
 
-### Important Notes on Initial Roles for HA Configuration
+### Important Notes on Initial Roles for Cluster Services Redundancy configuration
 
 The initial roles assigned during the standard installation must remain on the servers configured in the standard environment. Follow these guidelines:
 
@@ -115,10 +117,7 @@ Run this command to install LDAP in a multi-master configuration:
 ```
 ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_install_mmr
 ```
-or if a replica is already installed, run this playbook to promote it:
-```
-ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_promote_mmr
-```
+
 
 ## License(s)
 

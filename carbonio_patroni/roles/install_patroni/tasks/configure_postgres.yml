@@ -2,6 +2,28 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- name: Ensure 'local all postgres peer' exists right under the "local" header [Ubuntu]
+  ansible.builtin.lineinfile:
+    path: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
+    state: present
+    regexp: '^\s*local\s+all\s+postgres\s+peer(?:\s+.*)?$'
+    line: 'local   all             postgres                                peer'
+    insertafter: '^# "local" is for Unix domain socket connections only\s*$'
+  when: ansible_os_family == "Debian"
+  tags:
+    - postgres_configure
+
+- name: Ensure 'local all postgres peer' exists right under the "local" header [RHEL]
+  ansible.builtin.lineinfile:
+    path: "/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
+    state: present
+    regexp: '^\s*local\s+all\s+postgres\s+peer(?:\s+.*)?$'
+    line: 'local   all             postgres                                peer'
+    insertafter: '^# "local" is for Unix domain socket connections only\s*$'
+  when: ansible_os_family == "RedHat"
+  tags:
+    - postgres_configure
+
 - name: Edit pg_hba.conf [Ubuntu]
   ansible.builtin.lineinfile:
     path: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
@@ -122,13 +144,11 @@
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary"
 
 - name: Set md5
-  postgresql_set:
-    name: password_encryption
+  community.postgresql.postgresql_alter_system:
+    param: password_encryption
     value: md5
   become: yes
   become_user: postgres
-  tags:
-    - initialize-postgres
 
 - name: restart_postgres [Ubuntu]
   service: name=postgresql state=restarted
@@ -147,7 +167,6 @@
 #   ansible.builtin.command: "psql -c \"CREATE ROLE carbonio_postgres_replica WITH REPLICATION PASSWORD '{{ carbonio_postgres_replica_password }}' LOGIN;\""
 #   when: inventory_hostname  in groups["postgresServers"] and patroni_role == "primary"
 
-
 - name: Create Postgres Replica user
   become: true
   become_user: postgres
@@ -157,7 +176,6 @@
     password: "{{ carbonio_postgres_replica_password }}"
     role_attr_flags: LOGIN,REPLICATION
   when: inventory_hostname  in groups["postgresServers"] and patroni_role == "primary"
-
 
 - name: Clean data dir on Replica Postgres [Ubuntu]
   become: true
@@ -279,4 +297,3 @@
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_os_family == "RedHat"
   tags:
     - disable_postgres
-
