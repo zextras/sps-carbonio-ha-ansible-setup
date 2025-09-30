@@ -1,6 +1,6 @@
 # Ansible Collection - zxbot.carbonio_ldap
 
-An ansible collection to install Multi Master LDAP part of Carbonio HA 
+An ansible collection to install Multi Master LDAP part of Carbonio Cluster Services Redundancy 
 
 To install Multi Master LDAP using this collection you have to modify the masterDirectoryServers group in the inventory file. It supports only FQDN.
 
@@ -11,7 +11,7 @@ ansible-galaxy collection install zxbot.carbonio_ldap
 ```
 ### Modify the inventory 
 
-To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
+To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
 
 `masterDirectoryServers` group includes the following variable:
 * `ldap_role` Specifies the LDAP role. Use master for the initial master or mmr for additional masters.
@@ -21,7 +21,7 @@ svc1.example.com ldap_role=master
 svc2.example.com ldap_role=mmr
 ```
 
-Example for Full HA inventory file
+Example for Full Cluster Services Redundancy inventory file
 
 ```
 [kafka]
@@ -100,7 +100,7 @@ svcs3.example.com
 ```
 
 
-### Important Notes on Initial Roles for HA Configuration
+### Important Notes on Initial Roles for Cluster Services Redundancy configuration
 
 The initial roles assigned during the standard installation must remain on the servers configured in the standard environment. Follow these guidelines:
 

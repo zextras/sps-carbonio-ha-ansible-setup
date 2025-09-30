@@ -1,6 +1,6 @@
 # Ansible Collection - zxbot.carbonio_kafka
 
-An ansible collection to install Kafka part of Carbonio HA 
+An ansible collection to install Kafka part of Carbonio Cluster Services Redundancy 
 
 To install Kafka using this collection you have to insert new group in the inventory file It supports only FQDN.
 
@@ -11,7 +11,7 @@ ansible-galaxy collection install zxbot.carbonio_kafka
 ```
 ### Modify the inventory 
 
-To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
+To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
 
 `kafka` group specifies the servers where Kafka will be installed:
 ```
@@ -21,7 +21,7 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 ```
 
-Example for Full HA inventory file
+Example for Full Cluster Services Redundancy inventory file
 
 ```
 [kafka]

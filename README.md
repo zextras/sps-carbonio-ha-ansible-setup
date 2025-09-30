@@ -1,7 +1,6 @@
-# Carbonio High Availability (HA) Installation
+# Carbonio Cluster Services Redundancy
 
-This repository contains separate Ansible playbooks designed to configure Carbonio HA. 
-
+This repository contains separate Ansible playbooks that enables redundacy for Carbonio services like Directory, Postgres and Kafka that are mandatory to implement Mail Replica.
 ## Playbooks Overview
 
 ### 1. **Kafka**
@@ -11,12 +10,12 @@ This repository contains separate Ansible playbooks designed to configure Carbon
 - `carbonio_ldap` includes a playbook to install LDAP multi-master.
 
 ### 3. **PostgreSQL and Patroni**
-- `carbonio_patroni` includes 2 playbooks to sets up a PostgreSQL replica cluster and install Patroni for PostgreSQL HA management (second one includes HAProxy).
+- `carbonio_patroni` includes 2 playbooks to set up a PostgreSQL replica cluster and install Patroni for PostgreSQL management (second one includes HAProxy).
 
 ## Usage Notes
 
-- These playbooks can be executed individually to set up specific HA components.
-- For a **complete HA setup**, ensure all playbooks are executed in the correct sequence.
+- These playbooks can be executed individually to set up specific Cluster Services Redundancy components.
+- For a **complete Cluster Services Redundancy setup**, ensure all playbooks are executed in the correct sequence.
 
 ## Prerequisites
 
@@ -28,7 +27,7 @@ After the standard Carbonio installation, the following inventory files should b
 - `inventory_consulpassword`
 
 ### Update the Inventory
-To configure the inventory for HA installation, update the **inventory file** with specific variables and add the following groups:
+To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
 
 `kafka` group specifies the servers where Kafka will be installed:
 ```
@@ -45,7 +44,7 @@ svc3.example.com broker_id=3
 ```
 
 `postgresServers` group includes the following variables:
-* `postgres_version` Specifies the PostgreSQL version used for PostgreSQL HA.
+* `postgres_version` Specifies the PostgreSQL version used for PostgreSQL redundancy.
 * `patroni_role` Specifies the Patroni role. Use primary for the initial master or secondary for additional masters.
 ```
 [postgresServers]
@@ -61,14 +60,14 @@ svc1.example.com ldap_role=master
 svc2.example.com ldap_role=mmr
 ```
 
-`dbsConnectorServers` group specifies db connectors for HA (it will move connectors from postgres to application servers)
+`dbsConnectorServers` group specifies db connectors due to Cluster Services Redundancy (it will move connectors from postgres to application servers)
 ```
 [dbsConnectorServers]
 mbox1.example.com 
 mbox2.example.com
 ```
 
-### Important Notes on Initial Roles for HA Configuration
+### Important Notes on Initial Roles for Cluster Services Redundancy configuration
 
 The initial roles assigned during the standard installation must remain on the servers configured in the standard environment. Follow these guidelines:
 
@@ -81,7 +80,7 @@ The initial roles assigned during the standard installation must remain on the s
   - `secondary` for PostgreSQL
 ```
 ### Full Inventory Example
-Here’s an example of the inventory file configured for HA:
+Here’s an example of the inventory file configured for Cluster Services Redundancy:
 ```
 [kafka]
 svc1.example.com broker_id=1
@@ -159,7 +158,7 @@ svc3.example.com
 
 ## Installation Steps
 
-Download necessary collections before the HA installation:
+Download necessary collections before the Cluster Services Redundancy installation:
 
 ```
 ansible-galaxy collection install zxbot.carbonio_kafka
@@ -174,8 +173,8 @@ Run the following command to install Kafka:
 ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
-### 2. Install PostgreSQL HA
-Run these commands to set up PostgreSQL HA with Patroni:
+### 2. Install PostgreSQL redundancy
+Run these commands to set up PostgreSQL redundancy with Patroni:
 ```
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
 ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
