@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. 
 
-### [25.9.0] (2025-09-16)
+### [25.9.0] (2025-09-30)
 
 
 ### Features
@@ -12,3 +12,4 @@ All notable changes to this project will be documented in this file.
 * Replaced deprecated Ansible module postgresql_set with postgresql_alter_system (ensures forward compatibility with community.postgresql ≥ 5.0, removes deprecation warnings)
 * Updated collection dependency: now requires community.postgresql version 3.13.0 or higher, as newer module is used
 * Removed "Is this a full HA installation (yes/no)?" question. This user interaction will no longer occur during installation
+* Renamed HA to Carbonio Cluster Services Redundancy
