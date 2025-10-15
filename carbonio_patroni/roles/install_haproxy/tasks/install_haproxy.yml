@@ -172,6 +172,6 @@
   ansible.builtin.systemd:
     name: carbonio.target
     state: restarted
-  when: inventory_hostname in groups["applicationServers"] and (ansible_distribution_major_version == '9' or ansible_distribution_major_version != '24')
+  when: inventory_hostname in groups["applicationServers"] and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '24')
   tags:
     - haproxy
