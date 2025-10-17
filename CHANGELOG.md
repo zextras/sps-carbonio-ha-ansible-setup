@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. 
 
+### [25.12.0] (2025-10-17)
+
+
+### Feature
+* Implemented promotion of LDAP replica in a separate playbook (only for converting infrastructure to User Mail Replica)
+
+
 ### [25.9.1] (2025-10-15)
 
 
