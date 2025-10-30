@@ -7,12 +7,12 @@
   ansible.builtin.package_facts:
       manager: auto
 
-# - name: Enable MMR on existing LDAP master
-#   become: true
-#   become_method: su
-#   become_user: zextras
-#   command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389/"
-#   when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
+- name: Enable MMR on existing LDAP master
+  become: true
+  become_method: su
+  become_user: zextras
+  command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389/"
+  when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Change local conf on first master
   become: true
@@ -38,32 +38,21 @@
     inventory_hostname in groups["masterDirectoryServers"] and 
     ldap_role == "master"
 
-- name: Stop carbonio services on second LDAP master
+- name: Promote LDAP Replica to Multi Master
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmcontrol stop"
-  when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
-
-- name: Stop carbonio on second LDAP master [Sysd]
-  become: true
-  ansible.builtin.systemd:
-    name: carbonio.target
-    state: stopped
-  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
-
-# - name: Promote second LDAP master to multimaster
-#   become: true
-#   become_method: su
-#   become_user: zextras
-#   command: "/opt/zextras/libexec/zmldappromote-replica-mmr -s 2"
-#   when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
+  command: "/opt/zextras/libexec/zmldappromote-replica-mmr -s 2"
+  when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Change local conf on second master
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
+  command: "/opt/zextras/bin/zmlocalconfig -e {{ item }}"
+  loop:
+    - ldap_url='ldap://{{ groups["masterDirectoryServers"][1] }}:389'
+    - ldap_master_url='ldap://{{ groups["masterDirectoryServers"][1] }}:389 ldap://{{ groups["masterDirectoryServers"][0] }}:389'
   when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
 
 - name: Restart carbonio on second LDAP master
