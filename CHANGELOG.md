@@ -2,11 +2,13 @@
 
 All notable changes to this project will be documented in this file. 
 
-### [25.12.0] (2025-10-17)
+### [25.12.0] (2025-11-28)
 
 
 ### Feature
 * Implemented promotion of LDAP replica in a separate playbook (only for converting infrastructure to User Mail Replica)
+* Added a check that password files exist and are located in the same folder as the inventory
+* Added a check that workStreamServers group exists in the inventory
 
 
 ### [25.9.1] (2025-10-15)
