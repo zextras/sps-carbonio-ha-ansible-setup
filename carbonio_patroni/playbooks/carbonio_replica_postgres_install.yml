@@ -2,6 +2,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- hosts: all
+  order: inventory
+  gather_facts: yes
+  roles:
+     - ../roles/pre_installation_checks
+     
 - hosts: postgresServers
   order: inventory
   gather_facts: yes
