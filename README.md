@@ -95,10 +95,12 @@ svc1.example.com postgres_version=16 patroni_role=primary
 svc2.example.com postgres_version=16 patroni_role=secondary
 
 [masterDirectoryServers]
-svc1.example.com ldap_role=master
-svc2.example.com ldap_role=mmr
+#The master installed in the previous step should be first in the list
+svcs1.example.com ldap_role=master
+svcs2.example.com ldap_role=mmr
 
 [replicaDirectoryServers]
+#Keep this group empty for User Mail Replica installation
 
 [serviceDiscoverServers]
 svc1.example.com
