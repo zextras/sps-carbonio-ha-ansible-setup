@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. 
 
+### [26.3.0] (2026-03-10)
+
+
+### Feature
+* Added new DBConnector package carbonio-videorecorder-db for DB-backed metadata storage and job management support
+
+
 ### [25.12.0] (2025-12-17)
 
 
