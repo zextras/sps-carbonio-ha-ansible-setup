@@ -203,6 +203,36 @@
   tags:
     - remove-carbonio-dbconnectors
 
+- name: Disable videorecorder db connector (Debian)
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove videorecorder db connector packages (Debian)
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+    
 - name: Remove dbconnectors directories in /etc/carbonio/ with tokens 
   become: true
   command:
@@ -425,6 +455,35 @@
     - ansible_os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable videorecorder db connector [RHEL]
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove videorecorder db connector packages [RHEL]
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 

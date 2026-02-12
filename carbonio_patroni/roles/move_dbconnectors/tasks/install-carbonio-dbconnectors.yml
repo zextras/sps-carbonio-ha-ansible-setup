@@ -85,6 +85,18 @@
   tags:
     - install-carbonio-dbconnectors
 
+- name: Install videorecorder db connector Ubuntu  
+  become: true
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['videoServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
 ##### RHEL
 - name: Install mailbox db connector RHEL  
   become: true
@@ -182,3 +194,18 @@
     - groups['workStreamServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
+
+- name: Install videorecorder db connector RHEL  
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['videoServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
