@@ -54,4 +54,4 @@
 #     - module1
 #     - module2
 
-requires_ansible: '>=2.15.5'
+requires_ansible: '>=2.15.13'
