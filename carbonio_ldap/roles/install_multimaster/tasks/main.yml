@@ -143,7 +143,7 @@
   become_method: su
   become_user: zextras
   command: '/opt/zextras/bin/carbonio prov -l ms {{ ansible_fqdn }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover'
-  when: inventory_hostname in groups["serviceDiscoverServers"] and inventory_hostname in groups['masterDirectoryServers']
+  when: inventory_hostname in groups["serviceDiscoverServers"]
 
 - name: Restart carbonio on second LDAP master
   become: true
