@@ -79,7 +79,6 @@
   tags:
     - execute-pending-setups
     
-    
 - name: Copy scripts to remote host
   become: true
   ansible.builtin.template:
@@ -120,7 +119,11 @@
   when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
   tags:
     - execute-carbonio-bootstrap
-    
+
+- name: Wait 10 seconds for LDAP services to stabilize
+  ansible.builtin.pause:
+    seconds: 10
+
 - name: run Carbonio Bootstrap
   become: true
   command: /usr/bin/carbonio-bootstrap -c /tmp/carbonio-config.txt
@@ -134,6 +137,13 @@
   become_user: zextras
   command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
   when: "'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
+
+- name: Add and enable service-discover service
+  become: true
+  become_method: su
+  become_user: zextras
+  command: '/opt/zextras/bin/carbonio prov -l ms {{ ansible_fqdn }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover'
+  when: inventory_hostname in groups["serviceDiscoverServers"]
 
 - name: Restart carbonio on second LDAP master
   become: true

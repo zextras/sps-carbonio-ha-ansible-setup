@@ -99,6 +99,10 @@ svc2.example.com postgres_version=16 patroni_role=secondary
 svcs1.example.com ldap_role=master
 svcs2.example.com ldap_role=mmr
 
+#Custom Default Domain (Optional)
+[masterDirectoryServers:vars]
+#default_domain=domain.com # Replace with your desired domain
+
 [replicaDirectoryServers]
 #Keep this group empty for User Mail Replica installation
 
