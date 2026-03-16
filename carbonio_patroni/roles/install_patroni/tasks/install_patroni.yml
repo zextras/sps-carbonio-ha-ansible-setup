@@ -6,7 +6,7 @@
   template:
     src: patroni.list.j2
     dest: /etc/apt/sources.list.d/patroni.list
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - set-repos
 
@@ -15,7 +15,7 @@
   ansible.builtin.apt_key:
     url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
     state: present
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
       - set-repos
 
@@ -23,7 +23,7 @@
   become: true
   apt:
     update_cache: yes
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
       - set-repos
 
@@ -36,7 +36,7 @@
       - python3-consul
       - python3-pysyncobj
       - python3-psycopg2
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install_patroni
 
@@ -48,7 +48,7 @@
       - watchdog
       - python3-consul
       - python3-psycopg2
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts.os_family == "RedHat"
   tags:
     - install_patroni
 
@@ -57,7 +57,7 @@
   yum: name={{ item }} state=present
   with_items:
       - pinentry
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts.os_family == "RedHat"
   tags:
     - install_patroni
     - delete
@@ -93,7 +93,7 @@
   ansible.builtin.template:
     src: patroni.config.yaml.j2
     dest: /etc/patroni/config.yml
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - patroni-config
 
@@ -102,7 +102,7 @@
   ansible.builtin.template:
     src: patroni-rhel.config.yaml.j2
     dest: /etc/patroni/patroni.yml
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts.os_family == "RedHat"
   tags:
     - patroni-config
 
@@ -111,13 +111,13 @@
   become: true
   ansible.builtin.shell: "/usr/lib/postgresql/{{ postgres_version }}/bin/pg_controldata /var/lib/postgresql/{{ postgres_version }}/main/"
   register: cluster_ident
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
 
 - name: Check cluster identifier [RHEL]
   become: true
   ansible.builtin.shell: "/usr/pgsql-{{ postgres_version }}/bin/pg_controldata /var/lib/pgsql/{{ postgres_version }}/data/"
   register: cluster_ident
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts.os_family == "RedHat"
 
 - name: Print postgres ident
   ansible.builtin.debug:
@@ -139,7 +139,7 @@
     name: patroni
     state: restarted
     enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_os_family == "Debian"
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
 
@@ -152,7 +152,7 @@
     name: patroni
     state: stopped
     enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
 
@@ -161,7 +161,7 @@
     name: patroni
     state: started
     enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "RedHat"
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "RedHat"
   tags:
     - enable_patroni
 
@@ -170,7 +170,7 @@
     name: patroni
     state: started
     enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_os_family == "Debian"
+  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
 
