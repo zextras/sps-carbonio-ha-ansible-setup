@@ -28,7 +28,7 @@
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
-  when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master" and ansible_distribution_major_version != "9" and ansible_distribution_major_version != "24"
+  when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master" and ansible_facts.distribution_major_version != "9" and ansible_facts.distribution_major_version != "24"
 
 - name: Restart carbonio on first LDAP master [Sysd]
   become: true
@@ -36,7 +36,7 @@
     name: carbonio.target
     state: restarted
   when: >
-    (ansible_distribution_major_version == "9" or ansible_distribution_major_version == "24") and
+    (ansible_facts.distribution_major_version == "9" or ansible_facts.distribution_major_version == "24") and
     inventory_hostname in groups["masterDirectoryServers"] and 
     ldap_role == "master"
     
@@ -45,28 +45,28 @@
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol stop"
-  when: "'carbonio-directory-server' not in ansible_facts.packages and ansible_distribution_major_version != '9' and ansible_distribution_major_version != '24' and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
+  when: "'carbonio-directory-server' not in ansible_facts.packages and ansible_facts.distribution_major_version != '9' and ansible_facts.distribution_major_version != '24' and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
 
 - name: Stop carbonio on second LDAP master [Sysd]
   become: true
   ansible.builtin.systemd:
     name: carbonio.target
     state: stopped
-  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
+  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_facts.distribution_major_version == '9' or ansible_facts.distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
 
 - name: Install carbonio-directory-server [Ubuntu]
   become: true
   apt: name={{ item }} state=present
   with_items:
       - carbonio-directory-server
-  when: "ansible_os_family == 'Debian' and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
+  when: "ansible_facts.os_family == 'Debian' and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
 
 - name: Install carbonio-directory-server [RHEL]
   become: true
   yum: name={{ item }} state=present
   with_items:
       - carbonio-directory-server
-  when: "ansible_os_family == 'RedHat' and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
+  when: "ansible_facts.os_family == 'RedHat' and 'carbonio-directory-server' not in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
 
 - name: Remove old configuration
   become: true
@@ -142,7 +142,7 @@
   become: true
   become_method: su
   become_user: zextras
-  command: '/opt/zextras/bin/carbonio prov -l ms {{ ansible_fqdn }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover'
+  command: '/opt/zextras/bin/carbonio prov -l ms {{ ansible_facts.fqdn }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover'
   when: inventory_hostname in groups["serviceDiscoverServers"]
 
 - name: Restart carbonio on second LDAP master
@@ -150,11 +150,11 @@
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
-  when: "'carbonio-directory-server' not in ansible_facts.packages and ansible_distribution_major_version != '9' and ansible_distribution_major_version != '24' and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
+  when: "'carbonio-directory-server' not in ansible_facts.packages and ansible_facts.distribution_major_version != '9' and ansible_facts.distribution_major_version != '24' and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
 
 - name: Restart carbonio on second LDAP master [Sysd]
   become: true
   ansible.builtin.systemd:
     name: carbonio.target
     state: restarted
-  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
+  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_facts.distribution_major_version == '9' or ansible_facts.distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 

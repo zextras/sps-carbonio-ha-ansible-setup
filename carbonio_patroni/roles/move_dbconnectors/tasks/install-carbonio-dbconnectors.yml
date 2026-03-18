@@ -8,7 +8,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
     - install-carbonio-dbconnectors
@@ -19,7 +19,7 @@
   with_items:
     - "{{ files_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['filesServers'] | length > 0
   tags:
@@ -31,7 +31,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['docsServers'] | length > 0 
   tags:
@@ -43,7 +43,7 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['taskServers'] | length > 0
   tags:
@@ -55,7 +55,7 @@
   with_items:
     - "{{ ws_collaboration_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
@@ -67,7 +67,7 @@
   with_items:
     - "{{ message_dispatcher_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
@@ -79,7 +79,7 @@
   with_items:
     - "{{ notification_push_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
@@ -91,7 +91,7 @@
   with_items:
     - "{{ videorecorder_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['videoServers'] | length > 0
   tags:
@@ -106,7 +106,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
     - install-carbonio-dbconnectors
@@ -119,7 +119,7 @@
   with_items:
     - "{{ files_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['filesServers'] | length > 0
   tags:
@@ -133,7 +133,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['docsServers'] | length > 0
   tags:
@@ -147,7 +147,7 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['taskServers'] | length > 0
   tags:
@@ -161,7 +161,7 @@
   with_items:
     - "{{ ws_collaboration_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
@@ -175,7 +175,7 @@
   with_items:
     - "{{ message_dispatcher_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
@@ -189,7 +189,7 @@
   with_items:
     - "{{ notification_push_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['workStreamServers'] | length > 0
   tags:
@@ -203,7 +203,7 @@
   with_items:
     - "{{ videorecorder_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['videoServers'] | length > 0
   tags:
