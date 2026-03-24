@@ -67,7 +67,7 @@ proxy1.example.com
 proxy2.example.com
 
 [proxyServers:vars]
-webmailHostname=webmail.demo.zextras.io
+webmailHostname=webmailPublicHostname
 
 [applicationServers]
 mbox1.example.com
