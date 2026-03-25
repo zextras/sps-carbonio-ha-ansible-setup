@@ -101,8 +101,8 @@ svcs2.example.com ldap_role=mmr
 
 #Custom Default Domain (Optional)
 [masterDirectoryServers:vars]
-# Replace example.com with your desired domain
-#default_domain=example.com
+# Replace domain.com with your desired domain
+#default_domain=domain.com
 
 [replicaDirectoryServers]
 #Keep this group empty for User Mail Replica installation
