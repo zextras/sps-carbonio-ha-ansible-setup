@@ -6,7 +6,7 @@
   become: true
   apt:
     update_cache: yes
-  when: ansible_os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: ansible_facts.os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
       - haproxy
 
@@ -15,7 +15,7 @@
   apt: name={{ item }} state=present
   with_items:
     - "{{ haproxy_packages }}"
-  when: ansible_os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: ansible_facts.os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
     - haproxy
 
@@ -24,7 +24,7 @@
   yum: name={{ item }} state=present
   with_items:
     - "{{ haproxy_packages }}"
-  when: ansible_os_family == "RedHat" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: ansible_facts.os_family == "RedHat" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
   tags:
     - haproxy
 
@@ -43,7 +43,7 @@
   register: pgpool_check_debian
   failed_when: false
   changed_when: false
-  when: ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+  when: ansible_facts.os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
   tags:
     - haproxy
 
@@ -54,7 +54,7 @@
     enabled: false
     state: stopped
   when:
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool2' in pgpool_check_debian.stdout"
   tags:
     - haproxy
@@ -66,7 +66,7 @@
     state: absent
     purge: true
   when:
-    - ansible_os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool2' in pgpool_check_debian.stdout"
   tags:
     - haproxy
@@ -76,7 +76,7 @@
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool2' in pgpool_check_debian.stdout"
   tags:
@@ -88,7 +88,7 @@
   register: pgpool_check_rhel
   failed_when: false
   changed_when: false
-  when: ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+  when: ansible_facts.os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
   tags:
     - haproxy
 
@@ -99,7 +99,7 @@
     enabled: false
     state: stopped
   when:
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool-II' in pgpool_check_rhel.stdout"
   tags:
     - haproxy
@@ -110,7 +110,7 @@
     name: pgpool-II
     state: absent
   when:
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool-II' in pgpool_check_rhel.stdout"
   tags:
     - haproxy
@@ -121,7 +121,7 @@
     path: /etc/pgpool-II
     state: absent
   when:
-    - ansible_os_family == "RedHat"  and inventory_hostname in groups['dbsConnectorServers']
+    - ansible_facts.os_family == "RedHat"  and inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool-II' in pgpool_check_rhel.stdout"
   tags:
     - haproxy
@@ -131,7 +131,7 @@
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - "'pgpool-II' in pgpool_check_rhel.stdout"
   tags:
@@ -163,7 +163,7 @@
   become_method: su
   become_user: zextras
   command: "/opt/zextras/bin/zmcontrol restart"
-  when: inventory_hostname in groups["applicationServers"] and ansible_distribution_major_version != '9' and ansible_distribution_major_version != '24'
+  when: inventory_hostname in groups["applicationServers"] and ansible_facts.distribution_major_version != '9' and ansible_facts.distribution_major_version != '24'
   tags:
     - haproxy
 
@@ -172,6 +172,6 @@
   ansible.builtin.systemd:
     name: carbonio.target
     state: restarted
-  when: inventory_hostname in groups["applicationServers"] and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '24')
+  when: inventory_hostname in groups["applicationServers"] and (ansible_facts.distribution_major_version == '9' or ansible_facts.distribution_major_version == '24')
   tags:
     - haproxy

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. 
 
 
+### [26.6.0] (2026-06-10)
+
+
+### Feature
+* Added validation for inventory values (hostnames, domains, and IP addresses) to prevent misconfigurations caused by INI parsing
+* Added netaddr dependency handling for inventory IP address validation
+
+### Bug Fixes
+* Fixed deprecated ansible_* facts usage by migrating to ansible_facts for compatibility with ansible-core 2.24
+* Replaced ansible_facts.fqdn with inventory_hostname to avoid incorrect hostname resolution when hosts file entries are misconfigured
+
+
 ### [26.3.1] (2026-03-24)
 
 
@@ -18,6 +30,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 * Added workaround to ensure service-discover is enabled after MMR bootstrap
+
 
 ### [25.12.0] (2025-12-17)
 
