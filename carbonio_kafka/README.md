@@ -43,7 +43,8 @@ svcs2.example.com ldap_role=mmr
 
 #Custom Default Domain (Optional)
 [masterDirectoryServers:vars]
-#default_domain=domain.com # Replace with your desired domain
+# Replace domain.com with your desired domain
+#default_domain=domain.com
 
 [replicaDirectoryServers]
 #Keep this group empty for User Mail Replica installation
@@ -66,7 +67,7 @@ proxy1.example.com
 proxy2.example.com
 
 [proxyServers:vars]
-webmailHostname=webmail.demo.zextras.io
+webmailHostname=webmailPublicHostname
 
 [applicationServers]
 mbox1.example.com

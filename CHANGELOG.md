@@ -15,6 +15,13 @@ All notable changes to this project will be documented in this file.
 * Replaced ansible_facts.fqdn with inventory_hostname to avoid incorrect hostname resolution when hosts file entries are misconfigured
 
 
+### [26.3.1] (2026-03-24)
+
+
+### Bug Fixes
+* Fixed an issue where inline comments in inventory variable examples were propagated as part of the value into generated configuration files, causing invalid Postfix configuration
+
+
 ### [26.3.0] (2026-03-11)
 
 
