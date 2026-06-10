@@ -2,30 +2,43 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- name: Create Patroni repo [Ubuntu]
-  template:
-    src: patroni.list.j2
-    dest: /etc/apt/sources.list.d/patroni.list
+- name: Ensure apt keyrings directory exists [Ubuntu]
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
   when: ansible_facts.os_family == "Debian"
   tags:
     - set-repos
 
-- name: Add apt key Postgres repo [Ubuntu]
+- name: Download PostgreSQL repository key [Ubuntu]
   become: true
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-    state: present
+    dest: /etc/apt/keyrings/postgresql.asc
+    mode: "0644"
   when: ansible_facts.os_family == "Debian"
   tags:
-      - set-repos
+    - set-repos
+
+- name: Create Patroni repo [Ubuntu]
+  become: true
+  ansible.builtin.template:
+    src: patroni.list.j2
+    dest: /etc/apt/sources.list.d/patroni.list
+    mode: "0644"
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - set-repos
 
 - name: Update repos [Ubuntu]
   become: true
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
   when: ansible_facts.os_family == "Debian"
   tags:
-      - set-repos
+    - set-repos
 
 - name: Install patroni packages [Ubuntu]
   become: true
