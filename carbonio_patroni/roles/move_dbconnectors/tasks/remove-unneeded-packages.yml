@@ -113,14 +113,14 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector (Debian)
+- name: Disable Chats db connector (Debian)
   become: true
   systemd:
     name: "{{ item }}"
     enabled: false
     state: stopped
   with_items:
-    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+    - "{{ chats_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
     - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
@@ -128,14 +128,14 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages (Debian)
+- name: Remove Chats db connector packages (Debian)
   become: true
   apt:
     name: "{{ item }}"
     state: absent
     purge: true
   with_items:
-    - "{{ ws_collaboration_dbconnectors_packages }}"
+    - "{{ chats_dbconnectors_packages }}"
   when:
     - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
@@ -381,14 +381,14 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector [RHEL]
+- name: Disable Chats db connector [RHEL]
   become: true
   systemd:
     name: "{{ item }}"
     enabled: false
     state: stopped
   with_items:
-    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+    - "{{ chats_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
     - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
@@ -396,13 +396,13 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages [RHEL]
+- name: Remove Chats db connector packages [RHEL]
   become: true
   yum:
     name: "{{ item }}"
     state: absent
   with_items:
-    - "{{ ws_collaboration_dbconnectors_packages }}"
+    - "{{ chats_dbconnectors_packages }}"
   when:
     - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]

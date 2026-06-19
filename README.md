@@ -153,8 +153,8 @@ video1.example.com public_ip_address=1.2.3.4
 video2.example.com public_ip_address=1.2.3.4
 
 [workStreamServers]
-wsc1.example.com
-wsc2.example.com
+chats1.example.com
+chats2.example.com
 
 [prometheusServers]
 svc3.example.com

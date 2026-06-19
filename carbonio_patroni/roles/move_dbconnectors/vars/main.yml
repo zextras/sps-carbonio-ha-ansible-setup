@@ -15,7 +15,7 @@
   task_dbconnectors_packages:
     - carbonio-tasks-db
     
-  ws_collaboration_dbconnectors_packages:
+  chats_dbconnectors_packages:
     - carbonio-ws-collaboration-db
     
   message_dispatcher_dbconnectors_packages:
