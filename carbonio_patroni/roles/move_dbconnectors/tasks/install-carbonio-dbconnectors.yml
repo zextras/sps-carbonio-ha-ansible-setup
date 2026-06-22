@@ -49,11 +49,11 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install chats db connector Ubuntu  
+- name: Install WSC db connector Ubuntu  
   become: true
   apt: name={{ item }} state=present
   with_items:
-    - "{{ chats_dbconnectors_packages }}"
+    - "{{ ws_collaboration_dbconnectors_packages }}"
   when: 
     - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['dbsConnectorServers']
@@ -153,13 +153,13 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install chats db connector RHEL  
+- name: Install WSC db connector RHEL  
   become: true
   yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - "{{ chats_dbconnectors_packages }}"
+    - "{{ ws_collaboration_dbconnectors_packages }}"
   when: 
     - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']

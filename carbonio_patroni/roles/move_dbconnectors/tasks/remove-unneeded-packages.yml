@@ -113,14 +113,14 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable Chats db connector (Debian)
+- name: Disable WSC db connector (Debian)
   become: true
   systemd:
     name: "{{ item }}"
     enabled: false
     state: stopped
   with_items:
-    - "{{ chats_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
     - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
@@ -128,14 +128,14 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove Chats db connector packages (Debian)
+- name: Remove WSC db connector packages (Debian)
   become: true
   apt:
     name: "{{ item }}"
     state: absent
     purge: true
   with_items:
-    - "{{ chats_dbconnectors_packages }}"
+    - "{{ ws_collaboration_dbconnectors_packages }}"
   when:
     - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
@@ -381,14 +381,14 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable Chats db connector [RHEL]
+- name: Disable WSC db connector [RHEL]
   become: true
   systemd:
     name: "{{ item }}"
     enabled: false
     state: stopped
   with_items:
-    - "{{ chats_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
     - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
@@ -396,13 +396,13 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove Chats db connector packages [RHEL]
+- name: Remove WSC db connector packages [RHEL]
   become: true
   yum:
     name: "{{ item }}"
     state: absent
   with_items:
-    - "{{ chats_dbconnectors_packages }}"
+    - "{{ ws_collaboration_dbconnectors_packages }}"
   when:
     - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
