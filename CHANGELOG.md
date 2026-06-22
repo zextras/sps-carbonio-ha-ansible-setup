@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 * Replaced deprecated apt_key usage with keyring-based APT repository configuration for PostgreSQL repositories
 * Replaced the word "WSC" with "Chats" in the names of some tasks where necessary to avoid inconsistencies
 
+
 ### [26.3.1] (2026-03-24)
 
 
