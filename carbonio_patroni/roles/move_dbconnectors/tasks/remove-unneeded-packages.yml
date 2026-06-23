@@ -113,7 +113,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector (Debian)
+- name: Disable WSC db connector (Debian)
   become: true
   systemd:
     name: "{{ item }}"
@@ -128,7 +128,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages (Debian)
+- name: Remove WSC db connector packages (Debian)
   become: true
   apt:
     name: "{{ item }}"
@@ -381,7 +381,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector [RHEL]
+- name: Disable WSC db connector [RHEL]
   become: true
   systemd:
     name: "{{ item }}"
@@ -396,7 +396,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages [RHEL]
+- name: Remove WSC db connector packages [RHEL]
   become: true
   yum:
     name: "{{ item }}"
