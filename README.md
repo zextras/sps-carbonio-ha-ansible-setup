@@ -13,6 +13,7 @@ This repository contains separate Ansible playbooks that enables redundacy for C
 - [Installation Steps](#installation-steps)
 - [License(s)](#licenses)
 
+This repository contains separate Ansible playbooks that enables redundacy for Carbonio services like Directory, Postgres and Kafka that are mandatory to implement Mail Replica.
 ## Playbooks Overview
 
 ### 1. **Kafka**
