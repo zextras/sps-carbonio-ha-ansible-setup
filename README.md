@@ -1,6 +1,19 @@
 # Carbonio Cluster Services Redundancy
 
 This repository contains separate Ansible playbooks that enables redundacy for Carbonio services like Directory, Postgres and Kafka that are mandatory to implement Mail Replica.
+
+## Table of Contents
+
+- [Playbooks Overview](#playbooks-overview)
+- [Usage Notes](#usage-notes)
+- [Prerequisites](#prerequisites)
+- [Update the Inventory](#update-the-inventory)
+- [Important Notes on Initial Roles](#important-notes-on-initial-roles-for-cluster-services-redundancy-configuration)
+- [Full Inventory Example](#full-inventory-example)
+- [Installation Steps](#installation-steps)
+- [License(s)](#licenses)
+
+This repository contains separate Ansible playbooks that enables redundacy for Carbonio services like Directory, Postgres and Kafka that are mandatory to implement Mail Replica.
 ## Playbooks Overview
 
 ### 1. **Kafka**
@@ -25,6 +38,8 @@ After the standard Carbonio installation, the following inventory files should b
 - `inventory_postgrespassword`
 - `inventory_ldap_password`
 - `inventory_consulpassword`
+
+> The playbook validates that these password files exist and are located in the same folder as the inventory file — the run will fail early if they're missing or misplaced.
 
 ### Update the Inventory
 To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
@@ -153,8 +168,8 @@ video1.example.com public_ip_address=1.2.3.4
 video2.example.com public_ip_address=1.2.3.4
 
 [workStreamServers]
-wsc1.example.com
-wsc2.example.com
+chats1.example.com
+chats2.example.com
 
 [prometheusServers]
 svc3.example.com
@@ -177,20 +192,20 @@ ansible-galaxy collection install zxbot.carbonio_ldap
 ### 1. Install Kafka
 Run the following command to install Kafka:
 ```
-ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
+ansible-playbook -i inventory -u root zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
 ### 2. Install PostgreSQL redundancy
 Run these commands to set up PostgreSQL redundancy with Patroni:
 ```
-ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
-ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
+ansible-playbook -i inventory -u root zxbot.carbonio_patroni.carbonio_replica_postgres_install
+ansible-playbook -i inventory -u root zxbot.carbonio_patroni.carbonio_patroni_install
 ```
 
 ### 3. Install Multi-Master LDAP
 Run this command to install LDAP in a multi-master configuration:
 ```
-ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_install_mmr
+ansible-playbook -i inventory -u root zxbot.carbonio_ldap.carbonio_install_mmr
 ```
 
 

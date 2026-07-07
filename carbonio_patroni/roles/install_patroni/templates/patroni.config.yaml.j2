@@ -29,7 +29,7 @@ bootstrap:
   - host all all 0.0.0.0/0 md5
 postgresql:
   listen: 0.0.0.0:5432                # should be 0.0.0.0 to listen all incoming sources + port 5432 can be used if haproxy\pgpool not on this VM 
-  connect_address: {{ ansible_default_ipv4.address }}:5432     # should be local ip address, ip addr show to check
+  connect_address: {{ ansible_facts.default_ipv4.address }}:5432     # should be local ip address, ip addr show to check
   config_dir: /etc/postgresql/{{ postgres_version }}/main
   data_dir: /var/lib/postgresql/{{ postgres_version }}/main
   bin_dir: /usr/lib/postgresql/{{ postgres_version }}/bin

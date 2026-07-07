@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file. 
 
 
+### [26.6.0] (2026-07-07)
+
+
+### Feature
+* Added validation for inventory values (hostnames, domains, and IP addresses) to prevent misconfigurations caused by INI parsing
+* Added netaddr dependency handling for inventory IP address validation
+
+### Bug Fixes
+* Fixed deprecated ansible_* facts usage by migrating to ansible_facts for compatibility with ansible-core 2.24
+* Replaced ansible_facts.fqdn with inventory_hostname to avoid incorrect hostname resolution when hosts file entries are misconfigured
+* Updated the `ansible.posix` dependency to version `2.2.0` to remove deprecation warnings related to the deprecated `to_native` import path in newer `ansible-core` versions
+* Replaced deprecated apt_key usage with keyring-based APT repository configuration for PostgreSQL repositories
+* Replaced the word "WSC" with "Chats" in the names of some tasks where necessary to avoid inconsistencies
+
+
 ### [26.3.1] (2026-03-24)
 
 
@@ -18,6 +33,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 * Added workaround to ensure service-discover is enabled after MMR bootstrap
+
 
 ### [25.12.0] (2025-12-17)
 

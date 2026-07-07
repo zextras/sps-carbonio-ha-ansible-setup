@@ -4,6 +4,21 @@ An ansible collection to install Multi Master LDAP part of Carbonio Cluster Serv
 
 To install Multi Master LDAP using this collection you have to modify the masterDirectoryServers group in the inventory file. It supports only FQDN.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Install the Collection](#install-the-collection)
+- [Modify the Inventory](#modify-the-inventory)
+- [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
+- [Important Notes on Initial Roles](#important-notes-on-initial-roles-for-cluster-services-redundancy-configuration)
+- [Install Multi-Master LDAP](#install-multi-master-ldap)
+- [License(s)](#licenses)
+
+## Prerequisites
+
+- The inventory must use FQDN only — this collection supports FQDN entries exclusively.
+- The `masterDirectoryServers` group in the inventory must be modified to include an `ldap_role` for each host (see [Modify the Inventory](#modify-the-inventory)).
+
 ### Install the collection
 
 ```
@@ -21,7 +36,7 @@ svc1.example.com ldap_role=master
 svc2.example.com ldap_role=mmr
 ```
 
-Example for Full Cluster Services Redundancy inventory file
+## Full Cluster Services Redundancy Inventory Example
 
 ```
 [kafka]
@@ -95,8 +110,8 @@ video1.example.com
 video2.example.com
 
 [workStreamServers]
-wsc1.example.com
-wsc2.example.com
+chats1.example.com
+chats2.example.com
 
 [prometheusServers]
 svcs3.example.com
@@ -121,7 +136,7 @@ The initial roles assigned during the standard installation must remain on the s
 
 Run this command to install LDAP in a multi-master configuration:
 ```
-ansible-playbook -i inventory zxbot.carbonio_ldap.carbonio_install_mmr
+ansible-playbook -i inventory -u root zxbot.carbonio_ldap.carbonio_install_mmr
 ```
 
 

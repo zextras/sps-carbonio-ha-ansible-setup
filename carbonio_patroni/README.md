@@ -4,6 +4,21 @@ An ansible collection to install Patroni part of Carbonio Cluster Services Redun
 
 To install Kafka using this collection you have to insert new groups in the inventory file It supports only FQDN.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Install the Collection](#install-the-collection)
+- [Modify the Inventory](#modify-the-inventory)
+- [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
+- [Important Notes on Initial Roles](#important-notes-on-initial-roles-for-cluster-services-redundancy-configuration)
+- [Install PostgreSQL Redundancy](#install-postgresql-redundancy)
+- [License(s)](#licenses)
+
+## Prerequisites
+
+- The inventory must use FQDN only — this collection supports FQDN entries exclusively.
+- New groups must be added to the inventory file: `postgresServers` (with `postgres_version` and `patroni_role` variables) and `dbsConnectorServers` (see [Modify the Inventory](#modify-the-inventory)).
+
 ### Install the collection
 
 ```
@@ -29,7 +44,7 @@ mbox1.example.com
 mbox2.example.com
 ```
 
-Example for Full Cluster Services Redundancy inventory file
+## Full Cluster Services Redundancy Inventory Example
 
 ```
 [kafka]
@@ -103,8 +118,8 @@ video1.example.com
 video2.example.com
 
 [workStreamServers]
-wsc1.example.com
-wsc2.example.com
+chats1.example.com
+chats2.example.com
 
 [prometheusServers]
 svcs3.example.com
@@ -128,8 +143,8 @@ The initial roles assigned during the standard installation must remain on the s
 
 Run these commands to set up PostgreSQL redundancy with Patroni:
 ```
-ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_replica_postgres_install
-ansible-playbook -i inventory zxbot.carbonio_patroni.carbonio_patroni_install
+ansible-playbook -i inventory -u root zxbot.carbonio_patroni.carbonio_replica_postgres_install
+ansible-playbook -i inventory -u root zxbot.carbonio_patroni.carbonio_patroni_install
 ```
 
 

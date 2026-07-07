@@ -34,7 +34,7 @@
     name: carbonio.target
     state: restarted
   when: >
-    (ansible_distribution_major_version == "9" or ansible_distribution_major_version == "24") and
+    (ansible_facts.distribution_major_version == "9" or ansible_facts.distribution_major_version == "24") and
     inventory_hostname in groups["masterDirectoryServers"] and 
     ldap_role == "master"
 
@@ -67,4 +67,4 @@
   ansible.builtin.systemd:
     name: carbonio.target
     state: restarted
-  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 
+  when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_facts.distribution_major_version == '9' or ansible_facts.distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 

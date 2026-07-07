@@ -12,7 +12,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnectors
 
@@ -25,7 +25,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnectors
 
@@ -38,7 +38,7 @@
   with_items:
     - "{{ files_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
     - groups['filesServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -52,7 +52,7 @@
   with_items:
     - "{{ files_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
     - groups['filesServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -66,7 +66,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
     - groups['docsServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -80,7 +80,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
     - groups['docsServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -94,7 +94,7 @@
   with_items:
     - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -108,12 +108,12 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector (Debian)
+- name: Disable WSC db connector (Debian)
   become: true
   systemd:
     name: "{{ item }}"
@@ -122,13 +122,13 @@
   with_items:
     - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages (Debian)
+- name: Remove WSC db connector packages (Debian)
   become: true
   apt:
     name: "{{ item }}"
@@ -137,7 +137,7 @@
   with_items:
     - "{{ ws_collaboration_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -152,7 +152,7 @@
   with_items:
     - "{{ message_dispatcher_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -167,7 +167,7 @@
   with_items:
     - "{{ message_dispatcher_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -182,7 +182,7 @@
   with_items:
     - "{{ notification_push_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -197,7 +197,7 @@
   with_items:
     - "{{ notification_push_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -212,7 +212,7 @@
   with_items:
     - "{{ videorecorder_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['videoServers'] | length > 0
   tags:
@@ -227,7 +227,7 @@
   with_items:
     - "{{ videorecorder_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['videoServers'] | length > 0
   tags:
@@ -238,7 +238,7 @@
   command:
     cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
   when: 
-    - ansible_os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnector
 
@@ -246,6 +246,26 @@
   shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
   when: 
     - ansible_os_family == "Debian"
     - inventory_hostname in groups['postgresServers'][0]
@@ -273,7 +293,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnectors
 
@@ -286,7 +306,7 @@
   with_items:
     - "{{ mailbox_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnectors
 
@@ -299,7 +319,7 @@
   with_items:
     - "{{ files_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['filesServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -312,7 +332,7 @@
   with_items:
     - "{{ files_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['filesServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -326,7 +346,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['docsServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -339,7 +359,7 @@
   with_items:
     - "{{ docs_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['docsServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -353,7 +373,7 @@
   with_items:
     - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
@@ -366,12 +386,12 @@
   with_items:
     - "{{ task_dbconnectors_packages }}"
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['taskServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector [RHEL]
+- name: Disable WSC db connector [RHEL]
   become: true
   systemd:
     name: "{{ item }}"
@@ -380,13 +400,13 @@
   with_items:
     - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages [RHEL]
+- name: Remove WSC db connector packages [RHEL]
   become: true
   yum:
     name: "{{ item }}"
@@ -394,7 +414,7 @@
   with_items:
     - "{{ ws_collaboration_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -409,7 +429,7 @@
   with_items:
     - "{{ message_dispatcher_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -423,7 +443,7 @@
   with_items:
     - "{{ message_dispatcher_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -438,7 +458,7 @@
   with_items:
     - "{{ notification_push_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -452,7 +472,7 @@
   with_items:
     - "{{ notification_push_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['workStreamServers'] | length > 0
   tags:
@@ -467,7 +487,7 @@
   with_items:
     - "{{ videorecorder_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['videoServers'] | length > 0
   tags:
@@ -481,7 +501,7 @@
   with_items:
     - "{{ videorecorder_dbconnectors_packages }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
     - groups['videoServers'] | length > 0
   tags:
@@ -492,7 +512,7 @@
   command:
     cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
   when: 
-    - ansible_os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnector
 
@@ -500,6 +520,26 @@
   shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
   when: 
     - ansible_os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]

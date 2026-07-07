@@ -4,6 +4,20 @@ An ansible collection to install Kafka part of Carbonio Cluster Services Redunda
 
 To install Kafka using this collection you have to insert new group in the inventory file It supports only FQDN.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Install the Collection](#install-the-collection)
+- [Modify the Inventory](#modify-the-inventory)
+- [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
+- [Install Kafka](#install-kafka)
+- [License(s)](#licenses)
+
+## Prerequisites
+
+- The inventory must use FQDN only — this collection supports FQDN entries exclusively.
+- A new `kafka` group must be added to the inventory file (see [Modify the Inventory](#modify-the-inventory)).
+
 ### Install the collection
 
 ```
@@ -21,7 +35,7 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 ```
 
-Example for Full Cluster Services Redundancy inventory file
+## Full Cluster Services Redundancy Inventory Example
 
 ```
 [kafka]
@@ -95,8 +109,8 @@ video1.example.com
 video2.example.com
 
 [workStreamServers]
-wsc1.example.com
-wsc2.example.com
+chats1.example.com
+chats2.example.com
 
 [prometheusServers]
 svcs3.example.com
@@ -108,7 +122,7 @@ svcs3.example.com
 ### Install Kafka
 Run the following command to install Kafka:
 ```
-ansible-playbook -i inventory zxbot.carbonio_kafka.carbonio_kafka_install
+ansible-playbook -i inventory -u root zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
 ## License(s)
