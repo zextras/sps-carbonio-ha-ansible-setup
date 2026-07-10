@@ -113,7 +113,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector (Debian)
+- name: Disable WSC db connector (Debian)
   become: true
   systemd:
     name: "{{ item }}"
@@ -128,7 +128,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages (Debian)
+- name: Remove WSC db connector packages (Debian)
   become: true
   apt:
     name: "{{ item }}"
@@ -272,6 +272,16 @@
   tags:
     - remove-carbonio-dbconnector
 
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
 #RHEL
 
 - name: Disable mailbox db connector [RHEL]  
@@ -381,7 +391,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Disable wscollaboration db connector [RHEL]
+- name: Disable WSC db connector [RHEL]
   become: true
   systemd:
     name: "{{ item }}"
@@ -396,7 +406,7 @@
   tags:
     - remove-carbonio-dbconnectors
 
-- name: Remove wscollaboration db connector packages [RHEL]
+- name: Remove WSC db connector packages [RHEL]
   become: true
   yum:
     name: "{{ item }}"
@@ -522,6 +532,16 @@
     state: restarted
   when: 
     - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "RedHat"
     - inventory_hostname in groups['postgresServers'][0]
   tags:
     - remove-carbonio-dbconnector
