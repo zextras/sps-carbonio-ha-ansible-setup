@@ -2,13 +2,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Validate Kafka installation prerequisites
+  hosts: all
   order: inventory
   gather_facts: yes
   roles:
      - ../roles/pre_installation_checks
 
-- hosts: kafka
+- name: Install and configure Kafka
+  hosts: kafka
   order: inventory
   gather_facts: yes
   vars:
@@ -16,7 +18,8 @@
   roles:
      - ../roles/install_kafka
 
-- hosts: applicationServers
+- name: Configure Kafka brokers on Application Servers
+  hosts: applicationServers
   order: inventory
   gather_facts: yes
   roles:

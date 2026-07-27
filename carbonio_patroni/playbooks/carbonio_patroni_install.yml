@@ -2,19 +2,21 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Validate Patroni installation prerequisites
+  hosts: all
   order: inventory
   gather_facts: yes
   roles:
      - ../roles/pre_installation_checks
      
-- hosts: postgresServers
+- name: Install and configure Patroni
+  hosts: postgresServers
   order: inventory
   gather_facts: yes
   roles:
      - ../roles/install_patroni
 
-- name: HAProxy installation for infrastructures with Multi Master LDAP
+- name: Install HAProxy for infrastructures with Multi-Master LDAP
   hosts: all
   gather_facts: yes
   tasks:
@@ -25,7 +27,7 @@
       tags:
         - haproxy
 
-- name: HAProxy Installation for infrastructures without Multi Master LDAP
+- name: Install HAProxy for infrastructures without Multi-Master LDAP
   hosts: dbsConnectorServers
   gather_facts: yes
   tasks:

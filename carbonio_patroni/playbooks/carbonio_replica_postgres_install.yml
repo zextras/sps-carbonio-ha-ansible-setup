@@ -2,13 +2,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Validate PostgreSQL replica installation prerequisites
+  hosts: all
   order: inventory
   gather_facts: yes
   roles:
      - ../roles/pre_installation_checks
      
-- hosts: postgresServers
+- name: Install and configure PostgreSQL replicas
+  hosts: postgresServers
   order: inventory
   gather_facts: yes
   roles:

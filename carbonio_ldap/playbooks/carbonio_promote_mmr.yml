@@ -2,13 +2,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Validate LDAP Multi-Master installation prerequisites
+  hosts: all
   order: inventory
   gather_facts: yes
   roles:
      - ../roles/pre_installation_checks
      
-- hosts: masterDirectoryServers
+- name: Promote and configure LDAP Multi-Master
+  hosts: masterDirectoryServers
   order: inventory
   gather_facts: yes
   roles:
