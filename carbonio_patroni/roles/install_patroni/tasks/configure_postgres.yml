@@ -151,11 +151,11 @@
   become_user: postgres
 
 - name: restart_postgres [Ubuntu]
-  service: name=postgresql state=restarted
+  ansible.builtin.service: name=postgresql state=restarted
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "Debian"
 
 - name: restart_postgres [RHEL]
-  service: 
+  ansible.builtin.service: 
     name: "postgresql-{{ postgres_version }}"
     state: restarted
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "RedHat"

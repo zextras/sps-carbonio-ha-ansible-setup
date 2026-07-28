@@ -55,7 +55,7 @@
   ansible.builtin.yum_repository:
     name: zextras
     description: Zextras Carbonio Release for RHEL {{ ansible_facts.distribution_major_version }} x86_64 (RPMs)
-    file: zextras
+    ansible.builtin.file: zextras
     baseurl: https://repo.zextras.io/release/rhel{{ ansible_facts.distribution_major_version }}/
     gpgkey: https://repo.zextras.io/repomd.xml.key
     gpgcheck: no
@@ -67,7 +67,7 @@
 
 - name: Update RedHat repo(RedHat)
   become: true
-  shell:
+  ansible.builtin.shell:
     cmd: "yum check-update -y 2>/dev/null"
     executable: /bin/bash
   register: pkgu
@@ -78,7 +78,7 @@
 
 - name: Disable the postgresql stream module in AppStream
   become: true
-  command: '/usr/bin/dnf -qy module disable postgresql'
+  ansible.builtin.command: '/usr/bin/dnf -qy module disable postgresql'
   when: ansible_facts.os_family == "RedHat" and inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
       - set-repos

@@ -3,6 +3,6 @@
 # SPDX-License-Identifier: GPL-3.0-only
 ---
 # tasks file for dbconnectors
-- import_tasks: install_carbonio_dbconnectors.yml
-- import_tasks: remove_unneeded_packages.yml
-- import_tasks: execute_carbonio_pending-setups.yml
+- ansible.builtin.import_tasks: install_carbonio_dbconnectors.yml
+- ansible.builtin.import_tasks: remove_unneeded_packages.yml
+- ansible.builtin.import_tasks: execute_carbonio_pending-setups.yml

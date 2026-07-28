@@ -91,7 +91,7 @@
   ansible.builtin.unarchive:
     src: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
     dest: '{{ kafka_dir }}'
-    copy: no
+    ansible.builtin.copy: no
     group: '{{ kafka_group }}'
     owner: '{{ kafka_user }}'
     extra_opts: ['--strip-components=1', '--show-stored-names']

@@ -4,6 +4,6 @@
 
 ---
 # tasks file for pre_installation_checks
-  - import_tasks: validate_inventory_chats.yml
-  - import_tasks: validate_password_files.yml
-  - import_tasks: validate_inventory_values.yml
+  - ansible.builtin.import_tasks: validate_inventory_chats.yml
+  - ansible.builtin.import_tasks: validate_password_files.yml
+  - ansible.builtin.import_tasks: validate_inventory_values.yml

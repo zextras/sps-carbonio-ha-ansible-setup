@@ -18,7 +18,7 @@
 
 - name: Remove mailbox db connector packages (Debian)  
   become: true
-  apt: 
+  ansible.builtin.apt: 
     name: "{{ item }}"
     state: absent
     purge: true
@@ -45,7 +45,7 @@
     
 - name: Remove files db connector packages (Debian)  
   become: true
-  apt: 
+  ansible.builtin.apt: 
     name: "{{ item }}"
     state: absent
     purge: true
@@ -73,7 +73,7 @@
 
 - name: Remove docs db connector packages (Debian)  
   become: true
-  apt: 
+  ansible.builtin.apt: 
     name: "{{ item }}"
     state: absent
     purge: true
@@ -101,7 +101,7 @@
 
 - name: Remove tasks db connector packages (Debian)  
   become: true
-  apt: 
+  ansible.builtin.apt: 
     name: "{{ item }}"
     state: absent
     purge: true
@@ -130,7 +130,7 @@
 
 - name: Remove WSC db connector packages (Debian)
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
     purge: true
@@ -160,7 +160,7 @@
 
 - name: Remove message dispatcher db connector packages (Debian)
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
     purge: true
@@ -190,7 +190,7 @@
 
 - name: Remove notification push db connector packages (Debian)
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
     purge: true
@@ -220,7 +220,7 @@
 
 - name: Remove videorecorder db connector packages (Debian)
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
     purge: true
@@ -235,7 +235,7 @@
     
 - name: Remove dbconnectors directories in /etc/carbonio/ with tokens 
   become: true
-  command:
+  ansible.builtin.command:
     cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
   when: 
     - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
@@ -243,7 +243,7 @@
     - remove-carbonio-dbconnector
 
 - name: Reset failed services
-  shell:
+  ansible.builtin.shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
   when: 
@@ -300,7 +300,7 @@
 
 - name: Remove mailbox db connector packages [RHEL]  
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -326,7 +326,7 @@
 
 - name: Remove files db connector packages [RHEL]  
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -353,7 +353,7 @@
 
 - name: Remove docs db connector packages [RHEL]  
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -380,7 +380,7 @@
 
 - name: Remove tasks db connector packages [RHEL]  
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -408,7 +408,7 @@
 
 - name: Remove WSC db connector packages [RHEL]
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -437,7 +437,7 @@
 
 - name: Remove message dispatcher db connector packages [RHEL]
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -466,7 +466,7 @@
 
 - name: Remove notification push db connector packages [RHEL]
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -495,7 +495,7 @@
 
 - name: Remove videorecorder db connector packages [RHEL]
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ item }}"
     state: absent
   with_items:
@@ -509,7 +509,7 @@
 
 - name: Remove dbconnectors directories in /etc/carbonio/ with tokens  [RHEL]
   become: true
-  command:
+  ansible.builtin.command:
     cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
   when: 
     - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
@@ -517,7 +517,7 @@
     - remove-carbonio-dbconnector
 
 - name: Reset failed services [RHEL]
-  shell:
+  ansible.builtin.shell:
     cmd: 'systemctl reset-failed'
     executable: /bin/bash
   when: 

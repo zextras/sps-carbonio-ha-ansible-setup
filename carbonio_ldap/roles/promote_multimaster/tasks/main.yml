@@ -11,26 +11,26 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389/"
+  ansible.builtin.command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389/"
   when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Change local conf on first master
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389\""
+  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389\""
   when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Restart carbonio on first LDAP master
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmcontrol restart"
+  ansible.builtin.command: "/opt/zextras/bin/zmcontrol restart"
   when: inventory_hostname in groups["masterDirectoryServers"] and ldap_role == "master"
 
 - name: Restart carbonio on first LDAP master [Sysd]
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: carbonio.target
     state: restarted
   when: >
@@ -42,14 +42,14 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/libexec/zmldappromote-replica-mmr -s 2"
+  ansible.builtin.command: "/opt/zextras/libexec/zmldappromote-replica-mmr -s 2"
   when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups[\"masterDirectoryServers\"] and ldap_role == \"mmr\""
 
 - name: Change local conf on second master
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmlocalconfig -e {{ item }}"
+  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e {{ item }}"
   loop:
     - ldap_url='ldap://{{ groups["masterDirectoryServers"][1] }}:389'
     - ldap_master_url='ldap://{{ groups["masterDirectoryServers"][1] }}:389 ldap://{{ groups["masterDirectoryServers"][0] }}:389'
@@ -59,12 +59,12 @@
   become: true
   become_method: su
   become_user: zextras
-  command: "/opt/zextras/bin/zmcontrol restart"
+  ansible.builtin.command: "/opt/zextras/bin/zmcontrol restart"
   when: "'carbonio-directory-server' in ansible_facts.packages and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'"
   
 - name: Restart carbonio on second LDAP master [Sysd]
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: carbonio.target
     state: restarted
   when: "'carbonio-directory-server' not in ansible_facts.packages and (ansible_facts.distribution_major_version == '9' or ansible_facts.distribution_major_version == '24') and inventory_hostname in groups['masterDirectoryServers'] and ldap_role == 'mmr'" 

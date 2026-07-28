@@ -2,6 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-  - import_tasks: configure_postgres.yml
-  - import_tasks: install_patroni.yml
+  - ansible.builtin.import_tasks: configure_postgres.yml
+  - ansible.builtin.import_tasks: install_patroni.yml
 
