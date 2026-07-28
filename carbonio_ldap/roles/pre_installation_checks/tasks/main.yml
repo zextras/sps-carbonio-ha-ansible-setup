@@ -4,6 +4,6 @@
 
 ---
 # tasks file for pre_installation_checks
-  - import_tasks: chats_check.yml
-  - import_tasks: password-checks.yml
-  - import_tasks: inventory_values_checks.yml
+  - import_tasks: validate_inventory_chats.yml
+  - import_tasks: validate_password_files.yml
+  - import_tasks: validate_inventory_values.yml

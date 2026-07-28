@@ -2,6 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-  - import_tasks: set-repos.yml
-  - import_tasks: install-postgres.yml
-  - import_tasks: start-postgres.yml
+  - import_tasks: set_repos.yml
+  - import_tasks: install_postgres.yml
+  - import_tasks: start_postgres.yml
