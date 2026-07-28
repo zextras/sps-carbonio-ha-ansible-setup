@@ -142,7 +142,7 @@
   ansible.builtin.service:
     name: patroni
     state: started
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary"
   tags:
     - enable_patroni
@@ -151,7 +151,7 @@
   ansible.builtin.service:
     name: patroni
     state: restarted
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
@@ -164,7 +164,7 @@
   ansible.builtin.service:
     name: patroni
     state: stopped
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
@@ -173,7 +173,7 @@
   ansible.builtin.service:
     name: patroni
     state: started
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "RedHat"
   tags:
     - enable_patroni
@@ -182,7 +182,7 @@
   ansible.builtin.service:
     name: patroni
     state: started
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni

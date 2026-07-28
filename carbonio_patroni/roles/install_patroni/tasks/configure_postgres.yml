@@ -71,7 +71,7 @@
 - name: Change scram-sha-256 to md5 [Ubuntu]
   ansible.builtin.shell:
     cmd: "sed -i 's/scram-sha-256/md5/g' /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
-  become: yes
+  become: true
   become_user: postgres
   when: ansible_facts.os_family == "Debian"
   tags:
@@ -80,7 +80,7 @@
 - name: Change scram-sha-256 to md5 [RHEL]
   ansible.builtin.shell:
     cmd: "sed -i 's/scram-sha-256/md5/g' /var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
-  become: yes
+  become: true
   become_user: postgres
   when: ansible_facts.os_family == "RedHat"
   tags:
@@ -147,7 +147,7 @@
   community.postgresql.postgresql_alter_system:
     param: password_encryption
     value: md5
-  become: yes
+  become: true
   become_user: postgres
 
 - name: restart_postgres [Ubuntu]
@@ -196,7 +196,7 @@
          {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
     group: postgres
     owner: postgres
-    mode: 0600
+    mode: "0600"
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
 
 - name: Create pgpass file [RHEL]
@@ -206,14 +206,14 @@
          {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
     group: postgres
     owner: postgres
-    mode: 0600
+    mode: "0600"
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "RedHat"
 
 - name: Stop the postgres service [Ubuntu]
   ansible.builtin.service:
     name: postgresql
     state: stopped
-    enabled: no
+    enabled: false
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
   tags:
     - disable_postgres
@@ -229,7 +229,7 @@
   ansible.builtin.service:
     name: postgresql-{{ postgres_version }}
     state: stopped
-    enabled: no
+    enabled: false
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "RedHat"
   tags:
     - disable_postgres
@@ -266,7 +266,7 @@
   ansible.builtin.service:
     name: postgresql
     state: stopped
-    enabled: no
+    enabled: false
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
   tags:
     - disable_postgres
@@ -275,7 +275,7 @@
   ansible.builtin.service:
     name: postgresql
     state: stopped
-    enabled: no
+    enabled: false
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "Debian"
   tags:
     - disable_postgres
@@ -284,7 +284,7 @@
   ansible.builtin.service:
     name: postgresql-{{ postgres_version }}
     state: stopped
-    enabled: no
+    enabled: false
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "RedHat"
   tags:
     - disable_postgres
@@ -293,7 +293,7 @@
   ansible.builtin.service:
     name: postgresql-{{ postgres_version }}
     state: stopped
-    enabled: no
+    enabled: false
   when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "RedHat"
   tags:
     - disable_postgres

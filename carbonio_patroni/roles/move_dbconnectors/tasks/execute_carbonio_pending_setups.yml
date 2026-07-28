@@ -15,7 +15,7 @@
   ansible.builtin.copy:
       src: apply-pending-setups.sh
       dest: /tmp/apply-pending-setups.sh
-      mode: '0755'
+      mode: "0755"
   when: 
     - inventory_hostname in groups['dbsConnectorServers']
   tags:

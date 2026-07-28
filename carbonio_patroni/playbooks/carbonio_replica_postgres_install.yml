@@ -12,13 +12,13 @@
 - name: Validate PostgreSQL replica installation prerequisites
   hosts: all
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/pre_installation_checks
      
 - name: Install and configure PostgreSQL replicas
   hosts: postgresServers
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/install_replica_postgres

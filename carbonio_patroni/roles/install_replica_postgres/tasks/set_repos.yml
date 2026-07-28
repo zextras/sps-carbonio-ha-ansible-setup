@@ -60,7 +60,7 @@
     gpgkey: https://repo.zextras.io/repomd.xml.key
     gpgcheck: no
     repo_gpgcheck: no
-    enabled: yes
+    enabled: true
   when: ansible_facts['os_family'] == "RedHat" and  inventory_hostname in groups["postgresServers"] and patroni_role == "secondary"
   tags:
     - set-repos

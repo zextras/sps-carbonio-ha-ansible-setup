@@ -12,20 +12,20 @@
 - name: Validate Patroni installation prerequisites
   hosts: all
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/pre_installation_checks
      
 - name: Install and configure Patroni
   hosts: postgresServers
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/install_patroni
 
 - name: Install HAProxy for infrastructures with Multi-Master LDAP
   hosts: all
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: HAProxy installation for infrastructures with Multi Master LDAP
       ansible.builtin.import_role:
@@ -36,7 +36,7 @@
 
 - name: Install HAProxy for infrastructures without Multi-Master LDAP
   hosts: dbsConnectorServers
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: HAProxy installation for infrastructures without Multi Master LDAP
       ansible.builtin.import_role:
@@ -47,7 +47,7 @@
 
 - name: Move DB connectors 
   hosts: all
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: Move DB connectors for full HA
       ansible.builtin.import_role:

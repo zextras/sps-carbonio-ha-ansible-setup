@@ -12,21 +12,21 @@
 
 - name: Create kafka group
   ansible.builtin.group:
-    name: '{{ kafka_group }}'
+    name: "{{ kafka_group }}"
     state: present
-    system: yes
+    system: true
   when: kafka_create_user_group | bool
   tags:
     - kafka_group
 
 - name: Create kafka user
   ansible.builtin.user:
-    name: '{{ kafka_user }}'
-    group: '{{ kafka_group }}'
+    name: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
     state: present
-    createhome: yes
+    createhome: true
     home: '/var/lib/queue/'
-    system: yes
+    system: true
   when: kafka_create_user_group | bool
   tags:
     - kafka_user
@@ -35,32 +35,32 @@
   ansible.builtin.file:
     path: /var/lib/queue/kafka/logs
     state: directory
-    recurse: yes
-    owner: '{{ kafka_user }}'
-    group: '{{ kafka_group }}'
-    mode: 0755
+    recurse: true
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "0755"
 
 - name: Create directory for kafka config
   ansible.builtin.file:
     path: /opt/kafka/config
     state: directory
-    recurse: yes
-    owner: '{{ kafka_user }}'
-    group: '{{ kafka_group }}'
-    mode: 0755
+    recurse: true
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "0755"
 
 - name: Install jre [Ubuntu]
   ansible.builtin.apt:
     name: openjdk-17-jre-headless
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_facts.os_family == "Debian"
 
 - name: Install jre [RHEL]
   ansible.builtin.yum:
     name: java-17-openjdk-headless
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_facts.os_family == "RedHat"
 
 - name: Check if Kafka has already been downloaded and unpacked
@@ -73,7 +73,7 @@
     url: '{{ kafka_download_base_url }}/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz'
     dest: /tmp
     validate_certs: false
-    mode: 0644
+    mode: "0644"
   when: offline is undefined
   tags:
     - kafka_download
@@ -82,7 +82,7 @@
   ansible.builtin.copy:
       src: kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
       dest: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
-      mode: '0644'
+      mode: "0644"
   when: offline is defined
   tags:
     - kafka_download
@@ -91,9 +91,9 @@
   ansible.builtin.unarchive:
     src: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
     dest: '{{ kafka_dir }}'
-    ansible.builtin.copy: no
-    group: '{{ kafka_group }}'
-    owner: '{{ kafka_user }}'
+    copy: false
+    group: "{{ kafka_group }}"
+    owner: "{{ kafka_user }}"
     extra_opts: ['--strip-components=1', '--show-stored-names']
   # when: not dir.stat.exists
   tags:
@@ -103,9 +103,9 @@
   ansible.builtin.file:
     path: /etc/kafka
     state: directory
-    group: '{{ kafka_group }}'
-    owner: '{{ kafka_user }}'
-    mode: 0755
+    group: "{{ kafka_group }}"
+    owner: "{{ kafka_user }}"
+    mode: "0755"
   tags:
     - kafka_dirs
 
@@ -113,9 +113,9 @@
   ansible.builtin.template:
     src: server.properties.j2
     dest: '{{ kafka_dir }}/config/server.properties'
-    group: '{{ kafka_group }}'
-    owner: '{{ kafka_user }}'
-    mode: 0644
+    group: "{{ kafka_group }}"
+    owner: "{{ kafka_user }}"
+    mode: "0644"
   tags:
     - kafka_config
 
@@ -123,9 +123,9 @@
   ansible.builtin.template:
     src: producer.properties.j2
     dest: '{{ kafka_dir }}/config/producer.propertiess'
-    group: '{{ kafka_group }}'
-    owner: '{{ kafka_user }}'
-    mode: 0644
+    group: "{{ kafka_group }}"
+    owner: "{{ kafka_user }}"
+    mode: "0644"
   tags:
     - kafka_config
 
@@ -163,9 +163,9 @@
   ansible.builtin.template:
     src: carbonio-kafka.service.j2
     dest: '{{ kafka_unit_path }}'
-    group: '{{ kafka_group }}'
-    owner: '{{ kafka_user }}'
-    mode: 0644
+    group: "{{ kafka_group }}"
+    owner: "{{ kafka_user }}"
+    mode: "0644"
   when: ansible_facts.os_family == "RedHat" and ansible_facts.distribution_major_version > '6' or ansible_facts.os_family == "Debian"
   tags:
     - kafka_service
@@ -174,7 +174,7 @@
   ansible.builtin.service:
     name: carbonio-kafka
     state: started
-    enabled: yes
+    enabled: true
   # when: kafka_start
   tags:
     - kafka_service
