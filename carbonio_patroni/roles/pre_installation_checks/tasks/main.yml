@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 ---
-# tasks file for pre-installation_checks
+# tasks file for pre_installation_checks
   - import_tasks: chats_check.yml
   - import_tasks: password-checks.yml
-  - import_tasks: ansible_controller_dependencies.yml
   - import_tasks: inventory_values_checks.yml

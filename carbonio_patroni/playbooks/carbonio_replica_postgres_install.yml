@@ -2,6 +2,13 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- name: Prepare Ansible controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/prepare_ansible_controller
+    
 - name: Validate PostgreSQL replica installation prerequisites
   hosts: all
   order: inventory

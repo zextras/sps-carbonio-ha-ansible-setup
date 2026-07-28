@@ -2,6 +2,13 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- name: Prepare Ansible controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/prepare_ansible_controller
+
 - name: Validate Patroni installation prerequisites
   hosts: all
   order: inventory
@@ -21,7 +28,7 @@
   gather_facts: yes
   tasks:
     - name: HAProxy installation for infrastructures with Multi Master LDAP
-      import_role:
+      ansible.builtin.import_role:
         name: ../roles/install_haproxy
       when: groups['masterDirectoryServers'] | length > 1
       tags:
@@ -32,7 +39,7 @@
   gather_facts: yes
   tasks:
     - name: HAProxy installation for infrastructures without Multi Master LDAP
-      import_role:
+      ansible.builtin.import_role:
         name: ../roles/install_haproxy
       when: groups['masterDirectoryServers'] | length == 1
       tags:
@@ -43,7 +50,7 @@
   gather_facts: yes
   tasks:
     - name: Move DB connectors for full HA
-      import_role:
+      ansible.builtin.import_role:
         name: ../roles/move_dbconnectors
       tags:
         - move-dbconnectors
