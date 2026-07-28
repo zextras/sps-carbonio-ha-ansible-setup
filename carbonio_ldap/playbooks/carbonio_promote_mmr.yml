@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
@@ -8,7 +8,7 @@
   gather_facts: false
   roles:
     - ../roles/prepare_ansible_controller
-    
+
 - name: Validate LDAP Multi-Master installation prerequisites
   hosts: all
   order: inventory
