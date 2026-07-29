@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- name: Install Postgres Ubuntu
+- name: Install Postgres [Ubuntu]
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
     - "{{ postgres_packages_ubuntu }}"  
-  when: ansible_facts.os_family == "Debian"  and inventory_hostname in groups['postgresServers'] and patroni_role == "secondary"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "secondary"
   tags:
     - install-postgres
 
@@ -16,6 +19,9 @@
   ansible.builtin.yum: name={{ item }} state=present
   with_items:
     - "{{ postgres_packages_rhel }}"  
-  when: (ansible_facts.os_family == "RedHat" or ansible_facts.os_family == "CentOS") and inventory_hostname in groups['postgresServers'] and patroni_role == "secondary" 
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "secondary" 
   tags:
     - install-postgres

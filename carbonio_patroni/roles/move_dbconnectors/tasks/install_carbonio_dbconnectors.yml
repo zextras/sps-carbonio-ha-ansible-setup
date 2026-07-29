@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- name: Install mailbox db connector Ubuntu  
+- name: Install mailbox db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -13,7 +13,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install files db connector Ubuntu  
+- name: Install files db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -25,7 +25,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install docs db connector Ubuntu  
+- name: Install docs db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -49,7 +49,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install tasks db connector Ubuntu  
+- name: Install tasks db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -61,7 +61,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install WSC db connector Ubuntu  
+- name: Install WSC db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -73,7 +73,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install message_dispatcher db connector Ubuntu  
+- name: Install message_dispatcher db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -85,7 +85,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install notification_push db connector Ubuntu  
+- name: Install notification_push db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -97,7 +97,7 @@
   tags:
     - install-carbonio-dbconnectors
 
-- name: Install videorecorder db connector Ubuntu  
+- name: Install videorecorder db connector [Ubuntu]  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
