@@ -37,6 +37,18 @@
   tags:
     - install-carbonio-dbconnectors
 
+- name: Install preview db connector [Ubuntu]
+  become: true
+  ansible.builtin.apt: name={{ item }} state=present
+  with_items:
+    - "{{ preview_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['previewServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
 - name: Install tasks db connector Ubuntu  
   become: true
   ansible.builtin.apt: name={{ item }} state=present
@@ -136,6 +148,18 @@
     - ansible_facts.os_family == "RedHat"
     - inventory_hostname in groups['dbsConnectorServers']
     - groups['docsServers'] | length > 0
+  tags:
+    - install-carbonio-dbconnectors
+
+- name: Install preview db connector [RHEL]
+  become: true
+  ansible.builtin.yum: name={{ item }} state=present
+  with_items:
+    - "{{ preview_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['dbsConnectorServers']
+    - groups['previewServers'] | length > 0
   tags:
     - install-carbonio-dbconnectors
 

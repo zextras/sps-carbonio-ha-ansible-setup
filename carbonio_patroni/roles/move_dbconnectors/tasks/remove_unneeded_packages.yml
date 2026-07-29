@@ -85,6 +85,34 @@
   tags:
     - remove-carbonio-dbconnectors
 
+- name: Disable preview db connector (Debian)  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ preview_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove preview db connector packages (Debian)  
+  become: true
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ preview_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
 - name: Disable tasks db connector (Debian)  
   become: true
   systemd:
@@ -361,6 +389,33 @@
   when: 
     - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
     - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable preview db connector [RHEL]  
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ preview_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove preview db connector packages [RHEL]  
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ preview_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
   tags:
     - remove-carbonio-dbconnectors
 

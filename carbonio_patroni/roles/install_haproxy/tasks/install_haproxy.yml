@@ -6,7 +6,10 @@
   become: true
   ansible.builtin.apt:
     update_cache: true
-  when: ansible_facts.os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname not in groups['masterDirectoryServers']
+    - inventory_hostname not in groups['replicaDirectoryServers']
   tags:
       - haproxy
 
@@ -15,7 +18,10 @@
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
     - "{{ haproxy_packages }}"
-  when: ansible_facts.os_family == "Debian" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname not in groups['masterDirectoryServers']
+    - inventory_hostname not in groups['replicaDirectoryServers']
   tags:
     - haproxy
 
@@ -24,7 +30,10 @@
   ansible.builtin.yum: name={{ item }} state=present
   with_items:
     - "{{ haproxy_packages }}"
-  when: ansible_facts.os_family == "RedHat" and inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname not in groups['masterDirectoryServers']
+    - inventory_hostname not in groups['replicaDirectoryServers']
   tags:
     - haproxy
 
@@ -33,107 +42,9 @@
   ansible.builtin.template:
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
-  when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
-  tags:
-    - haproxy
-
-- name: Check if pgpool is installed [Ubuntu]
-  become: true
-  ansible.builtin.shell: apt list --installed 2>/dev/null | grep -w '^pgpool2'
-  register: pgpool_check_debian
-  failed_when: false
-  changed_when: false
-  when: ansible_facts.os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
-  tags:
-    - haproxy
-
-- name: Disable pgpool service if installed [Ubuntu]
-  become: true
-  ansible.builtin.systemd_service:
-    name: pgpool2
-    enabled: false
-    state: stopped
-  when:
-    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool2' in pgpool_check_debian.stdout"
-  tags:
-    - haproxy
-
-- name: Uninstall pgpool package if installed [Ubuntu]
-  become: true
-  ansible.builtin.apt:
-    name: pgpool2
-    state: absent
-    purge: true
-  when:
-    - ansible_facts.os_family == "Debian" and inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool2' in pgpool_check_debian.stdout"
-  tags:
-    - haproxy
-
-- name: Reset failed services [Ubuntu]
-  ansible.builtin.shell:
-    cmd: 'systemctl reset-failed'
-    executable: /bin/bash
-  when:
-    - ansible_facts.os_family == "Debian"
-    - inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool2' in pgpool_check_debian.stdout"
-  tags:
-    - haproxy
-
-- name: Check if pgpool is installed [RHEL]
-  become: true
-  ansible.builtin.shell: rpm -qa 2>/dev/null | grep -w '^pgpool-II'
-  register: pgpool_check_rhel
-  failed_when: false
-  changed_when: false
-  when: ansible_facts.os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
-  tags:
-    - haproxy
-
-- name: Disable pgpool service if installed [RHEL]
-  become: true
-  ansible.builtin.systemd_service:
-    name: pgpool-II
-    enabled: false
-    state: stopped
-  when:
-    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool-II' in pgpool_check_rhel.stdout"
-  tags:
-    - haproxy
-
-- name: Uninstall pgpool package if installed [RHEL]
-  become: true
-  ansible.builtin.yum:
-    name: pgpool-II
-    state: absent
-  when:
-    - ansible_facts.os_family == "RedHat" and inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool-II' in pgpool_check_rhel.stdout"
-  tags:
-    - haproxy
-
-- name: Remove pgpool configuration files [RHEL]
-  become: true
-  ansible.builtin.file:
-    path: /etc/pgpool-II
-    state: absent
-  when:
-    - ansible_facts.os_family == "RedHat"  and inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool-II' in pgpool_check_rhel.stdout"
-  tags:
-    - haproxy
-
-- name: Reset failed services [RHEL]
-  ansible.builtin.shell:
-    cmd: 'systemctl reset-failed'
-    executable: /bin/bash
-  when:
-    - ansible_facts.os_family == "RedHat"
-    - inventory_hostname in groups['dbsConnectorServers']
-    - "'pgpool-II' in pgpool_check_rhel.stdout"
+  when: 
+    - inventory_hostname not in groups['masterDirectoryServers']
+    - inventory_hostname not in groups['replicaDirectoryServers']
   tags:
     - haproxy
 
@@ -142,7 +53,9 @@
     name: haproxy
     state: restarted
     enabled: true
-  when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"]
+  when: 
+    - inventory_hostname not in groups['masterDirectoryServers']
+    - inventory_hostname not in groups['replicaDirectoryServers']
   tags:
     - haproxy
 
@@ -154,7 +67,10 @@
   loop:
     - "ldap_url='ldap://localhost:389'"
     - "ldap_master_url='ldap://localhost:389'"
-  when: inventory_hostname not in groups["masterDirectoryServers"] and inventory_hostname not in groups["replicaDirectoryServers"] and groups['masterDirectoryServers'] | length > 1
+  when: 
+    - inventory_hostname not in groups['masterDirectoryServers']
+    - inventory_hostname not in groups['replicaDirectoryServers']
+    - groups['masterDirectoryServers'] | length > 1
   tags:
     - haproxy
 
@@ -163,7 +79,10 @@
   become_method: su
   become_user: zextras
   ansible.builtin.command: "/opt/zextras/bin/zmcontrol restart"
-  when: inventory_hostname in groups["applicationServers"] and ansible_facts.distribution_major_version != '9' and ansible_facts.distribution_major_version != '24'
+  when: 
+    - inventory_hostname in groups['applicationServers']
+    - ansible_facts.distribution_major_version != "9"
+    - ansible_facts.distribution_major_version != "24"
   tags:
     - haproxy
 
@@ -172,6 +91,8 @@
   ansible.builtin.systemd_service:
     name: carbonio.target
     state: restarted
-  when: inventory_hostname in groups["applicationServers"] and (ansible_facts.distribution_major_version == '9' or ansible_facts.distribution_major_version == '24')
+  when: 
+    - inventory_hostname in groups['applicationServers']
+    - ansible_facts.distribution_major_version == "9" or ansible_facts.distribution_major_version == "24"
   tags:
     - haproxy

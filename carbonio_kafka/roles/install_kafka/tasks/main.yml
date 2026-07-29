@@ -95,7 +95,6 @@
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
     extra_opts: ['--strip-components=1', '--show-stored-names']
-  # when: not dir.stat.exists
   tags:
     - kafka_unpack
 
@@ -132,7 +131,10 @@
 - name: Generate Kafka KRaft Cluster ID
   ansible.builtin.command: "{{ kafka_dir }}/bin/kafka-storage.sh random-uuid"
   register: kafka_cluster_id_result
-  changed_when: kafka_cluster_id_result.rc == 0 and kafka_cluster_id_result.stdout is defined and kafka_cluster_id_result.stdout | length > 0
+  changed_when: 
+    - kafka_cluster_id_result.rc == 0
+    - kafka_cluster_id_result.stdout is defined
+    - kafka_cluster_id_result.stdout | length > 0
   become_user: "{{ kafka_user }}"
   run_once: true
   tags:
@@ -166,7 +168,8 @@
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
     mode: "0644"
-  when: ansible_facts.os_family == "RedHat" and ansible_facts.distribution_major_version > '6' or ansible_facts.os_family == "Debian"
+  when: 
+    - ansible_facts.os_family == "Debian" or ansible_facts.os_family == "RedHat"
   tags:
     - kafka_service
 
