@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 ---
 - name: Load OS-specific variables
-  ansible.builtin.include_vars: '{{ item }}'
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - ../vars/{{ ansible_facts.os_family }}.yml
     - ../vars/{{ ansible_facts.distribution_release }}.yml
@@ -25,7 +25,7 @@
     group: "{{ kafka_group }}"
     state: present
     createhome: true
-    home: '/var/lib/queue/'
+    home: "/var/lib/queue/"
     system: true
   when: kafka_create_user_group | bool
   tags:
@@ -33,7 +33,7 @@
 
 - name: Create directory for kafka data log files
   ansible.builtin.file:
-    path: /var/lib/queue/kafka/logs
+    path: "/var/lib/queue/kafka/logs"
     state: directory
     recurse: true
     owner: "{{ kafka_user }}"
@@ -42,7 +42,7 @@
 
 - name: Create directory for kafka config
   ansible.builtin.file:
-    path: /opt/kafka/config
+    path: "/opt/kafka/config"
     state: directory
     recurse: true
     owner: "{{ kafka_user }}"
@@ -63,15 +63,10 @@
     update_cache: true
   when: ansible_facts.os_family == "RedHat"
 
-- name: Check if Kafka has already been downloaded and unpacked
-  ansible.builtin.stat:
-    path: '{{ kafka_dir }}_{{ kafka_scala_version }}-{{ kafka_version }}'
-  register: dir
-
 - name: Download Apache Kafka
   ansible.builtin.get_url:
-    url: '{{ kafka_download_base_url }}/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz'
-    dest: /tmp
+    url: "{{ kafka_download_base_url }}/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
+    dest: "/tmp"
     validate_certs: false
     mode: "0644"
   when: offline is undefined
@@ -80,8 +75,8 @@
 
 - name: Upload Apache Kafka
   ansible.builtin.copy:
-      src: kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
-      dest: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
+      src: "kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
+      dest: "/tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
       mode: "0644"
   when: offline is defined
   tags:
@@ -89,8 +84,8 @@
 
 - name: Unpack Apache Kafka
   ansible.builtin.unarchive:
-    src: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
-    dest: '{{ kafka_dir }}'
+    src: "/tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
+    dest: "{{ kafka_dir }}"
     copy: false
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
@@ -100,7 +95,7 @@
 
 - name: Create directory for symlink to kafka configuration files
   ansible.builtin.file:
-    path: /etc/kafka
+    path: "/etc/kafka"
     state: directory
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
@@ -111,7 +106,7 @@
 - name: Template configuration file to server.properties
   ansible.builtin.template:
     src: server.properties.j2
-    dest: '{{ kafka_dir }}/config/server.properties'
+    dest: "{{ kafka_dir }}/config/server.properties"
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
     mode: "0644"
@@ -121,7 +116,7 @@
 - name: Template configuration file to producer.properties
   ansible.builtin.template:
     src: producer.properties.j2
-    dest: '{{ kafka_dir }}/config/producer.propertiess'
+    dest: "{{ kafka_dir }}/config/producer.properties"
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
     mode: "0644"
@@ -163,8 +158,8 @@
     
 - name: Template kafka systemd service
   ansible.builtin.template:
-    src: carbonio-kafka.service.j2
-    dest: '{{ kafka_unit_path }}'
+    src: "carbonio-kafka.service.j2"
+    dest: "{{ kafka_unit_path }}"
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
     mode: "0644"
@@ -178,13 +173,12 @@
     name: carbonio-kafka
     state: started
     enabled: true
-  # when: kafka_start
   tags:
     - kafka_service
 
 - name: Delete the kafka archive file
   ansible.builtin.file:
-    path: /tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
+    path: "/tmp/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
     state: absent
   tags:
     - kafka_cleanup

@@ -132,7 +132,7 @@
   ansible.builtin.set_fact:
       carbonio_postgres_replica_password: "{{ lookup('ansible.builtin.password', inventory_file + '_postgresreplicapassword', chars=['ascii_letters', 'digits'], length=8) }}"
 
-- name: Change Postgres to listen all ips
+- name: Configure PostgreSQL to listen on all addresses
   become: true
   become_user: postgres
   ansible.builtin.command: "psql -c \"ALTER SYSTEM SET listen_addresses TO '*';\""
@@ -204,7 +204,7 @@
   ansible.builtin.copy:
     dest: /var/lib/postgresql/.pgpass
     content: |
-         {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
+      {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
     group: postgres
     owner: postgres
     mode: "0600"
@@ -217,7 +217,7 @@
   ansible.builtin.copy:
     dest: /var/lib/pgsql/.pgpass
     content: |
-         {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
+      {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }}:5432:*:carbonio_postgres_replica:{{ carbonio_postgres_replica_password }}
     group: postgres
     owner: postgres
     mode: "0600"
@@ -238,7 +238,7 @@
   tags:
     - disable_postgres
     
-- name: Create  Replica Postgres Sync [Ubuntu]
+- name: Synchronize PostgreSQL replica [Ubuntu]
   become: true
   become_user: postgres
   ansible.builtin.shell: "pg_basebackup -h {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }} -p 5432 -U carbonio_postgres_replica -D /var/lib/postgresql/{{ postgres_version }}/main/ -Fp -Xs -R"
@@ -259,7 +259,7 @@
   tags:
     - disable_postgres
 
-- name: Create  Replica Postgres Sync [RHEL]
+- name: Synchronize PostgreSQL replica [RHEL]
   become: true
   become_user: postgres
   ansible.builtin.shell: "pg_basebackup -h {{ hostvars[ groups['postgresServers'][0] ].ansible_facts.default_ipv4.address }} -p 5432 -U carbonio_postgres_replica -D /var/lib/pgsql/{{ postgres_version }}/data/ -Fp -Xs -R"

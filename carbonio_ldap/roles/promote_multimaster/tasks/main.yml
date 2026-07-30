@@ -5,7 +5,7 @@
 # tasks file for promote_multimaster
 - name: Check if read replica configured
   ansible.builtin.package_facts:
-      manager: auto
+    manager: auto
 
 - name: Enable MMR on existing LDAP master
   become: true

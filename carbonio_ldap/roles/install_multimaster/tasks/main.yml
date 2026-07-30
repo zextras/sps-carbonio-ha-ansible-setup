@@ -5,7 +5,7 @@
 # tasks file for install_multimaster
 - name: Check if read replica configured
   ansible.builtin.package_facts:
-      manager: auto
+    manager: auto
   tags:
     - execute-pending-setups
     
@@ -76,9 +76,10 @@
   with_items:
       - carbonio-directory-server
   when: 
-  - ansible_facts.os_family == "Debian"
-  - "'carbonio-directory-server' not in ansible_facts.packages"
-  - inventory_hostname in groups['masterDirectoryServers'] and ldap_role == "mmr"
+    - ansible_facts.os_family == "Debian"
+    - "'carbonio-directory-server' not in ansible_facts.packages"
+    - inventory_hostname in groups['masterDirectoryServers']
+    - ldap_role == "mmr"
 
 - name: Install carbonio-directory-server [RHEL]
   become: true
@@ -162,7 +163,7 @@
   ansible.builtin.pause:
     seconds: 10
 
-- name: run Carbonio Bootstrap
+- name: Run Carbonio Bootstrap
   become: true
   ansible.builtin.command: /usr/bin/carbonio-bootstrap -c /tmp/carbonio-config.txt
   when: 
