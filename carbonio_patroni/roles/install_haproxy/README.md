@@ -1,38 +1,132 @@
-Role Name
-=========
+#### `carbonio_patroni/roles/install_replica_postgres/README.md`
 
-A brief description of the role goes here.
+```markdown
+# Install Replica PostgreSQL
 
-Requirements
-------------
+This role installs and starts PostgreSQL on the additional database nodes before Patroni configuration.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Responsibilities
 
-Role Variables
---------------
+The role:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- configures PostgreSQL repositories;
+- installs PostgreSQL packages;
+- prepares the PostgreSQL service;
+- starts PostgreSQL on additional database nodes.
 
-Dependencies
-------------
+## License
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+GPL-3.0-only
 
-Example Playbook
-----------------
+## Author Information
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Zextras  
+<https://www.zextras.com>
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+#### `carbonio_patroni/roles/install_patroni/README.md`
 
-License
--------
+```markdown
+# Install Patroni
 
-BSD
+This role installs and configures Patroni for PostgreSQL high availability.
 
-Author Information
-------------------
+## Responsibilities
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+The role:
+
+- configures PostgreSQL for Patroni;
+- installs Patroni and its dependencies;
+- creates the Patroni configuration;
+- configures the PostgreSQL cluster;
+- starts the Patroni service.
+
+## License
+
+GPL-3.0-only
+
+## Author Information
+
+Zextras  
+<https://www.zextras.com>
+```
+
+#### `carbonio_patroni/roles/install_haproxy/README.md`
+
+```markdown
+# Install HAProxy
+
+This role installs and configures HAProxy for Carbonio Cluster Services Redundancy.
+
+## Responsibilities
+
+The role:
+
+- installs HAProxy;
+- creates the HAProxy configuration;
+- starts and enables the HAProxy service;
+- configures Carbonio nodes to use HAProxy for LDAP connections;
+- restarts Application Server services where required.
+
+## License
+
+GPL-3.0-only
+
+## Author Information
+
+Zextras  
+<https://www.zextras.com>
+```
+
+#### `carbonio_patroni/roles/move_dbconnectors/README.md`
+
+```markdown
+# Move Database Connectors
+
+This role moves Carbonio database connector components to the configured DB Connector nodes.
+
+## Responsibilities
+
+The role:
+
+- installs database connector packages on the target nodes;
+- removes obsolete packages from PostgreSQL nodes;
+- removes obsolete Preview DB connector packages;
+- runs Carbonio pending setups.
+
+## License
+
+GPL-3.0-only
+
+## Author Information
+
+Zextras  
+<https://www.zextras.com>
+```
+
+#### `carbonio_patroni/roles/pre_installation_checks/README.md`
+
+```markdown
+# Pre-installation Checks
+
+This role validates the inventory and required configuration before PostgreSQL and Patroni installation.
+
+## Responsibilities
+
+The role:
+
+- validates required inventory groups;
+- checks inventory hostnames and configuration values;
+- validates Video Server IP addresses;
+- verifies required password files;
+- stops the playbook when validation fails.
+
+## License
+
+GPL-3.0-only
+
+## Author Information
+
+Zextras  
+<https://www.zextras.com>
+```
