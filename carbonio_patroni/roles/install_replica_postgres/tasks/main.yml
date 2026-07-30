@@ -4,4 +4,4 @@
 ---
   - ansible.builtin.import_tasks: set_repos.yml
   - ansible.builtin.import_tasks: install_postgres.yml
-  - ansible.builtin.import_tasks: start_postgres.yml
+  - ansible.builtin.import_tasks: initialize_postgres.yml
