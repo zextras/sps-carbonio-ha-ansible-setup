@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+---
+  - name: "Set Postgres Service name RHEL"
+    ansible.builtin.set_fact:
+      postgresql_service_name: "{{ rhel_postgresql_service_name }}"
+    when: 
+      - ansible_facts.os_family == "RedHat"
+      - inventory_hostname in groups['postgresServers']
+      - patroni_role == "secondary"
+    tags:
+      - initialize-postgres
+      
+  - name: Check if PostgreSQL database is initialized.
+    ansible.builtin.stat:
+      path: "{{ rhel_postgresql_data_dir }}/PG_VERSION"
+    register: pgdata_dir_version
+    tags:
+      - initialize-postgres
+      
+  - name:  Initialize Postgres on RHEL
+    become: true
+    ansible.builtin.command: '{{ rhel_postgres_init_script }} initdb'
+    when: 
+      - ansible_facts.os_family == "RedHat"
+      - inventory_hostname in groups['postgresServers']
+      - patroni_role == "secondary" 
+      - not pgdata_dir_version.stat.exists
+    tags:
+      - initialize-postgres
+
+  - name: Enable Postgres service RHEL
+    ansible.builtin.systemd_service:
+      name: "{{ rhel_postgresql_service_name }}"
+      state: started
+      enabled: true
+    when: 
+      - ansible_facts.os_family == "RedHat"
+      - inventory_hostname in groups['postgresServers']
+      - patroni_role == "secondary"
+    tags:
+      - initialize-postgres

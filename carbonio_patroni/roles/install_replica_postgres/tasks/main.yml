@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-  - import_tasks: set-repos.yml
-  - import_tasks: install-postgres.yml
-  - import_tasks: start-postgres.yml
+  - ansible.builtin.import_tasks: set_repos.yml
+  - ansible.builtin.import_tasks: install_postgres.yml
+  - ansible.builtin.import_tasks: initialize_postgres.yml

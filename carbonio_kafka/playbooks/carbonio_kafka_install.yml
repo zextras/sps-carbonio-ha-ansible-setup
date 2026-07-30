@@ -1,21 +1,31 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Prepare Ansible controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/prepare_ansible_controller
+
+- name: Validate Kafka installation prerequisites
+  hosts: all
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/pre_installation_checks
      
-- hosts: kafka
+- name: Install and configure Kafka
+  hosts: kafka
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/install_kafka
 
-- hosts: applicationServers
+- name: Configure Kafka brokers on Application Servers
+  hosts: applicationServers
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/configure_kafka_mailbox

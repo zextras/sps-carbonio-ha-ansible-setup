@@ -1,0 +1,634 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Disable mailbox db connector [Ubuntu]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove mailbox db connector packages [Ubuntu]
+  become: true
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ mailbox_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable files db connector [Ubuntu]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ files_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+    
+- name: Remove files db connector packages [Ubuntu]
+  become: true
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ files_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable docs db connector [Ubuntu]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove docs db connector packages [Ubuntu]
+  become: true
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ docs_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable preview db connector [Ubuntu]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ preview_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove preview db connector packages [Ubuntu]
+  become: true
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ preview_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable tasks db connector [Ubuntu]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove tasks db connector packages [Ubuntu]
+  become: true
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ task_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable WSC db connector (Debian)
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove WSC db connector packages (Debian)
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ ws_collaboration_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable message dispatcher db connector (Debian)
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove message dispatcher db connector packages (Debian)
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable notification push db connector (Debian)
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ notification_push_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove notification push db connector packages (Debian)
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ notification_push_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable videorecorder db connector (Debian)
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove videorecorder db connector packages (Debian)
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+    
+- name: Remove dbconnectors directories in /etc/carbonio/ with tokens 
+  become: true
+  ansible.builtin.command:
+    cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Reset failed services
+  ansible.builtin.shell:
+    cmd: 'systemctl reset-failed'
+    executable: /bin/bash
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "Debian"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+#RHEL
+
+- name: Disable mailbox db connector [RHEL]  
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ mailbox_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnectors
+
+
+- name: Remove mailbox db connector packages [RHEL]  
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ mailbox_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable files db connector [RHEL]  
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ files_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove files db connector packages [RHEL]  
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ files_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['filesServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable docs db connector [RHEL]  
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ docs_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove docs db connector packages [RHEL]  
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ docs_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['docsServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable preview db connector [RHEL]  
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ preview_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove preview db connector packages [RHEL]  
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ preview_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['previewServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable tasks db connector [RHEL]  
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ task_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove tasks db connector packages [RHEL]  
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ task_dbconnectors_packages }}"
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['taskServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable WSC db connector [RHEL]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ ws_collaboration_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove WSC db connector packages [RHEL]
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ ws_collaboration_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable message dispatcher db connector [RHEL]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove message dispatcher db connector packages [RHEL]
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ message_dispatcher_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable notification push db connector [RHEL]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ notification_push_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove notification push db connector packages [RHEL]
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ notification_push_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['workStreamServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Disable videorecorder db connector [RHEL]
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages | map('regex_replace', '$', '-sidecar') | list }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove videorecorder db connector packages [RHEL]
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ videorecorder_dbconnectors_packages }}"
+  when:
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+    - groups['videoServers'] | length > 0
+  tags:
+    - remove-carbonio-dbconnectors
+
+- name: Remove dbconnectors directories in /etc/carbonio/ with tokens  [RHEL]
+  become: true
+  ansible.builtin.command:
+    cmd: find /etc/carbonio/ -type d -name '*-db' -exec rm -r {} +
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Reset failed services [RHEL]
+  ansible.builtin.shell:
+    cmd: 'systemctl reset-failed'
+    executable: /bin/bash
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_facts.os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector
+
+- name: Restart service-discover [RHEL]
+  ansible.builtin.service:
+    name: service-discover
+    state: restarted
+  when: 
+    - ansible_os_family == "RedHat"
+    - inventory_hostname in groups['postgresServers'][0]
+  tags:
+    - remove-carbonio-dbconnector

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. 
 
 
+### [26.9.0] (2026-09-01)
+
+
+### Features
+* Refactored the playbook structure and standardized Ansible content across roles, including task names, module FQCNs, inventory group references, and task conditions.
+* Added migration of Preview DB connector packages during the DB connector migration process.
+* Removed obsolete pgpool cleanup logic from the HAProxy installation role.
+
+### Bug Fixes
+* Fixed the Kafka producer configuration filename from `producer.propertiess` to `producer.properties`.
+
+
 ### [26.6.0] (2026-07-07)
 
 

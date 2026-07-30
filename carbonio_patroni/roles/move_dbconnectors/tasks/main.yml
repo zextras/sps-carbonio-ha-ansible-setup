@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
 # tasks file for dbconnectors
-- import_tasks: install-carbonio-dbconnectors.yml
-- import_tasks: remove-unneeded-packages.yml
-- import_tasks: execute-carbonio-pending-setups.yml
+- ansible.builtin.import_tasks: install_carbonio_dbconnectors.yml
+- ansible.builtin.import_tasks: remove_unneeded_packages.yml
+- ansible.builtin.import_tasks: execute_carbonio_pending-setups.yml

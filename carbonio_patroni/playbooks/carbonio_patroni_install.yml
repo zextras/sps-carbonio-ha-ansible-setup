@@ -1,36 +1,45 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Prepare Ansible controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/prepare_ansible_controller
+
+- name: Validate Patroni installation prerequisites
+  hosts: all
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/pre_installation_checks
      
-- hosts: postgresServers
+- name: Install and configure Patroni
+  hosts: postgresServers
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/install_patroni
 
-- name: HAProxy installation for infrastructures with Multi Master LDAP
+- name: Install HAProxy for infrastructures with Multi-Master LDAP
   hosts: all
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: HAProxy installation for infrastructures with Multi Master LDAP
-      import_role:
+      ansible.builtin.import_role:
         name: ../roles/install_haproxy
       when: groups['masterDirectoryServers'] | length > 1
       tags:
         - haproxy
 
-- name: HAProxy Installation for infrastructures without Multi Master LDAP
+- name: Install HAProxy for infrastructures without Multi-Master LDAP
   hosts: dbsConnectorServers
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: HAProxy installation for infrastructures without Multi Master LDAP
-      import_role:
+      ansible.builtin.import_role:
         name: ../roles/install_haproxy
       when: groups['masterDirectoryServers'] | length == 1
       tags:
@@ -38,10 +47,10 @@
 
 - name: Move DB connectors 
   hosts: all
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: Move DB connectors for full HA
-      import_role:
+      ansible.builtin.import_role:
         name: ../roles/move_dbconnectors
       tags:
         - move-dbconnectors
