@@ -296,32 +296,8 @@
     enabled: false
   when: 
     - inventory_hostname in groups['postgresServers']
-    - patroni_role == "secondary"
-    - ansible_facts.os_family == "Debian"
-  tags:
-    - disable_postgres
-
-- name: Stop the postgres service [Ubuntu]
-  ansible.builtin.service:
-    name: postgresql
-    state: stopped
-    enabled: false
-  when: 
-    - inventory_hostname in groups['postgresServers']
     - patroni_role == "primary"
     - ansible_facts.os_family == "Debian"
-  tags:
-    - disable_postgres
-
-- name: Stop the postgres service [RHEL]
-  ansible.builtin.service:
-    name: postgresql-{{ postgres_version }}
-    state: stopped
-    enabled: false
-  when: 
-    - inventory_hostname in groups['postgresServers']
-    - patroni_role == "secondary"
-    - ansible_facts.os_family == "RedHat"
   tags:
     - disable_postgres
 
