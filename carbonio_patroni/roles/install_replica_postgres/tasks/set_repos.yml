@@ -70,7 +70,7 @@
   ansible.builtin.yum_repository:
     name: zextras
     description: Zextras Carbonio Release for RHEL {{ ansible_facts.distribution_major_version }} x86_64 (RPMs)
-    ansible.builtin.file: zextras
+    file: zextras
     baseurl: https://repo.zextras.io/release/rhel{{ ansible_facts.distribution_major_version }}/
     gpgkey: https://repo.zextras.io/repomd.xml.key
     gpgcheck: no

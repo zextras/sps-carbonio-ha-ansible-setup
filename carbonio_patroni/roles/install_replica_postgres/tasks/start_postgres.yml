@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 ---
   - name: "Set Postgres Service name RHEL"
-    ansible.builtin.set_fact
+    ansible.builtin.set_fact:
       postgresql_service_name: "{{ rhel_postgresql_service_name }}"
     when: 
       - ansible_facts.os_family == "RedHat"
