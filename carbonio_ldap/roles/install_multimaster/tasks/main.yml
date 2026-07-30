@@ -94,7 +94,7 @@
 
 - name: Remove old configuration
   become: true
-  ansible.builtin.shell: "rm /opt/zextras/config.* && rm /opt/zextras/.install_history"
+  ansible.builtin.shell: "rm -f /opt/zextras/config.* /opt/zextras/.install_history"
   when: 
     - "'carbonio-directory-server' not in ansible_facts.packages"
     - inventory_hostname in groups['masterDirectoryServers']

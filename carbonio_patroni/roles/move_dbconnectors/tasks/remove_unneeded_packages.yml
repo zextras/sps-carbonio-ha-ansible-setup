@@ -5,7 +5,7 @@
 ---
 - name: Disable mailbox db connector [Ubuntu]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -33,7 +33,7 @@
 
 - name: Disable files db connector [Ubuntu]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -63,7 +63,7 @@
 
 - name: Disable docs db connector [Ubuntu]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -93,7 +93,7 @@
 
 - name: Disable preview db connector [Ubuntu]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -123,7 +123,7 @@
 
 - name: Disable tasks db connector [Ubuntu]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -153,7 +153,7 @@
 
 - name: Disable WSC db connector (Debian)
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -183,7 +183,7 @@
 
 - name: Disable message dispatcher db connector (Debian)
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -213,7 +213,7 @@
 
 - name: Disable notification push db connector (Debian)
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -243,7 +243,7 @@
 
 - name: Disable videorecorder db connector (Debian)
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -325,7 +325,7 @@
 
 - name: Disable mailbox db connector [RHEL]  
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -353,7 +353,7 @@
 
 - name: Disable files db connector [RHEL]  
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -382,7 +382,7 @@
 
 - name: Disable docs db connector [RHEL]  
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -411,7 +411,7 @@
 
 - name: Disable preview db connector [RHEL]  
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -440,7 +440,7 @@
 
 - name: Disable tasks db connector [RHEL]  
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -469,7 +469,7 @@
 
 - name: Disable WSC db connector [RHEL]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -498,7 +498,7 @@
 
 - name: Disable message dispatcher db connector [RHEL]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -527,7 +527,7 @@
 
 - name: Disable notification push db connector [RHEL]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped
@@ -556,7 +556,7 @@
 
 - name: Disable videorecorder db connector [RHEL]
   become: true
-  systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped

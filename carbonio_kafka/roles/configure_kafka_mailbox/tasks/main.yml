@@ -23,5 +23,5 @@
 
 
 - name: Print Kafka config status
-  debug:
+  ansible.builtin.debug:
     msg: "{{ kafka_status.stdout_lines }}"
