@@ -14,7 +14,7 @@
   tags:
     - install-postgres
 
-- name: Install Postgres RHEL
+- name: Install PostgreSQL [RHEL]
   become: true
   ansible.builtin.yum: name={{ item }} state=present
   with_items:

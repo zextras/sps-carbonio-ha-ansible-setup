@@ -147,14 +147,14 @@
   become: true
   become_user: postgres
 
-- name: restart_postgres [Ubuntu]
+- name: Restart PostgreSQL [Ubuntu]
   ansible.builtin.service: name=postgresql state=restarted
   when: 
     - inventory_hostname in groups['postgresServers']
     - patroni_role == "primary"
     - ansible_facts.os_family == "Debian"
 
-- name: restart_postgres [RHEL]
+- name: Restart PostgreSQL [RHEL]
   ansible.builtin.service: 
     name: "postgresql-{{ postgres_version }}"
     state: restarted
@@ -284,7 +284,7 @@
   register: cluster_ident
   when: ansible_facts.os_family == "RedHat"
 
-# - name: Print postgres ident
+# - name: Display PostgreSQL cluster identifier
 #   ansible.builtin.debug:
 #     var: cluster_ident
 #     verbosity: 2

@@ -13,7 +13,7 @@
   become: true
   become_method: su
   become_user: zextras
-  ansible.builtin.command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389/"
+  ansible.builtin.command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups['masterDirectoryServers'][1]}}:389/"
   when: 
     - inventory_hostname in groups['masterDirectoryServers']
     - ldap_role == "master"
@@ -22,7 +22,7 @@
   become: true
   become_method: su
   become_user: zextras
-  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389\""
+  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups['masterDirectoryServers'][0]}}:389 ldap://{{ groups['masterDirectoryServers'][1]}}:389\""
   when: 
     - inventory_hostname in groups['masterDirectoryServers']
     - ldap_role == "master"
@@ -57,7 +57,8 @@
     - "'carbonio-directory-server' not in ansible_facts.packages"
     - ansible_facts.distribution_major_version != "9"
     - ansible_facts.distribution_major_version != "24"
-    - inventory_hostname in groups['masterDirectoryServers'] and ldap_role == "mmr"
+    - inventory_hostname in groups['masterDirectoryServers']
+    - ldap_role == "mmr"
 
 - name: Stop carbonio on second LDAP master [Sysd]
   become: true
@@ -177,7 +178,7 @@
   become: true
   become_method: su
   become_user: zextras
-  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups[\"masterDirectoryServers\"][1]}}:389 ldap://{{ groups[\"masterDirectoryServers\"][0]}}:389\""
+  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups['masterDirectoryServers'][1]}}:389 ldap://{{ groups['masterDirectoryServers'][0]}}:389\""
   when: 
     - "'carbonio-directory-server' not in ansible_facts.packages"
     - inventory_hostname in groups['masterDirectoryServers']
@@ -187,7 +188,7 @@
   become: true
   become_method: su
   become_user: zextras
-  ansible.builtin.command: '/opt/zextras/bin/carbonio prov -l ms {{ inventory_hostname }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover'
+  ansible.builtin.command: "/opt/zextras/bin/carbonio prov -l ms {{ inventory_hostname }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover"
   when: inventory_hostname in groups['serviceDiscoverServers']
 
 - name: Restart carbonio on second LDAP master

@@ -27,7 +27,7 @@
   hosts: all
   gather_facts: true
   tasks:
-    - name: HAProxy installation for infrastructures with Multi Master LDAP
+    - name: Install HAProxy for infrastructures with Multi-Master LDAP
       ansible.builtin.import_role:
         name: ../roles/install_haproxy
       when: groups['masterDirectoryServers'] | length > 1

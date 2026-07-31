@@ -8,7 +8,7 @@
   when: 
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
-      - execute-pending-setups
+    - execute-pending-setups
 
 - name: Copy scripts to remote host
   become: true
@@ -19,7 +19,7 @@
   when: 
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
-      - execute-pending-setups
+    - execute-pending-setups
 
 - name: Run Carbonio pending-setups
   become: true
@@ -28,7 +28,7 @@
   when: 
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
-      - execute-pending-setups
+    - execute-pending-setups
 
 - name: Remove scripts from remote host
   become: true
@@ -38,10 +38,15 @@
   when: 
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
-      - execute-pending-setups
+    - execute-pending-setups
 
-- local_action: copy content={{ pso.stdout }} dest=/tmp/pso_{{ inventory_hostname }}
+- name: Save pending-setups output on Ansible controller
+  ansible.builtin.copy:
+    content: "{{ pso.stdout }}"
+    dest: "/tmp/pso_{{ inventory_hostname }}"
+    mode: "0600"
+  delegate_to: localhost
   when: 
     - inventory_hostname in groups['dbsConnectorServers']
   tags:
-      - execute-pending-setups
+    - execute-pending-setups

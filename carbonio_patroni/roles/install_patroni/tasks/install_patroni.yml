@@ -40,7 +40,7 @@
   tags:
     - set-repos
 
-- name: Install patroni packages [Ubuntu]
+- name: Install Patroni packages [Ubuntu]
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
@@ -53,7 +53,7 @@
   tags:
     - install_patroni
 
-- name: Install patroni packages [RHEL]
+- name: Install Patroni packages [RHEL]
   become: true
   ansible.builtin.yum: name={{ item }} state=present
   with_items:
@@ -65,7 +65,7 @@
   tags:
     - install_patroni
 
-- name: Install patroni packages [RHEL]
+- name: Install Patroni packages [RHEL]
   become: true
   ansible.builtin.yum: name={{ item }} state=present
   with_items:
@@ -86,7 +86,7 @@
   register: carbonio_mesh_token_answer
 
 - name: Set Consul token
-  ansible.builtin.set_fact
+  ansible.builtin.set_fact:
     carbonio_mesh_token: "{{ carbonio_mesh_token_answer.stdout_lines[0] }}"
 
 - name: Manage Postgres Admin password
@@ -132,13 +132,13 @@
   register: cluster_ident
   when: ansible_facts.os_family == "RedHat"
 
-- name: Print postgres ident
+- name: Display PostgreSQL cluster identifier
   ansible.builtin.debug:
     var: cluster_ident
     verbosity: 2 
 
 
-- name: Start the patroni service
+- name: Start Patroni service
   ansible.builtin.service:
     name: patroni
     state: started
@@ -149,7 +149,7 @@
   tags:
     - enable_patroni
 
-- name: Restart the patroni service[Ubuntu]
+- name: Restart Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: restarted
@@ -161,11 +161,11 @@
   tags:
     - enable_patroni
 
-- name: Pause for 1 minutes to vailidate pastroni start
+- name: Wait for Patroni to start (1 min)
   ansible.builtin.pause:
     minutes: 1
 
-- name: Stop the patroni service[Ubuntu]
+- name: Stop Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: stopped
@@ -177,7 +177,7 @@
   tags:
     - enable_patroni
 
-- name: Start the patroni service [RHEL]
+- name: Start Patroni service [RHEL]
   ansible.builtin.service:
     name: patroni
     state: started
@@ -189,7 +189,7 @@
   tags:
     - enable_patroni
 
-- name: Restart the patroni service [Ubuntu]
+- name: Start Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: started
