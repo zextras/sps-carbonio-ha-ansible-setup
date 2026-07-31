@@ -5,4 +5,4 @@
 # tasks file for dbconnectors
 - ansible.builtin.import_tasks: install_carbonio_dbconnectors.yml
 - ansible.builtin.import_tasks: remove_unneeded_packages.yml
-- ansible.builtin.import_tasks: execute_carbonio_pending-setups.yml
+- ansible.builtin.import_tasks: execute_carbonio_pending_setups.yml

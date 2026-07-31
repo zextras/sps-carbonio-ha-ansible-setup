@@ -86,7 +86,7 @@
   register: carbonio_mesh_token_answer
 
 - name: Set Consul token
-  ansible.builtin.set_fact
+  ansible.builtin.set_fact:
     carbonio_mesh_token: "{{ carbonio_mesh_token_answer.stdout_lines[0] }}"
 
 - name: Manage Postgres Admin password
@@ -149,7 +149,7 @@
   tags:
     - enable_patroni
 
-- name: Restart the patroni service[Ubuntu]
+- name: Restart Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: restarted
@@ -161,7 +161,7 @@
   tags:
     - enable_patroni
 
-- name: Pause for 1 minutes to vailidate pastroni start
+- name: Wait for Patroni to start (1 min)
   ansible.builtin.pause:
     minutes: 1
 

@@ -147,7 +147,7 @@
   become: true
   become_user: postgres
 
-- name: restart_postgres [Ubuntu]
+- name: Restart PostgreSQL [Ubuntu]
   ansible.builtin.service: name=postgresql state=restarted
   when: 
     - inventory_hostname in groups['postgresServers']

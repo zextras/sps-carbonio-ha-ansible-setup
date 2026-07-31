@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- name: Add  Kafka brooker to the mailboxes
+- name: Configure Kafka brokers on Application Servers
   become: true
   become_method: su
   become_user: zextras
