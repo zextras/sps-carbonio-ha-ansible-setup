@@ -22,11 +22,11 @@
   tags:
     - set-repos
 
-- name: Create Patroni repo [Ubuntu]
+- name: Configure PostgreSQL repository to install Patroni [Ubuntu]
   become: true
   ansible.builtin.template:
-    src: patroni.list.j2
-    dest: /etc/apt/sources.list.d/patroni.list
+    src: postgresql.list.j2
+    dest: /etc/apt/sources.list.d/pgdg.list
     mode: "0644"
   when: ansible_facts.os_family == "Debian"
   tags:
