@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 * Fixed the Kafka producer configuration filename from `producer.propertiess` to `producer.properties`.
+* Updated the Patroni setup to reuse the existing PostgreSQL pgdg.list repository configuration instead of creating a separate duplicate patroni.list, preventing duplicate APT repository warnings during HA installation.
 
 
 ### [26.6.0] (2026-07-07)
