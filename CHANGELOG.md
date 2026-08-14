@@ -11,9 +11,11 @@ All notable changes to this project will be documented in this file.
 * Added migration of Preview DB connector packages during the DB connector migration process.
 * Removed obsolete pgpool cleanup logic from the HAProxy installation role.
 
+
 ### Bug Fixes
 * Fixed the Kafka producer configuration filename from `producer.propertiess` to `producer.properties`.
 * Updated the Patroni setup to reuse the existing PostgreSQL pgdg.list repository configuration instead of creating a separate duplicate patroni.list, preventing duplicate APT repository warnings during HA installation.
+* Kafka KRaft Cluster ID is now generated once and persisted to `{{ inventory_file }}_kafkaid` on the Ansible controller, reused on subsequent runs, preventing node Cluster ID mismatches after an interrupted install.
 
 
 ### [26.6.0] (2026-07-07)

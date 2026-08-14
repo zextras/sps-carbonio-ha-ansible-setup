@@ -123,6 +123,16 @@
   tags:
     - kafka_config
 
+- name: Check for persisted Kafka Cluster ID file
+  ansible.builtin.stat:
+    path: "{{ inventory_file }}_kafkaid"
+  register: kafka_cluster_id_file
+  delegate_to: localhost
+  become: false
+  run_once: true
+  tags:
+    - kafka_kraft
+
 - name: Generate Kafka KRaft Cluster ID
   ansible.builtin.command: "{{ kafka_dir }}/bin/kafka-storage.sh random-uuid"
   register: kafka_cluster_id_result
@@ -132,12 +142,25 @@
     - kafka_cluster_id_result.stdout | length > 0
   become_user: "{{ kafka_user }}"
   run_once: true
+  when: not kafka_cluster_id_file.stat.exists
+  tags:
+    - kafka_kraft
+
+- name: Persist Kafka Cluster ID on the controller
+  ansible.builtin.copy:
+    content: "{{ kafka_cluster_id_result.stdout | trim }}\n"
+    dest: "{{ inventory_file }}_kafkaid"
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  when: not kafka_cluster_id_file.stat.exists
   tags:
     - kafka_kraft
 
 - name: Set kafka_cluster_id fact
   ansible.builtin.set_fact:
-    kafka_cluster_id: "{{ kafka_cluster_id_result.stdout | trim }}"
+    kafka_cluster_id: " {{ lookup('ansible.builtin.file', inventory_file + '_kafkaid') | trim }}"
   tags:
     - kafka_kraft
 
