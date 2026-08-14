@@ -1,73 +1,100 @@
 # Ansible Collection - zxbot.carbonio_ldap
 
-An ansible collection to install Multi Master LDAP part of Carbonio Cluster Services Redundancy 
+An Ansible collection to configure LDAP Multi-Master as part of Carbonio Cluster Services Redundancy.
 
-To install Multi Master LDAP using this collection you have to modify the masterDirectoryServers group in the inventory file. It supports only FQDN.
+The collection extends an existing Carbonio Directory Server installation by configuring an additional Directory Server as a Multi-Master LDAP node.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Install the Collection](#install-the-collection)
 - [Modify the Inventory](#modify-the-inventory)
+- [Important Notes on Initial Roles](#important-notes-on-initial-roles)
 - [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
-- [Important Notes on Initial Roles](#important-notes-on-initial-roles-for-cluster-services-redundancy-configuration)
+- [Confirmation](#confirmation)
 - [Install Multi-Master LDAP](#install-multi-master-ldap)
 - [License(s)](#licenses)
 
 ## Prerequisites
 
-- The inventory must use FQDN only — this collection supports FQDN entries exclusively.
-- The `masterDirectoryServers` group in the inventory must be modified to include an `ldap_role` for each host (see [Modify the Inventory](#modify-the-inventory)).
+- The inventory must use FQDN entries.
+- The existing Carbonio infrastructure must be updated to the intended version before starting the HA setup.
+- The `masterDirectoryServers` group must contain the existing Directory Server and the additional server that will be configured for Multi-Master LDAP.
+- Each server in `masterDirectoryServers` must have the appropriate `ldap_role`.
+- The Zextras repository configured on the LDAP servers must provide packages compatible with the currently installed Carbonio version.
 
-### Install the collection
+## Install the Collection
+
+Install the collection from Ansible Galaxy:
 
 ```
 ansible-galaxy collection install zxbot.carbonio_ldap
 ```
-### Modify the inventory 
 
-To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
+## Modify the Inventory
 
-`masterDirectoryServers` group includes the following variable:
-* `ldap_role` Specifies the LDAP role. Use master for the initial master or mmr for additional masters.
+The `masterDirectoryServers` group uses the `ldap_role` variable:
+
+- `master` identifies the Directory Server created during the standard Carbonio installation.
+- `mmr` identifies an additional Directory Server that will be configured for Multi-Master LDAP.
+
+The existing master must remain the first server in the group:
+
 ```
 [masterDirectoryServers]
 svc1.example.com ldap_role=master
 svc2.example.com ldap_role=mmr
 ```
 
+A custom default domain can be configured when required:
+
+```
+[masterDirectoryServers:vars]
+# default_domain=domain.com
+```
+
+## Important Notes on Initial Roles
+
+The role assigned to the existing Directory Server during the standard Carbonio installation must not be changed.
+
+Do not assign `ldap_role=master` to additional Directory Servers.
+
+Additional Directory Servers must use:
+
+```
+ldap_role=mmr
+```
+
 ## Full Cluster Services Redundancy Inventory Example
 
 ```
 [kafka]
-svcs1.example.com broker_id=1
-svcs2.example.com broker_id=2
-svcs3.example.com broker_id=3
+svc1.example.com broker_id=1
+svc2.example.com broker_id=2
+svc3.example.com broker_id=3
 
 [zookeeper_servers]
-#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
-svcs1.example.com postgres_version=16 patroni_role=primary
-svcs2.example.com postgres_version=16 patroni_role=secondary
+svc1.example.com postgres_version=16 patroni_role=primary
+svc2.example.com postgres_version=16 patroni_role=secondary
 
 [masterDirectoryServers]
-#The master installed in the previous step should be first in the list
-svcs1.example.com ldap_role=master
-svcs2.example.com ldap_role=mmr
+# The master installed during the standard Carbonio installation
+# must remain the first server in this group.
+svc1.example.com ldap_role=master
+svc2.example.com ldap_role=mmr
 
-#Custom Default Domain (Optional)
 [masterDirectoryServers:vars]
-# Replace domain.com with your desired domain
-#default_domain=domain.com
+# Custom Default Domain (Optional)
+# default_domain=domain.com
 
 [replicaDirectoryServers]
-#Keep this group empty for User Mail Replica installation
- 
+
 [serviceDiscoverServers]
-svcs1.example.com
-svcs2.example.com
-svcs3.example.com
+svc1.example.com
+svc2.example.com
+svc3.example.com
 
 [dbsConnectorServers]
 mbox1.example.com
@@ -82,64 +109,78 @@ proxy1.example.com
 proxy2.example.com
 
 [proxyServers:vars]
-webmailHostname=webmailPublicHostname
+# webmailHostname=webmail.example.com
 
 [applicationServers]
 mbox1.example.com
 mbox2.example.com
 
 [filesServers]
-filesdocs2.example.com
 filesdocs1.example.com
-
-[taskServers]
 filesdocs2.example.com
-filesdocs1.example.com
 
 [docsServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
+
+[taskServers]
+filesdocs1.example.com
+filesdocs2.example.com
 
 [previewServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [videoServers]
-#hostname public_ip_address=x.y.z.t
-video1.example.com
-video2.example.com
+# hostname public_ip_address=x.y.z.t
+video1.example.com public_ip_address=1.2.3.4
+video2.example.com public_ip_address=1.2.3.5
 
 [workStreamServers]
 chats1.example.com
 chats2.example.com
 
 [prometheusServers]
-svcs3.example.com
+svc3.example.com
 
 [syslogServer]
-svcs3.example.com
+svc3.example.com
 ```
 
+## Confirmation
 
-### Important Notes on Initial Roles for Cluster Services Redundancy configuration
+Before configuring LDAP Multi-Master, the playbook detects and displays:
 
-The initial roles assigned during the standard installation must remain on the servers configured in the standard environment. Follow these guidelines:
+- the currently installed Carbonio version;
+- the LDAP HA collection source;
+- the LDAP HA collection version;
+- the configured Zextras repository.
 
-```plaintext
-- Do not assign the `master` role to any additional servers being configured as extra masters.
-  
-- Additional servers should be assigned:
-  - `mmr` for LDAP
+The playbook also verifies that the same Zextras repository is configured on the LDAP servers.
+
+Before continuing, verify that:
+
+- the existing Carbonio infrastructure has been updated to the intended version;
+- the LDAP HA collection version is appropriate for the installed Carbonio version;
+- the configured Zextras repository matches the currently installed Carbonio version;
+- Carbonio packages installed during the LDAP HA setup will match the versions used by the existing infrastructure.
+
+To skip the interactive confirmation, set:
+
+```
+carbonio_auto_confirm_repository_and_playbook: true
 ```
 
-### Install Multi-Master LDAP
+When automatic confirmation is enabled, the detected environment information is still displayed before the setup continues.
 
-Run this command to install LDAP in a multi-master configuration:
+## Install Multi-Master LDAP
+
+Run the following command:
+
 ```
 ansible-playbook -i inventory -u root zxbot.carbonio_ldap.carbonio_install_mmr
 ```
 
-
 ## License(s)
 
-See [COPYING](COPYING.md) file for detail.
+See [COPYING](COPYING.md) for details.

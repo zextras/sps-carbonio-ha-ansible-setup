@@ -1,38 +1,48 @@
-Role Name
-=========
+# Confirm HA Setup
 
-A brief description of the role goes here.
+This role validates the existing Carbonio environment before starting the PostgreSQL redundancy or Patroni HA setup.
 
-Requirements
-------------
+It displays the installed Carbonio version and Patroni HA collection version before any HA configuration is applied.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+For the Patroni HA setup, the role also validates the configured Zextras repository on the current and target DB connector servers.
 
-Role Variables
---------------
+## Responsibilities
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The role:
 
-Dependencies
-------------
+- retrieves the Patroni HA collection source and version;
+- retrieves the installed Carbonio version from the current PostgreSQL server;
+- validates the configured Zextras repository when DB connectors are moved;
+- verifies that the same repository is configured on the current and target DB connector servers;
+- displays the detected Carbonio version, repository, and HA playbook information;
+- requests confirmation before continuing with the HA setup.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Repository Validation
 
-Example Playbook
-----------------
+Repository validation is enabled when `carbonio_repository_check_hosts` is defined.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+The PostgreSQL replica installation does not require repository validation.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+The Patroni HA setup validates the repository on:
 
-License
--------
+- the current DB connector node (`postgresServers[0]`);
+- the target `dbsConnectorServers`.
 
-BSD
+## Non-Interactive Confirmation
 
-Author Information
-------------------
+HA setup confirmation can be automated with:
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```
+carbonio_auto_confirm_repository_and_playbook: true
+```
+
+When enabled, the environment information is still displayed, but the interactive confirmation prompt is skipped.
+
+## License
+
+GPL-3.0-only
+
+## Author Information
+
+Zextras
+https://www.zextras.com

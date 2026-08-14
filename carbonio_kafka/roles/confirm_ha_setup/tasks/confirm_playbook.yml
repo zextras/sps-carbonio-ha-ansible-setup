@@ -20,11 +20,10 @@
       installed Carbonio version.
 
       ============================================================
-      Type 'yes' and press ENTER to continue:
+      Type 'YES' and press ENTER to continue:
   register: carbonio_playbook_confirmation
   run_once: true
-  when:
-    - carbonio_auto_confirm_playbook is not defined or not (carbonio_auto_confirm_playbook | bool)
+  when: carbonio_auto_confirm_playbook is not defined or not (carbonio_auto_confirm_playbook | bool)
 
 - name: Display Kafka playbook information
   ansible.builtin.pause:
@@ -63,5 +62,4 @@
       version is correct for the installed Carbonio version
       before continuing.
   run_once: true
-  when:
-    - (carbonio_playbook_confirmation.user_input | default('') | upper) != 'YES'
+  when: (carbonio_playbook_confirmation.user_input | default('') | upper) != 'YES'

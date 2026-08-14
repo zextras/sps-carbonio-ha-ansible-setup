@@ -20,7 +20,7 @@
 - name: Abort when collection metadata is missing
   ansible.builtin.fail:
     msg: >-
-      Unable to determine the Carbonio Kafka playbook version.
+      Unable to determine the Carbonio LDAP HA playbook version.
       Neither galaxy.yml nor MANIFEST.json was found.
   run_once: true
   when:

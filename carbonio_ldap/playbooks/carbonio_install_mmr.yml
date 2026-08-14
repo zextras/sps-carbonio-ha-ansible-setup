@@ -2,6 +2,14 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- name: Confirm Carbonio LDAP HA setup
+  hosts: masterDirectoryServers
+  order: inventory
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - ../roles/confirm_ha_setup
+    
 - name: Prepare Ansible controller
   hosts: localhost
   connection: local

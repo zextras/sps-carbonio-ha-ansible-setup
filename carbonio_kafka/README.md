@@ -1,8 +1,8 @@
 # Ansible Collection - zxbot.carbonio_kafka
 
-An ansible collection to install Kafka part of Carbonio Cluster Services Redundancy 
+An Ansible collection to install and configure Kafka as part of Carbonio Cluster Services Redundancy.
 
-To install Kafka using this collection you have to insert new group in the inventory file It supports only FQDN.
+The collection installs Kafka on the servers defined in the `kafka` inventory group and configures the Kafka brokers used by Carbonio Application Servers.
 
 ## Table of Contents
 
@@ -10,24 +10,29 @@ To install Kafka using this collection you have to insert new group in the inven
 - [Install the Collection](#install-the-collection)
 - [Modify the Inventory](#modify-the-inventory)
 - [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
+- [Confirmation](#confirmation)
 - [Install Kafka](#install-kafka)
 - [License(s)](#licenses)
 
 ## Prerequisites
 
-- The inventory must use FQDN only — this collection supports FQDN entries exclusively.
-- A new `kafka` group must be added to the inventory file (see [Modify the Inventory](#modify-the-inventory)).
+- The inventory must use FQDN entries.
+- The existing Carbonio infrastructure must be updated to the intended version before starting the HA setup.
+- A `kafka` group must be added to the inventory.
+- Each Kafka server must have a unique `broker_id`.
 
-### Install the collection
+## Install the Collection
+
+Install the collection from Ansible Galaxy:
 
 ```
 ansible-galaxy collection install zxbot.carbonio_kafka
 ```
-### Modify the inventory 
 
-To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
+## Modify the Inventory
 
-`kafka` group specifies the servers where Kafka will be installed:
+Add the `kafka` group and assign a unique `broker_id` to each Kafka server:
+
 ```
 [kafka]
 svc1.example.com broker_id=1
@@ -35,38 +40,42 @@ svc2.example.com broker_id=2
 svc3.example.com broker_id=3
 ```
 
+The `zookeeper_servers` group is deprecated for new installations starting from Carbonio 25.9.0 because ZooKeeper has been replaced by Kafka KRaft. Keep the group empty:
+
+```
+[zookeeper_servers]
+```
+
 ## Full Cluster Services Redundancy Inventory Example
 
 ```
 [kafka]
-svcs1.example.com broker_id=1
-svcs2.example.com broker_id=2
-svcs3.example.com broker_id=3
+svc1.example.com broker_id=1
+svc2.example.com broker_id=2
+svc3.example.com broker_id=3
 
 [zookeeper_servers]
-#Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
-svcs1.example.com postgres_version=16 patroni_role=primary
-svcs2.example.com postgres_version=16 patroni_role=secondary
+svc1.example.com postgres_version=16 patroni_role=primary
+svc2.example.com postgres_version=16 patroni_role=secondary
 
 [masterDirectoryServers]
-#The master installed in the previous step should be first in the list
-svcs1.example.com ldap_role=master
-svcs2.example.com ldap_role=mmr
+# The master installed during the standard Carbonio installation
+# must remain the first server in this group.
+svc1.example.com ldap_role=master
+svc2.example.com ldap_role=mmr
 
-#Custom Default Domain (Optional)
 [masterDirectoryServers:vars]
-# Replace domain.com with your desired domain
-#default_domain=domain.com
+# Custom Default Domain (Optional)
+# default_domain=domain.com
 
 [replicaDirectoryServers]
-#Keep this group empty for User Mail Replica installation
- 
+
 [serviceDiscoverServers]
-svcs1.example.com
-svcs2.example.com
-svcs3.example.com
+svc1.example.com
+svc2.example.com
+svc3.example.com
 
 [dbsConnectorServers]
 mbox1.example.com
@@ -81,50 +90,71 @@ proxy1.example.com
 proxy2.example.com
 
 [proxyServers:vars]
-webmailHostname=webmailPublicHostname
+# webmailHostname=webmail.example.com
 
 [applicationServers]
 mbox1.example.com
 mbox2.example.com
 
 [filesServers]
-filesdocs2.example.com
 filesdocs1.example.com
-
-[taskServers]
 filesdocs2.example.com
-filesdocs1.example.com
 
 [docsServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
+
+[taskServers]
+filesdocs1.example.com
+filesdocs2.example.com
 
 [previewServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [videoServers]
-#hostname public_ip_address=x.y.z.t
-video1.example.com
-video2.example.com
+# hostname public_ip_address=x.y.z.t
+video1.example.com public_ip_address=1.2.3.4
+video2.example.com public_ip_address=1.2.3.5
 
 [workStreamServers]
 chats1.example.com
 chats2.example.com
 
 [prometheusServers]
-svcs3.example.com
+svc3.example.com
 
 [syslogServer]
-svcs3.example.com
+svc3.example.com
 ```
 
-### Install Kafka
-Run the following command to install Kafka:
+## Confirmation
+
+Before installing Kafka, the playbook displays:
+
+- the Kafka collection source;
+- the Kafka collection version.
+
+Verify that the collection version is appropriate for the currently installed Carbonio infrastructure before continuing.
+
+The Kafka installation does not require validation of the Zextras repository because Carbonio packages are not installed by this playbook.
+
+To skip the interactive confirmation, set:
+
+```
+carbonio_auto_confirm_playbook: true
+```
+
+When automatic confirmation is enabled, the playbook information is still displayed before the installation continues.
+
+## Install Kafka
+
+Run the following command:
+
 ```
 ansible-playbook -i inventory -u root zxbot.carbonio_kafka.carbonio_kafka_install
 ```
 
 ## License(s)
 
-See [COPYING](COPYING.md) file for detail.
+See [COPYING](COPYING.md) for details.

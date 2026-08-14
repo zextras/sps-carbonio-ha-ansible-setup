@@ -5,7 +5,7 @@
 ---
 galaxy_info:
   author: Zextras
-  description: Carbonio Kafka HA setup confirmation role
+  description: Carbonio LDAP HA setup confirmation role
   company: Zextras
   license: GPL-3.0-only
 

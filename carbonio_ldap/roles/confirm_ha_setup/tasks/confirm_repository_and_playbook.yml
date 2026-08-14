@@ -1,0 +1,97 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Prompt for repository and playbook confirmation
+  ansible.builtin.pause:
+    prompt: |
+      ============================================================
+      CARBONIO LDAP HA SETUP CONFIRMATION
+      ============================================================
+
+      Installed Carbonio version:
+        {{ hostvars['localhost'].carbonio_installed_version }}
+
+      LDAP HA playbook source:
+        {{ hostvars['localhost'].carbonio_playbook_source }}
+
+      LDAP HA playbook version:
+        {{ hostvars['localhost'].carbonio_playbook_version }}
+
+      Zextras repository:
+        {{ hostvars['localhost'].carbonio_repositories | first }}
+
+      Verify that the repository and LDAP HA playbook version
+      are correct for the installed Carbonio version.
+
+      By continuing, you confirm that:
+
+        - the existing Carbonio infrastructure has been updated to the
+          intended version before starting the HA setup;
+        - the configured Zextras repository matches the currently installed
+          Carbonio version;
+        - Carbonio packages installed by this playbook are expected to match
+          the versions used by the existing infrastructure.
+
+      ============================================================
+      Type 'yes' and press ENTER to continue:
+  register: carbonio_repository_and_playbook_confirmation
+  run_once: true
+  when:
+    - carbonio_auto_confirm_repository_and_playbook is not defined or not (carbonio_auto_confirm_repository_and_playbook | bool)
+
+- name: Display Carbonio repository and playbook information
+  ansible.builtin.pause:
+    seconds: 5
+    prompt: |
+      ============================================================
+      CARBONIO LDAP HA SETUP CONFIRMATION
+      ============================================================
+
+      Installed Carbonio version:
+        {{ hostvars['localhost'].carbonio_installed_version }}
+
+      LDAP HA playbook source:
+        {{ hostvars['localhost'].carbonio_playbook_source }}
+
+      LDAP HA playbook version:
+        {{ hostvars['localhost'].carbonio_playbook_version }}
+
+      Zextras repository:
+        {{ hostvars['localhost'].carbonio_repositories | first }}
+
+      By continuing, you confirm that:
+
+        - the existing Carbonio infrastructure has been updated to the
+          intended version before starting the HA setup;
+        - the configured Zextras repository matches the currently installed
+          Carbonio version;
+        - Carbonio packages installed by this playbook are expected to match
+          the versions used by the existing infrastructure.
+
+      Automatic repository and playbook confirmation is enabled.
+      ============================================================
+  run_once: true
+  when:
+    - carbonio_auto_confirm_repository_and_playbook is defined
+    - carbonio_auto_confirm_repository_and_playbook | bool
+
+- name: Set automatic repository and playbook confirmation
+  ansible.builtin.set_fact:
+    carbonio_repository_and_playbook_confirmation:
+      user_input: 'YES'
+  run_once: true
+  when:
+    - carbonio_auto_confirm_repository_and_playbook is defined
+    - carbonio_auto_confirm_repository_and_playbook | bool
+
+- name: Abort LDAP HA setup when repository and playbook are not confirmed
+  ansible.builtin.fail:
+    msg: >-
+      LDAP HA setup aborted. Verify that the installed Carbonio version,
+      configured repository, and LDAP HA playbook version are correct
+      before continuing.
+  run_once: true
+  when:
+    - (carbonio_repository_and_playbook_confirmation.user_input | default('') | upper) != 'YES'
