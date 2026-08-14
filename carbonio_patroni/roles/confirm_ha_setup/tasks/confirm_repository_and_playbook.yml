@@ -19,19 +19,19 @@
       Patroni HA playbook version:
         {{ hostvars['localhost'].carbonio_playbook_version }}
 
-      {% if carbonio_repository_check_hosts is defined %}
+      {% if carbonio_repository_check_hosts is defined and carbonio_repository_check_hosts | length > 0 %}
       Zextras repository:
         {{ hostvars['localhost'].carbonio_repositories | first }}
 
       {% endif %}
-      Verify that the Patroni HA playbook version{% if carbonio_repository_check_hosts is defined %} and repository{% endif %}
-      are correct for the installed Carbonio version.
+      Verify that the displayed Patroni HA setup information is correct
+      for the installed Carbonio version.
 
       By continuing, you confirm that:
 
         - the existing Carbonio infrastructure has been updated to the
           intended version before starting the HA setup;
-      {% if carbonio_repository_check_hosts is defined %}
+      {% if carbonio_repository_check_hosts is defined and carbonio_repository_check_hosts | length > 0 %}
         - the configured Zextras repository matches the currently installed
           Carbonio version;
         - Carbonio packages installed by this playbook are expected to match
@@ -39,7 +39,7 @@
       {% endif %}
 
       ============================================================
-      Type 'yes' and press ENTER to continue:
+      Type 'YES' and press ENTER to continue:
   register: carbonio_ha_setup_confirmation
   run_once: true
   when:
@@ -62,7 +62,7 @@
       Patroni HA playbook version:
         {{ hostvars['localhost'].carbonio_playbook_version }}
 
-      {% if carbonio_repository_check_hosts is defined %}
+      {% if carbonio_repository_check_hosts is defined and carbonio_repository_check_hosts | length > 0 %}
       Zextras repository:
         {{ hostvars['localhost'].carbonio_repositories | first }}
 
@@ -86,9 +86,8 @@
 - name: Abort Patroni HA setup when configuration is not confirmed
   ansible.builtin.fail:
     msg: >-
-      Patroni HA setup aborted. Verify that the installed Carbonio version,
-      Patroni HA playbook version, and repository configuration are correct
-      before continuing.
+      Patroni HA setup aborted. Verify that the displayed HA setup
+      information is correct before continuing.
   run_once: true
   when:
     - (carbonio_ha_setup_confirmation.user_input | default('') | upper) != 'YES'

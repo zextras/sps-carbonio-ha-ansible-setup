@@ -20,7 +20,7 @@
       Unable to determine the installed Carbonio version on
       {{ groups['masterDirectoryServers'][0] }}.
       Command output:
-      {{ carbonio_version_result.stderr | default(carbonio_version_result.stdout) }}
+      {{ (carbonio_version_result.stderr | default('') | trim) or (carbonio_version_result.stdout | default('') | trim) }}
   run_once: true
   when: carbonio_version_result.rc != 0 or carbonio_version_result.stdout | default('') | trim | length == 0
 
