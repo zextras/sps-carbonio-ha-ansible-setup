@@ -2,6 +2,16 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- name: Confirm Carbonio Patroni HA setup
+  hosts: postgresServers,dbsConnectorServers
+  order: inventory
+  gather_facts: true
+  any_errors_fatal: true
+  vars:
+    carbonio_repository_check_hosts: "{{ [groups['postgresServers'][0]] + groups['dbsConnectorServers'] }}"
+  roles:
+    - ../roles/confirm_ha_setup
+
 - name: Prepare Ansible controller
   hosts: localhost
   connection: local

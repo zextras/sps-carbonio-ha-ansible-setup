@@ -1,0 +1,93 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Prompt for Patroni HA setup confirmation
+  ansible.builtin.pause:
+    prompt: |
+      ============================================================
+      CARBONIO PATRONI HA SETUP CONFIRMATION
+      ============================================================
+
+      Installed Carbonio version:
+        {{ hostvars['localhost'].carbonio_installed_version }}
+
+      Patroni HA playbook source:
+        {{ hostvars['localhost'].carbonio_playbook_source }}
+
+      Patroni HA playbook version:
+        {{ hostvars['localhost'].carbonio_playbook_version }}
+
+      {% if carbonio_repository_check_hosts is defined and carbonio_repository_check_hosts | length > 0 %}
+      Zextras repository:
+        {{ hostvars['localhost'].carbonio_repositories | first }}
+
+      {% endif %}
+      Verify that the displayed Patroni HA setup information is correct
+      for the installed Carbonio version.
+
+      By continuing, you confirm that:
+
+        - the existing Carbonio infrastructure has been updated to the
+          intended version before starting the HA setup;
+      {% if carbonio_repository_check_hosts is defined and carbonio_repository_check_hosts | length > 0 %}
+        - the configured Zextras repository matches the currently installed
+          Carbonio version;
+        - Carbonio packages installed by this playbook are expected to match
+          the versions used by the existing infrastructure;
+      {% endif %}
+
+      ============================================================
+      Type 'YES' and press ENTER to continue:
+  register: carbonio_ha_setup_confirmation
+  run_once: true
+  when:
+    - carbonio_auto_confirm_repository_and_playbook is not defined or not (carbonio_auto_confirm_repository_and_playbook | bool)
+
+- name: Display Patroni HA setup information
+  ansible.builtin.pause:
+    seconds: 5
+    prompt: |
+      ============================================================
+      CARBONIO PATRONI HA SETUP CONFIRMATION
+      ============================================================
+
+      Installed Carbonio version:
+        {{ hostvars['localhost'].carbonio_installed_version }}
+
+      Patroni HA playbook source:
+        {{ hostvars['localhost'].carbonio_playbook_source }}
+
+      Patroni HA playbook version:
+        {{ hostvars['localhost'].carbonio_playbook_version }}
+
+      {% if carbonio_repository_check_hosts is defined and carbonio_repository_check_hosts | length > 0 %}
+      Zextras repository:
+        {{ hostvars['localhost'].carbonio_repositories | first }}
+
+      {% endif %}
+      Automatic HA setup confirmation is enabled.
+      ============================================================
+  run_once: true
+  when:
+    - carbonio_auto_confirm_repository_and_playbook is defined
+    - carbonio_auto_confirm_repository_and_playbook | bool
+
+- name: Set automatic HA setup confirmation
+  ansible.builtin.set_fact:
+    carbonio_ha_setup_confirmation:
+      user_input: 'YES'
+  run_once: true
+  when:
+    - carbonio_auto_confirm_repository_and_playbook is defined
+    - carbonio_auto_confirm_repository_and_playbook | bool
+
+- name: Abort Patroni HA setup when configuration is not confirmed
+  ansible.builtin.fail:
+    msg: >-
+      Patroni HA setup aborted. Verify that the displayed HA setup
+      information is correct before continuing.
+  run_once: true
+  when:
+    - (carbonio_ha_setup_confirmation.user_input | default('') | upper) != 'YES'

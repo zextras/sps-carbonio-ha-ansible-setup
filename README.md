@@ -10,6 +10,7 @@ This repository contains separate Ansible playbooks that enables redundacy for C
 - [Update the Inventory](#update-the-inventory)
 - [Important Notes on Initial Roles](#important-notes-on-initial-roles-for-cluster-services-redundancy-configuration)
 - [Full Inventory Example](#full-inventory-example)
+- [Confirmation](#confirmation)
 - [Installation Steps](#installation-steps)
 - [License(s)](#licenses)
 
@@ -39,7 +40,7 @@ After the standard Carbonio installation, the following inventory files should b
 - `inventory_ldap_password`
 - `inventory_consulpassword`
 
-> The playbook validates that these password files exist and are located in the same folder as the inventory file — the run will fail early if they're missing or misplaced.
+The playbook validates that these password files exist and are located in the same folder as the inventory file — the run will fail early if they're missing or misplaced.
 
 ### Update the Inventory
 To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
@@ -47,9 +48,9 @@ To configure the inventory for Cluster Services Redundancy installation, update 
 `kafka` group specifies the servers where Kafka will be installed:
 ```
 [kafka]
-svc1.example.com broker_id=1
-svc2.example.com broker_id=2
-svc3.example.com broker_id=3
+svcs1.example.com broker_id=1
+svcs2.example.com broker_id=2
+svcs3.example.com broker_id=3
 ```
 
 `zookeeper_servers` group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
@@ -63,16 +64,16 @@ svc3.example.com broker_id=3
 * `patroni_role` Specifies the Patroni role. Use primary for the initial master or secondary for additional masters.
 ```
 [postgresServers]
-svc1.example.com postgres_version=16 patroni_role=primary
-svc2.example.com postgres_version=16 patroni_role=secondary
+svcs1.example.com postgres_version=16 patroni_role=primary
+svcs2.example.com postgres_version=16 patroni_role=secondary
 ```
 
 `masterDirectoryServers` group includes the following variable:
 * `ldap_role` Specifies the LDAP role. Use master for the initial master or mmr for additional masters.
 ```
 [masterDirectoryServers]
-svc1.example.com ldap_role=master
-svc2.example.com ldap_role=mmr
+svcs1.example.com ldap_role=master
+svcs2.example.com ldap_role=mmr
 ```
 
 `dbsConnectorServers` group specifies db connectors due to Cluster Services Redundancy (it will move connectors from postgres to application servers)
@@ -94,20 +95,21 @@ The initial roles assigned during the standard installation must remain on the s
   - `mmr` for LDAP
   - `secondary` for PostgreSQL
 ```
+
 ### Full Inventory Example
 Here’s an example of the inventory file configured for Cluster Services Redundancy:
 ```
 [kafka]
-svc1.example.com broker_id=1
-svc2.example.com broker_id=2
-svc3.example.com broker_id=3
+svcs1.example.com broker_id=1
+svcs2.example.com broker_id=2
+svcs3.example.com broker_id=3
 
 [zookeeper_servers]
 #Starting from 25.9.0 this group is deprecated for new installations, keep it empty as Zookeeper has been replaced by Kafka Kraft and will no longer be used
 
 [postgresServers]
-svc1.example.com postgres_version=16 patroni_role=primary
-svc2.example.com postgres_version=16 patroni_role=secondary
+svcs1.example.com postgres_version=16 patroni_role=primary
+svcs2.example.com postgres_version=16 patroni_role=secondary
 
 [masterDirectoryServers]
 #The master installed in the previous step should be first in the list
@@ -123,9 +125,9 @@ svcs2.example.com ldap_role=mmr
 #Keep this group empty for User Mail Replica installation
 
 [serviceDiscoverServers]
-svc1.example.com
-svc2.example.com
-svc3.example.com
+svcs1.example.com
+svcs2.example.com
+svcs3.example.com
 
 [dbsConnectorServers]
 mbox1.example.com
@@ -172,11 +174,61 @@ chats1.example.com
 chats2.example.com
 
 [prometheusServers]
-svc3.example.com
+svcs3.example.com
 
 [syslogServer]
-svc3.example.com
+svcs3.example.com
 ```
+
+## Confirmation
+
+Cluster Services Redundancy playbooks display the relevant environment and collection information before applying HA configuration changes.
+
+Depending on the playbook, the confirmation includes:
+
+- the currently installed Carbonio version;
+- the Ansible collection source and version;
+- the configured Zextras repository when Carbonio packages are installed.
+
+### Kafka
+
+The Kafka installation displays the Kafka collection source and version.
+
+The Zextras repository is not validated because the Kafka playbook does not install Carbonio packages.
+
+Interactive confirmation can be skipped with:
+
+```
+carbonio_auto_confirm_playbook: true
+```
+
+### PostgreSQL and Patroni
+
+The PostgreSQL replica installation displays the currently installed Carbonio version and Patroni collection source/version.
+
+Repository validation is not required during the PostgreSQL replica installation.
+
+The Patroni HA setup additionally displays and validates the Zextras repository on the current and target DB connector servers.
+
+Interactive confirmation can be skipped with:
+
+```
+carbonio_auto_confirm_repository_and_playbook: true
+```
+
+### LDAP Multi-Master
+
+The LDAP Multi-Master setup displays the currently installed Carbonio version, LDAP collection source/version, and configured Zextras repository.
+
+The same repository must be configured on all LDAP servers before the HA setup can continue.
+
+Interactive confirmation can be skipped with:
+
+```
+carbonio_auto_confirm_repository_and_playbook: true
+```
+
+Automatic confirmation skips only the interactive prompt. The detected environment information is still displayed and repository validation is still performed where applicable.
 
 ## Installation Steps
 
@@ -187,7 +239,6 @@ ansible-galaxy collection install zxbot.carbonio_kafka
 ansible-galaxy collection install zxbot.carbonio_patroni
 ansible-galaxy collection install zxbot.carbonio_ldap
 ```
-
 
 ### 1. Install Kafka
 Run the following command to install Kafka:
@@ -207,7 +258,6 @@ Run this command to install LDAP in a multi-master configuration:
 ```
 ansible-playbook -i inventory -u root zxbot.carbonio_ldap.carbonio_install_mmr
 ```
-
 
 ## License(s)
 

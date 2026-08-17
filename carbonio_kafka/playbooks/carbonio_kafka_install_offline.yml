@@ -2,6 +2,13 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
+- name: Confirm Carbonio Kafka HA setup
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/confirm_ha_setup
+    
 - name: Prepare Ansible controller
   hosts: localhost
   connection: local

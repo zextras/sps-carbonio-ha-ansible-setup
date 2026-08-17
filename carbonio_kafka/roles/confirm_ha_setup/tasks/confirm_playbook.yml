@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Prompt for playbook confirmation
+  ansible.builtin.pause:
+    prompt: |
+      ============================================================
+      CARBONIO KAFKA HA SETUP CONFIRMATION
+      ============================================================
+
+      Kafka playbook source:
+        {{ hostvars['localhost'].carbonio_playbook_source }}
+
+      Kafka playbook version:
+        {{ hostvars['localhost'].carbonio_playbook_version }}
+
+      Verify that the Kafka playbook version is correct for the
+      installed Carbonio version.
+
+      ============================================================
+      Type 'YES' and press ENTER to continue:
+  register: carbonio_playbook_confirmation
+  run_once: true
+  when: carbonio_auto_confirm_playbook is not defined or not (carbonio_auto_confirm_playbook | bool)
+
+- name: Display Kafka playbook information
+  ansible.builtin.pause:
+    seconds: 5
+    prompt: |
+      ============================================================
+      CARBONIO KAFKA HA SETUP CONFIRMATION
+      ============================================================
+
+      Kafka playbook source:
+        {{ hostvars['localhost'].carbonio_playbook_source }}
+
+      Kafka playbook version:
+        {{ hostvars['localhost'].carbonio_playbook_version }}
+
+      Automatic playbook confirmation is enabled.
+      ============================================================
+  run_once: true
+  when:
+    - carbonio_auto_confirm_playbook is defined
+    - carbonio_auto_confirm_playbook | bool
+
+- name: Set automatic playbook confirmation
+  ansible.builtin.set_fact:
+    carbonio_playbook_confirmation:
+      user_input: 'YES'
+  run_once: true
+  when:
+    - carbonio_auto_confirm_playbook is defined
+    - carbonio_auto_confirm_playbook | bool
+
+- name: Abort Kafka HA setup when playbook is not confirmed
+  ansible.builtin.fail:
+    msg: >-
+      Kafka HA setup aborted. Verify that the Kafka playbook
+      version is correct for the installed Carbonio version
+      before continuing.
+  run_once: true
+  when: (carbonio_playbook_confirmation.user_input | default('') | upper) != 'YES'

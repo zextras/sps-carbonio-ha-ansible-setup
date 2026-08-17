@@ -11,6 +11,7 @@ To install Kafka using this collection you have to insert new groups in the inve
 - [Modify the Inventory](#modify-the-inventory)
 - [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
 - [Important Notes on Initial Roles](#important-notes-on-initial-roles-for-cluster-services-redundancy-configuration)
+- [Confirmation](#confirmation)
 - [Install PostgreSQL Redundancy](#install-postgresql-redundancy)
 - [License(s)](#licenses)
 
@@ -24,6 +25,7 @@ To install Kafka using this collection you have to insert new groups in the inve
 ```
 ansible-galaxy collection install zxbot.carbonio_patroni
 ```
+
 ### Modify the inventory 
 
 To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
@@ -33,8 +35,8 @@ To configure the inventory for Cluster Services Redundancy installation, update 
 * `patroni_role` Specifies the Patroni role. Use primary for the initial master or secondary for additional masters.
 ```
 [postgresServers]
-svc1.example.com postgres_version=16 patroni_role=primary
-svc2.example.com postgres_version=16 patroni_role=secondary
+svcs1.example.com postgres_version=16 patroni_role=primary
+svcs2.example.com postgres_version=16 patroni_role=secondary
 ```
 
 `dbsConnectorServers` group specifies db connectors due to Cluster Services Redundancy  (it will move connectors from postgres to application servers)
@@ -97,20 +99,20 @@ mbox1.example.com
 mbox2.example.com
 
 [filesServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [taskServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [docsServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [previewServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [videoServers]
 #hostname public_ip_address=x.y.z.t
@@ -139,6 +141,50 @@ The initial roles assigned during the standard installation must remain on the s
   - `secondary` for PostgreSQL
 ```
 
+## Confirmation
+
+The PostgreSQL redundancy setup contains different confirmation checks depending on the playbook being executed.
+
+### PostgreSQL Replica Installation
+
+Before configuring additional PostgreSQL replicas, the playbook displays:
+
+- the currently installed Carbonio version detected on the existing PostgreSQL server;
+- the Patroni collection source;
+- the Patroni collection version.
+
+Verify that the Patroni collection version is appropriate for the currently installed Carbonio infrastructure before continuing.
+
+The PostgreSQL replica installation does not validate the Zextras repository because this stage does not install Carbonio DB connector packages.
+
+### Patroni HA Setup
+
+Before configuring Patroni and moving the DB connectors, the playbook displays:
+
+- the currently installed Carbonio version;
+- the Patroni collection source;
+- the Patroni collection version;
+- the configured Zextras repository.
+
+The repository is validated on the current DB connector server and the target `dbsConnectorServers`.
+
+Before continuing, verify that:
+
+- the existing Carbonio infrastructure has been updated to the intended version;
+- the Patroni collection version is appropriate for the installed Carbonio version;
+- the configured Zextras repository matches the currently installed Carbonio version;
+- Carbonio packages installed during the HA setup will match the versions used by the existing infrastructure.
+
+If the repository is missing, multiple repositories are configured on a server, or different repositories are detected between the current and target DB connector servers, the playbook stops before applying the HA configuration.
+
+To skip the interactive confirmation, set:
+
+```
+carbonio_auto_confirm_repository_and_playbook: true
+```
+
+When automatic confirmation is enabled, the detected environment information is still displayed and repository validation is still performed where applicable.
+
 ###  Install PostgreSQL redundancy
 
 Run these commands to set up PostgreSQL redundancy with Patroni:
@@ -146,7 +192,6 @@ Run these commands to set up PostgreSQL redundancy with Patroni:
 ansible-playbook -i inventory -u root zxbot.carbonio_patroni.carbonio_replica_postgres_install
 ansible-playbook -i inventory -u root zxbot.carbonio_patroni.carbonio_patroni_install
 ```
-
 
 ## License(s)
 

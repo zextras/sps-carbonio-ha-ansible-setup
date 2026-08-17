@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 * Refactored the playbook structure and standardized Ansible content across roles, including task names, module FQCNs, inventory group references, and task conditions.
 * Added migration of Preview DB connector packages during the DB connector migration process.
 * Removed obsolete pgpool cleanup logic from the HAProxy installation role.
+* Added pre-installation validation and confirmation for Kafka, LDAP, and Patroni playbooks, including Carbonio version, collection version, and Zextras repository checks where applicable.
 
 
 ### Bug Fixes
