@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 * Fixed the Kafka producer configuration filename from `producer.propertiess` to `producer.properties`.
 * Updated the Patroni setup to reuse the existing PostgreSQL pgdg.list repository configuration instead of creating a separate duplicate patroni.list, preventing duplicate APT repository warnings during HA installation.
 * Kafka KRaft Cluster ID is now generated once and persisted to `{{ inventory_file }}_kafkaid` on the Ansible controller, reused on subsequent runs, preventing node Cluster ID mismatches after an interrupted install.
+* Made LDAP MMR initialization idempotent by checking zmldapmmrtool -q before enabling MMR, skipping zmldapenable-mmr when the agreement already exists.
 
 
 ### [26.6.0] (2026-07-07)
