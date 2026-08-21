@@ -8,6 +8,18 @@
     manager: auto
   tags:
     - execute-pending-setups
+
+- name: Query existing LDAP MMR replication agreements
+  become: true
+  become_method: su
+  become_user: zextras
+  command: "/opt/zextras/libexec/zmldapmmrtool -q"
+  register: mmr_agreements
+  changed_when: false
+  failed_when: false          # don't fail the play if no agreements exist yet / rc != 0
+  when: 
+    - inventory_hostname in groups["masterDirectoryServers"] 
+    - ldap_role == "master"
     
 - name: Enable MMR on existing LDAP master
   become: true
@@ -17,6 +29,7 @@
   when: 
     - inventory_hostname in groups['masterDirectoryServers']
     - ldap_role == "master"
+    - "'Master Server ID:' not in mmr_agreements.stdout"
 
 - name: Change local conf on first master
   become: true
