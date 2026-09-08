@@ -84,22 +84,24 @@
     - inventory_hostname in groups['masterDirectoryServers']
     - ldap_role == "mmr"
 
-- name: Install carbonio-directory-server [Ubuntu]
+- name: Install Carbonio directory and license services [Ubuntu]
   become: true
   ansible.builtin.apt: name={{ item }} state=present
   with_items:
-      - carbonio-directory-server
+    - carbonio-directory-server
+    - carbonio-license-service
   when: 
     - ansible_facts.os_family == "Debian"
     - "'carbonio-directory-server' not in ansible_facts.packages"
     - inventory_hostname in groups['masterDirectoryServers']
     - ldap_role == "mmr"
 
-- name: Install carbonio-directory-server [RHEL]
+- name: Install Carbonio directory and license services [RHEL]
   become: true
   ansible.builtin.yum: name={{ item }} state=present
   with_items:
-      - carbonio-directory-server
+    - carbonio-directory-server
+    - carbonio-license-service
   when: 
     - ansible_facts.os_family == "RedHat"
     - "'carbonio-directory-server' not in ansible_facts.packages"

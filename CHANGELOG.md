@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 * Added migration of Preview DB connector packages during the DB connector migration process.
 * Removed obsolete pgpool cleanup logic from the HAProxy installation role.
 * Added pre-installation validation and confirmation for Kafka, LDAP, and Patroni playbooks, including Carbonio version, collection version, and Zextras repository checks where applicable.
+* Added carbonio-license-service installation on second master LDAP node.
 
 
 ### Bug Fixes
