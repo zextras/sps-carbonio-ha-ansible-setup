@@ -230,6 +230,8 @@ carbonio_auto_confirm_repository_and_playbook: true
 
 Automatic confirmation skips only the interactive prompt. The detected environment information is still displayed and repository validation is still performed where applicable.
 
+Only `true` and `false` are supported values for automatic confirmation variables.
+
 ## Installation Steps
 
 Download necessary collections before the Cluster Services Redundancy installation:

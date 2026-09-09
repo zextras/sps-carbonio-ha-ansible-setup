@@ -43,7 +43,7 @@
   register: carbonio_ha_setup_confirmation
   run_once: true
   when:
-    - carbonio_auto_confirm_repository_and_playbook is not defined or not (carbonio_auto_confirm_repository_and_playbook | bool)
+    - carbonio_auto_confirm_repository_and_playbook is not defined or not (carbonio_auto_confirm_repository_and_playbook | lower == 'true')
 
 - name: Display Patroni HA setup information
   ansible.builtin.pause:
@@ -72,7 +72,7 @@
   run_once: true
   when:
     - carbonio_auto_confirm_repository_and_playbook is defined
-    - carbonio_auto_confirm_repository_and_playbook | bool
+    - carbonio_auto_confirm_repository_and_playbook | lower == 'true'
 
 - name: Set automatic HA setup confirmation
   ansible.builtin.set_fact:
@@ -81,7 +81,7 @@
   run_once: true
   when:
     - carbonio_auto_confirm_repository_and_playbook is defined
-    - carbonio_auto_confirm_repository_and_playbook | bool
+    - carbonio_auto_confirm_repository_and_playbook | lower == 'true'
 
 - name: Abort Patroni HA setup when configuration is not confirmed
   ansible.builtin.fail:
