@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 * Removed obsolete pgpool cleanup logic from the HAProxy installation role.
 * Added pre-installation validation and confirmation for Kafka, LDAP, and Patroni playbooks, including Carbonio version, collection version, and Zextras repository checks where applicable.
 * Added carbonio-license-service installation on second master LDAP node.
-
+* Standardized confirmation handling across LDAP, Kafka, and Patroni collections, limiting automatic confirmation variables to `true` and `false`.
 
 ### Bug Fixes
 * Fixed the Kafka producer configuration filename from `producer.propertiess` to `producer.properties`.
