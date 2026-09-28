@@ -22,21 +22,32 @@
     - inventory_hostname in groups["masterDirectoryServers"]
     - ldap_role == "mmr"
 
-- name: Run pending setups for license service
+- name: Copy pending setups script
   become: true
-  ansible.builtin.command: /tmp/apply-pending-setups.sh {{ carbonio_mesh_password }}
-  register: license_service_pso
+  ansible.builtin.template:
+    src: apply-pending-setups.sh.j2
+    dest: /tmp/apply-pending-setups.sh
+    mode: "0755"
   when:
     - inventory_hostname in groups["masterDirectoryServers"]
     - ldap_role == "mmr"
   tags:
     - execute-pending-setups
 
-- name: Remove scripts from remote host
+- name: Run pending setups for license service
+  become: true
+  ansible.builtin.command: /tmp/apply-pending-setups.sh {{ carbonio_mesh_password }}
+  when:
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "mmr"
+  tags:
+    - execute-pending-setups
+
+- name: Remove pending setups script
   become: true
   ansible.builtin.file:
-    state: absent
     path: /tmp/apply-pending-setups.sh
+    state: absent
   when:
     - inventory_hostname in groups["masterDirectoryServers"]
     - ldap_role == "mmr"

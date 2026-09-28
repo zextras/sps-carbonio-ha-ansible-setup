@@ -91,6 +91,18 @@
   tags:
     - execute-pending-setups
 
+- name: Remove pending setups script
+  become: true
+  ansible.builtin.file:
+    path: /tmp/apply-pending-setups.sh
+    state: absent
+  when:
+    - "'carbonio-directory-server' not in ansible_facts.packages"
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "mmr"
+  tags:
+    - execute-pending-setups
+
 - name: Manage ldap password
   ansible.builtin.set_fact:
     carbonio_ldap_password: "{{ lookup('ansible.builtin.password', inventory_file + '_ldap_password', chars=['ascii_letters', 'digits'], length=8) }}"
