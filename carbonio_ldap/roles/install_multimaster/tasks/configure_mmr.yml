@@ -144,14 +144,6 @@
     - inventory_hostname in groups["masterDirectoryServers"]
     - ldap_role == "mmr"
 
-- name: Add and enable service-discover service
-  become: true
-  become_method: su
-  become_user: zextras
-  ansible.builtin.command: "/opt/zextras/bin/carbonio prov -l ms {{ inventory_hostname }} +zimbraServiceInstalled service-discover +zimbraServiceEnabled service-discover"
-  when:
-    - inventory_hostname in groups["serviceDiscoverServers"]
-
 - name: Restart carbonio on second LDAP master
   become: true
   become_method: su
