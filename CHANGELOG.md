@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 * Kafka KRaft Cluster ID is now generated once and persisted to `{{ inventory_file }}_kafkaid` on the Ansible controller, reused on subsequent runs, preventing node Cluster ID mismatches after an interrupted install.
 * Made LDAP MMR initialization idempotent by checking zmldapmmrtool -q before enabling MMR, skipping zmldapenable-mmr when the agreement already exists.
 * Fixed PostgreSQL replica setup on RHEL to avoid overriding the existing Zextras repository with the release repository.
+* Removed legacy service-discover LDAP attribute workaround from MMR LDAP playbook now resolved upstream.
 
 
 ### [26.6.0] (2026-07-07)
