@@ -10,6 +10,7 @@ To install Kafka using this collection you have to insert new group in the inven
 - [Install the Collection](#install-the-collection)
 - [Modify the Inventory](#modify-the-inventory)
 - [Full Cluster Services Redundancy Inventory Example](#full-cluster-services-redundancy-inventory-example)
+- [Confirmation](#confirmation)
 - [Install Kafka](#install-kafka)
 - [License(s)](#licenses)
 
@@ -23,6 +24,7 @@ To install Kafka using this collection you have to insert new group in the inven
 ```
 ansible-galaxy collection install zxbot.carbonio_kafka
 ```
+
 ### Modify the inventory 
 
 To configure the inventory for Cluster Services Redundancy installation, update the **inventory file** with specific variables and add the following groups:
@@ -30,9 +32,9 @@ To configure the inventory for Cluster Services Redundancy installation, update 
 `kafka` group specifies the servers where Kafka will be installed:
 ```
 [kafka]
-svc1.example.com broker_id=1
-svc2.example.com broker_id=2
-svc3.example.com broker_id=3
+svcs1.example.com broker_id=1
+svcs2.example.com broker_id=2
+svcs3.example.com broker_id=3
 ```
 
 ## Full Cluster Services Redundancy Inventory Example
@@ -88,20 +90,20 @@ mbox1.example.com
 mbox2.example.com
 
 [filesServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [taskServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [docsServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [previewServers]
-filesdocs2.example.com
 filesdocs1.example.com
+filesdocs2.example.com
 
 [videoServers]
 #hostname public_ip_address=x.y.z.t
@@ -119,7 +121,27 @@ svcs3.example.com
 svcs3.example.com
 ```
 
+## Confirmation
+
+Before installing Kafka, the playbook displays:
+
+- the Kafka collection source;
+- the Kafka collection version.
+
+Verify that the collection version is appropriate for the currently installed Carbonio infrastructure before continuing.
+
+The Kafka installation does not validate the Zextras repository because Carbonio packages are not installed by this playbook.
+
+To skip the interactive confirmation, set:
+
+```
+carbonio_auto_confirm_playbook: true
+```
+
+When automatic confirmation is enabled, the playbook information is still displayed before the installation continues.
+
 ### Install Kafka
+
 Run the following command to install Kafka:
 ```
 ansible-playbook -i inventory -u root zxbot.carbonio_kafka.carbonio_kafka_install

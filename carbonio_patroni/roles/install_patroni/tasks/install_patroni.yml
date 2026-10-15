@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
@@ -22,11 +22,11 @@
   tags:
     - set-repos
 
-- name: Create Patroni repo [Ubuntu]
+- name: Configure PostgreSQL repository to install Patroni [Ubuntu]
   become: true
   ansible.builtin.template:
-    src: patroni.list.j2
-    dest: /etc/apt/sources.list.d/patroni.list
+    src: postgresql.list.j2
+    dest: /etc/apt/sources.list.d/pgdg.list
     mode: "0644"
   when: ansible_facts.os_family == "Debian"
   tags:
@@ -40,9 +40,9 @@
   tags:
     - set-repos
 
-- name: Install patroni packages [Ubuntu]
+- name: Install Patroni packages [Ubuntu]
   become: true
-  apt: name={{ item }} state=present
+  ansible.builtin.apt: name={{ item }} state=present
   with_items:
       - patroni
       - watchdog
@@ -53,9 +53,9 @@
   tags:
     - install_patroni
 
-- name: Install patroni packages [RHEL]
+- name: Install Patroni packages [RHEL]
   become: true
-  yum: name={{ item }} state=present
+  ansible.builtin.yum: name={{ item }} state=present
   with_items:
       - patroni
       - watchdog
@@ -65,9 +65,9 @@
   tags:
     - install_patroni
 
-- name: Install patroni packages [RHEL]
+- name: Install Patroni packages [RHEL]
   become: true
-  yum: name={{ item }} state=present
+  ansible.builtin.yum: name={{ item }} state=present
   with_items:
       - pinentry
   when: ansible_facts.os_family == "RedHat"
@@ -86,7 +86,7 @@
   register: carbonio_mesh_token_answer
 
 - name: Set Consul token
-  set_fact:
+  ansible.builtin.set_fact:
     carbonio_mesh_token: "{{ carbonio_mesh_token_answer.stdout_lines[0] }}"
 
 - name: Manage Postgres Admin password
@@ -132,58 +132,72 @@
   register: cluster_ident
   when: ansible_facts.os_family == "RedHat"
 
-- name: Print postgres ident
+- name: Display PostgreSQL cluster identifier
   ansible.builtin.debug:
     var: cluster_ident
     verbosity: 2 
 
 
-- name: Start the patroni service
+- name: Start Patroni service
   ansible.builtin.service:
     name: patroni
     state: started
-    enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary"
+    enabled: true
+  when: 
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "primary"
   tags:
     - enable_patroni
 
-- name: Restart the patroni service[Ubuntu]
+- name: Restart Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: restarted
-    enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "primary" and ansible_facts.os_family == "Debian"
+    enabled: true
+  when: 
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "primary"
+    - ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
 
-- name: Pause for 1 minutes to vailidate pastroni start
+- name: Wait for Patroni to start (1 min)
   ansible.builtin.pause:
     minutes: 1
 
-- name: Stop the patroni service[Ubuntu]
+- name: Stop Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: stopped
-    enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
+    enabled: true
+  when: 
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "secondary"
+    - ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
 
-- name: Start the patroni service [RHEL]
+- name: Start Patroni service [RHEL]
   ansible.builtin.service:
     name: patroni
     state: started
-    enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "RedHat"
+    enabled: true
+  when: 
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "secondary"
+    - ansible_facts.os_family == "RedHat"
   tags:
     - enable_patroni
 
-- name: Restart the patroni service [Ubuntu]
+- name: Start Patroni service [Ubuntu]
   ansible.builtin.service:
     name: patroni
     state: started
-    enabled: yes
-  when: inventory_hostname in groups["postgresServers"] and patroni_role == "secondary" and ansible_facts.os_family == "Debian"
+    enabled: true
+  when: 
+    - inventory_hostname in groups['postgresServers']
+    - patroni_role == "secondary"
+    - ansible_facts.os_family == "Debian"
   tags:
     - enable_patroni
 

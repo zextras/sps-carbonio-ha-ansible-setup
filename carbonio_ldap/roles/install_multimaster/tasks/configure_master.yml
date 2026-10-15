@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+---
+- name: Query existing LDAP MMR replication agreements
+  become: true
+  become_method: su
+  become_user: zextras
+  ansible.builtin.command: "/opt/zextras/libexec/zmldapmmrtool -q"
+  register: mmr_agreements
+  changed_when: false
+  failed_when: false
+  when:
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "master"
+
+- name: Enable MMR on existing LDAP master
+  become: true
+  become_method: su
+  become_user: zextras
+  ansible.builtin.command: "/opt/zextras/libexec/zmldapenable-mmr -s 1 -m ldap://{{ groups['masterDirectoryServers'][1] }}:389/"
+  when:
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "master"
+    - "'Master Server ID:' not in mmr_agreements.stdout"
+
+- name: Change local conf on first master
+  become: true
+  become_method: su
+  become_user: zextras
+  ansible.builtin.command: "/opt/zextras/bin/zmlocalconfig -e ldap_master_url=\"ldap://{{ groups['masterDirectoryServers'][0] }}:389 ldap://{{ groups['masterDirectoryServers'][1] }}:389\""
+  when:
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "master"
+
+- name: Restart carbonio on first LDAP master
+  become: true
+  become_method: su
+  become_user: zextras
+  ansible.builtin.command: "/opt/zextras/bin/zmcontrol restart"
+  when:
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "master"
+    - ansible_facts.distribution_major_version != "9"
+    - ansible_facts.distribution_major_version != "24"
+
+- name: Restart carbonio on first LDAP master [Sysd]
+  become: true
+  ansible.builtin.systemd_service:
+    name: carbonio.target
+    state: restarted
+  when:
+    - ansible_facts.distribution_major_version == "9" or ansible_facts.distribution_major_version == "24"
+    - inventory_hostname in groups["masterDirectoryServers"]
+    - ldap_role == "master"

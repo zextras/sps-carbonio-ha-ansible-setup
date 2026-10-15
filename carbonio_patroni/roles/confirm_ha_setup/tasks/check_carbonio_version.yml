@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+- name: Retrieve installed Carbonio version
+  become: true
+  become_method: su
+  become_user: zextras
+  ansible.builtin.command: /opt/zextras/bin/zmcontrol -v
+  register: carbonio_version_result
+  changed_when: false
+  failed_when: false
+  delegate_to: "{{ groups['postgresServers'][0] }}"
+  run_once: true
+
+- name: Abort when Carbonio version cannot be determined
+  ansible.builtin.fail:
+    msg: >-
+      Unable to determine the installed Carbonio version on
+      {{ groups['postgresServers'][0] }}.
+      Command output:
+      {{ (carbonio_version_result.stderr | default('') | trim) or (carbonio_version_result.stdout | default('') | trim) }}
+  run_once: true
+  when: carbonio_version_result.rc != 0 or carbonio_version_result.stdout | default('') | trim | length == 0
+
+- name: Store installed Carbonio version
+  ansible.builtin.set_fact:
+    carbonio_installed_version: "{{ carbonio_version_result.stdout | trim }}"
+  delegate_to: localhost
+  delegate_facts: true
+  run_once: true

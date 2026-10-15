@@ -3,11 +3,24 @@
 All notable changes to this project will be documented in this file. 
 
 
-### [26.6.1] (2026-08-18)
+### [26.9.0] (2026-10-15)
 
+
+### Features
+* Refactored the playbook structure and standardized Ansible content across roles, including task names, module FQCNs, inventory group references, and task conditions.
+* Added migration of Preview DB connector packages during the DB connector migration process.
+* Removed obsolete pgpool cleanup logic from the HAProxy installation role.
+* Added pre-installation validation and confirmation for Kafka, LDAP, and Patroni playbooks, including Carbonio version, collection version, and Zextras repository checks where applicable.
+* Added carbonio-license-service installation on second master LDAP node.
+* Standardized confirmation handling across LDAP, Kafka, and Patroni collections, limiting automatic confirmation variables to `true` and `false`.
 
 ### Bug Fixes
-* Remove invisible/unusable characters from `ansible_controller_dependencies.yml` causing file access errors.
+* Fixed the Kafka producer configuration filename from `producer.propertiess` to `producer.properties`.
+* Updated the Patroni setup to reuse the existing PostgreSQL pgdg.list repository configuration instead of creating a separate duplicate patroni.list, preventing duplicate APT repository warnings during HA installation.
+* Kafka KRaft Cluster ID is now generated once and persisted to `{{ inventory_file }}_kafkaid` on the Ansible controller, reused on subsequent runs, preventing node Cluster ID mismatches after an interrupted install.
+* Made LDAP MMR initialization idempotent by checking zmldapmmrtool -q before enabling MMR, skipping zmldapenable-mmr when the agreement already exists.
+* Fixed PostgreSQL replica setup on RHEL to avoid overriding the existing Zextras repository with the release repository.
+* Removed legacy service-discover LDAP attribute workaround from MMR LDAP playbook now resolved upstream.
 
 
 ### [26.6.0] (2026-07-07)

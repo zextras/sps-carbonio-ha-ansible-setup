@@ -1,10 +1,9 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
 ---
-# tasks file for pre-installation_checks
-  - import_tasks: chats_check.yml
-  - import_tasks: password-checks.yml
-  - import_tasks: ansible_controller_dependencies.yml
-  - import_tasks: inventory_values_checks.yml
+# tasks file for pre_installation_checks
+- ansible.builtin.import_tasks: validate_inventory_chats.yml
+- ansible.builtin.import_tasks: validate_password_files.yml
+- ansible.builtin.import_tasks: validate_inventory_values.yml

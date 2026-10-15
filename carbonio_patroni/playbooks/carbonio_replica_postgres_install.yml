@@ -1,15 +1,32 @@
-# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 ---
-- hosts: all
+- name: Confirm Carbonio PostgreSQL replica setup
+  hosts: postgresServers
   order: inventory
-  gather_facts: yes
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - ../roles/confirm_ha_setup
+      
+- name: Prepare Ansible controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/prepare_ansible_controller
+
+- name: Validate PostgreSQL replica installation prerequisites
+  hosts: all
+  order: inventory
+  gather_facts: true
   roles:
      - ../roles/pre_installation_checks
      
-- hosts: postgresServers
+- name: Install and configure PostgreSQL replicas
+  hosts: postgresServers
   order: inventory
-  gather_facts: yes
+  gather_facts: true
   roles:
      - ../roles/install_replica_postgres

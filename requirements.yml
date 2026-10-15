@@ -1,0 +1,11 @@
+---
+collections:
+  - name: community.postgresql
+    version: ">=3.13.0"
+    source: https://galaxy.ansible.com
+  - name: ansible.posix
+    version: ">=2.2.0"
+    source: https://galaxy.ansible.com
+  - name: zxbot.sps_ansible_addons
+    version: ">=1.0.0"
+    source: https://galaxy.ansible.com
