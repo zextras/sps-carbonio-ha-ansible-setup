@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'infra-v1'
+            label 'ansible-v1'
         }
     }
 
@@ -15,7 +15,10 @@ pipeline {
 
         stage('Checkout') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                anyOf {
+                    expression { env.BRANCH_NAME == 'main' }
+                    buildingTag()
+                }
             }
             steps {
                 checkout scm
@@ -24,7 +27,10 @@ pipeline {
 
         stage('Build Carbonio HA Collections') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                anyOf {
+                    expression { env.BRANCH_NAME == 'main' }
+                    buildingTag()
+                }
             }
             steps {
                 container('ansible') {
@@ -39,7 +45,7 @@ pipeline {
 
         stage('Publish Carbonio HA Collections') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                buildingTag()
             }
             steps {
                 container('ansible') {
