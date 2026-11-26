@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 ### [26.12.0] (2026-12-20)
 
 
+### Features
+* Removed the obsolete carbonio-license-service package from the LDAP Multi-Master installation playbook.
+
 ### Bug Fixes
 * Fixed Patroni installation on RHEL 9.9 by replacing the obsolete python3-consul dependency with py-consul, ensuring compatibility with the updated PGDG repositories.
 
