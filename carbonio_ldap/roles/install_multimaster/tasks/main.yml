@@ -4,4 +4,3 @@
 ---
 - ansible.builtin.import_tasks: configure_master.yml
 - ansible.builtin.import_tasks: configure_mmr.yml
-- ansible.builtin.import_tasks: install_license_service.yml
